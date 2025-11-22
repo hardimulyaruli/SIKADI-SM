@@ -18,7 +18,8 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required',
-            'password' => 'required'
+            'password' => 'required',
+            'selected_role' => 'required'
         ]);
 
         // Cari user berdasarkan email
@@ -27,6 +28,11 @@ class AuthController extends Controller
         // Jika user tidak ditemukan atau password salah
         if (!$user || !Hash::check($request->password, $user->kata_sandi)) {
             return back()->with('error', 'Email atau password salah!');
+        }
+
+        // Validasi role sesuai akun
+        if ($request->selected_role !== $user->peran) {
+            return back()->with('error', 'Role tidak sesuai dengan akun!');
         }
 
         // Login manual

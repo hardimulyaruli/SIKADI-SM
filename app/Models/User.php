@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -7,9 +6,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
-
-    protected $table = 'pengguna';
+    protected $table = 'pengguna'; // pakai tabel pengguna
 
     protected $fillable = [
         'nama',
@@ -18,7 +15,11 @@ class User extends Authenticatable
         'peran',
     ];
 
-    // Override agar Laravel tahu password pakai 'kata_sandi'
+    protected $hidden = [
+        'kata_sandi',
+    ];
+
+    // Mapping agar Auth memakai kolom kata_sandi
     public function getAuthPassword()
     {
         return $this->kata_sandi;

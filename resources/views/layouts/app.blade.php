@@ -14,7 +14,6 @@
             display: flex;
         }
 
-
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -55,14 +54,14 @@
     <div class="sidebar">
         <h4 class="mb-4">📦 SIKADI SM</h4>
 
-        <!-- MENU OWNER -->
+        {{-- MENU OWNER --}}
         @if(Auth::user()->peran === 'owner')
             <a href="{{ route('owner.dashboard') }}">🏠 Dashboard Owner</a>
             <a href="{{ route('owner.keuangan') }}">📊 Laporan Umum</a>
             <a href="{{ route('owner.user_management') }}">👥 Manajemen Pengguna</a>
         @endif
 
-        <!-- MENU KEUANGAN -->
+        {{-- MENU KEUANGAN --}}
         @if(Auth::user()->peran === 'keuangan')
             <a href="{{ route('keuangan.dashboard') }}">🏠 Dashboard Keuangan</a>
             <a href="#">💰 Gaji Pegawai</a>
@@ -72,7 +71,7 @@
             <a href="#">📄 Laporan Keuangan</a>
         @endif
 
-        <!-- MENU DISTRIBUSI -->
+        {{-- MENU DISTRIBUSI --}}
         @if(Auth::user()->peran === 'distribusi')
             <a href="{{ route('distribusi.dashboard') }}">🏠 Dashboard Distribusi</a>
             <a href="#">🚚 Distribusi Barang</a>
@@ -80,14 +79,14 @@
         @endif
 
         <hr style="border-color:white;">
+
         <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button class="btn btn-danger w-100 mt-3">🚪 Logout</button>
         </form>
-
     </div>
 
-    <!-- CONTENT AREA -->
+    <!-- CONTENT -->
     <div class="content">
         @yield('content')
     </div>
