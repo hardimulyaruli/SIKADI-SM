@@ -65,11 +65,11 @@
         <!-- MENU KEUANGAN -->
         @if(Auth::user()->peran === 'keuangan')
             <a href="{{ route('keuangan.dashboard') }}">🏠 Dashboard Keuangan</a>
-            <a href="#">💰 Gaji Pegawai</a>
-            <a href="#">🏦 Pinjaman</a>
-            <a href="#">📥 Pemasukan</a>
-            <a href="#">📤 Pengeluaran</a>
-            <a href="#">📄 Laporan Keuangan</a>
+            <a href="{{ route('keuangan.gaji') }}">💰 Gaji Pegawai</a>
+            <a href="{{ route('keuangan.pinjaman') }}">🏦 Pinjaman</a>
+            <a href="{{ route('keuangan.pemasukan') }}">📥 Pemasukan</a>
+            <a href="{{ route('keuangan.pengeluaran') }}">📤 Pengeluaran</a>
+            <a href="{{ route('keuangan.laporan') }}">📄 Laporan Keuangan</a>
         @endif
 
         <!-- MENU DISTRIBUSI -->
