@@ -56,7 +56,7 @@ Route::get('/keuangan/laporan', function () {
     return view('keuangan.laporan');
 })->name('keuangan.laporan');
 
-//Menu Distribusi
+//Menu Distribusii
 Route::get('/distribusi/laporan', function () {
     return view('distribusi.Laporan');
 })->name('distribusi.laporan');
