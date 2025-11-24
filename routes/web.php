@@ -57,7 +57,6 @@ Route::get('/keuangan/laporan', function () {
 
 })->name('keuangan.laporan');
 
-//Menu Distribusii
 Route::get('/distribusi/laporan', function () {
     return view('distribusi.Laporan');
 })->name('distribusi.laporan');
@@ -65,5 +64,4 @@ Route::get('/distribusi/laporan', function () {
 Route::get('/distribusi/Barang', function () {
     return view('distribusi.Barang');
 })->name('distribusi.Barang');
-
 
