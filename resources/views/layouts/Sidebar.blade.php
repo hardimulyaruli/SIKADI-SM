@@ -75,8 +75,8 @@
         <!-- MENU DISTRIBUSI -->
         @if(Auth::user()->peran === 'distribusi')
             <a href="{{ route('distribusi.dashboard') }}">🏠 Dashboard Distribusi</a>
-            <a href="#">🚚 Distribusi Barang</a>
-            <a href="#">📄 Laporan Distribusi</a>
+            <a href="{{ route('distribusi.Barang') }}">🚚 Distribusi Barang</a>
+            <a href="{{ route('distribusi.laporan') }}">📄 Laporan Distribusi</a>
         @endif
 
         <hr style="border-color:white;">

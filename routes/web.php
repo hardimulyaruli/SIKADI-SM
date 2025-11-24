@@ -35,7 +35,7 @@ Route::get('/owner/manajemen-pengguna', function () {
     return view('owner.user-management');
 })->name('owner.user_management');
 
-// MENU KEUANGAN (struktur sama seperti owner menu)
+// MENU KEUANGAN
 Route::get('/keuangan/pemasukan', function () {
     return view('keuangan.pemasukan');
 })->name('keuangan.pemasukan');
@@ -54,5 +54,14 @@ Route::get('/keuangan/pinjaman', function () {
 
 Route::get('/keuangan/laporan', function () {
     return view('keuangan.laporan');
+
 })->name('keuangan.laporan');
+
+Route::get('/distribusi/laporan', function () {
+    return view('distribusi.Laporan');
+})->name('distribusi.laporan');
+
+Route::get('/distribusi/Barang', function () {
+    return view('distribusi.Barang');
+})->name('distribusi.Barang');
 
