@@ -18,7 +18,6 @@ Route::get('/owner/dashboard', function () {
     return view('dashboard.owner');
 })->name('owner.dashboard');
 
-//keuangan
 Route::get('/keuangan/dashboard', function () {
     return view('dashboard.keuangan');
 })->name('keuangan.dashboard');
@@ -36,3 +35,32 @@ Route::get('/owner/manajemen-pengguna', function () {
     return view('owner.user-management');
 })->name('owner.user_management');
 
+// MENU KEUANGAN
+Route::get('/keuangan/pemasukan', function () {
+    return view('keuangan.pemasukan');
+})->name('keuangan.pemasukan');
+
+Route::get('/keuangan/pengeluaran', function () {
+    return view('keuangan.pengeluaran');
+})->name('keuangan.pengeluaran');
+
+Route::get('/keuangan/gaji-pegawai', function () {
+    return view('keuangan.gaji');
+})->name('keuangan.gaji');
+
+Route::get('/keuangan/pinjaman', function () {
+    return view('keuangan.pinjaman');
+})->name('keuangan.pinjaman');
+
+Route::get('/keuangan/laporan', function () {
+    return view('keuangan.laporan');
+})->name('keuangan.laporan');
+
+//Menu Distribusi
+Route::get('/distribusi/laporan', function () {
+    return view('distribusi.Laporan');
+})->name('distribusi.laporan');
+
+Route::get('/distribusi/Barang', function () {
+    return view('distribusi.Barang');
+})->name('distribusi.Barang');
