@@ -36,35 +36,18 @@ Route::get('/owner/manajemen-pengguna', function () {
 })->name('owner.user_management');
 
 // MENU KEUANGAN
-Route::get('/keuangan/pemasukan', function () {
-    return view('keuangan.pemasukan');
-})->name('keuangan.pemasukan');
+// DASHBOARD
+Route::get('/keuangan/dashboard', fn() => view('dashboard.keuangan'))->name('keuangan.dashboard');
 
-Route::get('/keuangan/pengeluaran', function () {
-    return view('keuangan.pengeluaran');
-})->name('keuangan.pengeluaran');
+// KELOLA KEUANGAN
+Route::get('/keuangan/gaji', fn() => view('keuangan.gaji'))->name('keuangan.gaji');
+Route::get('/keuangan/pinjaman', fn() => view('keuangan.pinjaman'))->name('keuangan.pinjaman');
 
-Route::get('/keuangan/gaji-pegawai', function () {
-    return view('keuangan.gaji');
-})->name('keuangan.gaji');
+// TRANSAKSI
+Route::get('/keaungan/pemasukan', fn() => view('keuangan.pemasukan'))->name('keuangan.pemasukan');
+Route::get('/keuangan/pengeluaran', fn() => view('keuangan.pengeluaran'))->name('keuangan.pengeluaran');
 
-Route::get('/keuangan/pinjaman', function () {
-    return view('keuangan.pinjaman');
-})->name('keuangan.pinjaman');
+// LAPORAN
+Route::get('/keuangan/laporan', fn() => view('keuangan.laporan'))->name('keuangan.laporan');
 
-Route::get('/keuangan/laporan', function () {
-    return view('keuangan.laporan');
-<<<<<<< HEAD
-})->name('keuangan.laporan');
 
-//Menu Distribusii
-Route::get('/distribusi/laporan', function () {
-    return view('distribusi.Laporan');
-})->name('distribusi.laporan');
-
-Route::get('/distribusi/Barang', function () {
-    return view('distribusi.Barang');
-})->name('distribusi.Barang');
-=======
-})->name('keuangan.laporan');
->>>>>>> a7c56290596508637eb6bb4857c71f6b9167e79f
