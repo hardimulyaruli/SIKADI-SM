@@ -27,27 +27,59 @@ Route::get('/distribusi/dashboard', function () {
 })->name('distribusi.dashboard');
 
 // OWNER MENU
+//laporan umum
 Route::get('/owner/laporan-umum', function () {
     return view('owner.laporan');
 })->name('owner.keuangan');
 
+//akun
+Route::get('/owner/akun', function () {
+    return view('owner.list_user');
+})->name('owner.list_user');
+
+// MANAGEMEN AKUN
 Route::get('/owner/manajemen-pengguna', function () {
     return view('owner.user-management');
 })->name('owner.user_management');
 
+// TAMBAH AKUN
+Route::get('/owner/tambah-akun', function () {
+    return view('owner.tambah_akun');
+})->name('owner.add_user');
+
+// Laporan Distribusi
+Route::get('/owner/laporan-distribusi', function () {
+    return view('owner.laporan_distribusi');
+})->name('owner.distribusi');
+
 // MENU KEUANGAN
-// DASHBOARD
-Route::get('/keuangan/dashboard', fn() => view('dashboard.keuangan'))->name('keuangan.dashboard');
+Route::get('/keuangan/pemasukan', function () {
+    return view('keuangan.pemasukan');
+})->name('transaksi.pemasukan');
 
-// KELOLA KEUANGAN
-Route::get('/keuangan/gaji', fn() => view('keuangan.gaji'))->name('keuangan.gaji');
-Route::get('/keuangan/pinjaman', fn() => view('keuangan.pinjaman'))->name('keuangan.pinjaman');
+Route::get('/keuangan/pengeluaran', function () {
+    return view('keuangan.pengeluaran');
+})->name('transaksi.pengeluaran');
 
-// TRANSAKSI
-Route::get('/keaungan/pemasukan', fn() => view('keuangan.pemasukan'))->name('keuangan.pemasukan');
-Route::get('/keuangan/pengeluaran', fn() => view('keuangan.pengeluaran'))->name('keuangan.pengeluaran');
+Route::get('/keuangan/gaji-pegawai', function () {
+    return view('keuangan.gaji');
+})->name('keuangan.gaji');
 
-// LAPORAN
-Route::get('/keuangan/laporan', fn() => view('keuangan.laporan'))->name('keuangan.laporan');
+Route::get('/keuangan/pinjaman', function () {
+    return view('keuangan.pinjaman');
+})->name('keuangan.pinjaman');
+
+Route::get('/keuangan/laporan', function () {
+    return view('keuangan.laporan');
+
+})->name('keuangan.laporan');
+
+Route::get('/distribusi/laporan', function () {
+    return view('distribusi.Laporan');
+})->name('distribusi.laporan');
+
+Route::get('/distribusi/Barang', function () {
+    return view('distribusi.Barang');
+})->name('distribusi.Barang');
 
 

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIKADI SM</title>
 
-    <!-- BOOTSTRAP CSS -->
+    <!-- =============== BOOTSTRAP CSS (TARUH DI <head>) =============== -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
     <style>
@@ -36,11 +36,6 @@
             transition: 0.3s;
         }
 
-        .submenu a {
-            padding-left: 20px !important;
-            font-size: 14px;
-        }
-
         .content {
             flex: 1;
             padding: 30px;
@@ -51,79 +46,89 @@
 </head>
 
 <body>
-
 @php
     use Illuminate\Support\Facades\Auth;
 @endphp
 
-    <!-- SIDEBAR -->
+    <!-- ======================= SIDEBAR ======================= -->
     <div class="sidebar">
         <h4 class="mb-4">📦 SIKADI SM</h4>
 
-        <!-- MENU OWNER -->
+        <!-- ======================= MENU OWNER ======================= -->
         @if(Auth::user()->peran === 'owner')
+
             <a href="{{ route('owner.dashboard') }}">🏠 Dashboard Owner</a>
-            <a href="{{ route('owner.keuangan') }}">📊 Laporan Umum</a>
-            <a href="{{ route('owner.user_management') }}">👥 Manajemen Pengguna</a>
+            <!-- K E L O L A   A K U N -->
+            <a data-bs-toggle="collapse" href="#kelolaAkun" role="button">
+                👥 Kelola Akun
+            </a>
+            <div class="collapse ps-3" id="kelolaAkun">
+                <a href="{{ route('owner.list_user') }}">📄 Daftar Akun</a>
+            </div>
+
+            <!-- L A P O R A N   K E S E L U R U H A N -->
+            <a data-bs-toggle="collapse" href="#laporanKeseluruhan" role="button">
+                📊 Laporan Keseluruhan
+            </a>
+            <div class="collapse ps-3" id="laporanKeseluruhan">
+                <a href="{{ route('owner.keuangan') }}">💰 Laporan Keuangan</a>
+                <a href="{{ route('owner.distribusi') }}">🚚 Laporan Distribusi</a>
+
+            </div>
+
         @endif
+        <!-- =================== END MENU OWNER =================== -->
 
 
-        <!-- === MENU UNTUK KEUANGAN === -->
+
+        <!-- ======================= MENU KEUANGAN ======================= -->
         @if(Auth::user()->peran === 'keuangan')
+            <a href="{{ route('keuangan.dashboard') }}">🏠 Dashboard Keuangan</a>
 
-        <!-- Dashboard -->
-        <a href="{{ route('keuangan.dashboard') }}">🏠 Dashboard Keuangan</a>
+            <a data-bs-toggle="collapse" href="#kelolaKeuangan" role="button">🧾 Kelola Keuangan</a>
+            <div class="collapse ps-3" id="kelolaKeuangan">
+                <a href="{{ route('keuangan.gaji') }}">💰 Gaji Pegawai</a>
+                <a href="{{ route('keuangan.pinjaman') }}">🏦 Pinjaman</a>
+            </div>
 
-        <!-- KELOLA KEUANGAN -->
-        <a data-bs-toggle="collapse" href="#kelolaKeuanganMenu" role="button">
-            📑 Kelola Keuangan ▼
-        </a>
+            <a data-bs-toggle="collapse" href="#kelolaTransaksi" role="button">💵 Kelola Transaksi</a>
+            <div class="collapse ps-3" id="kelolaTransaksi">
+                <a href="{{ route('transaksi.pemasukan') }}">📥 Pemasukan</a>
+                <a href="{{ route('transaksi.pengeluaran') }}">📤 Pengeluaran</a>
+            </div>
 
-        <div class="collapse submenu" id="kelolaKeuanganMenu">
-            <a href="{{ route('keuangan.gaji') }}">💼 Gaji Pegawai</a>
-            <a href="{{ route('keuangan.pinjaman') }}">🏦 Pinjaman</a>
-        </div>
-
-        <!-- KELOLA TRANSAKSI -->
-        <a data-bs-toggle="collapse" href="#kelolaTransaksiMenu" role="button">
-            💰 Kelola Transaksi ▼
-        </a>
-
-        <div class="collapse submenu" id="kelolaTransaksiMenu">
-            <a href="{{ route('keuangan.pemasukan') }}">📥 Pemasukan</a>
-            <a href="{{ route('keuangan.pengeluaran') }}">📤 Pengeluaran</a>
-        </div>
-
-        <!-- LAPORAN -->
-        <a href="{{ route('keuangan.laporan') }}">📄 Laporan Keuangan</a>
-
+            <a href="{{ route('keuangan.laporan') }}">📄 Laporan Keuangan</a>
         @endif
 
 
-        <!-- MENU DISTRIBUSI -->
+
+        <!-- ======================= MENU DISTRIBUSI ======================= -->
         @if(Auth::user()->peran === 'distribusi')
             <a href="{{ route('distribusi.dashboard') }}">🏠 Dashboard Distribusi</a>
             <a href="{{ route('distribusi.Barang') }}">🚚 Distribusi Barang</a>
             <a href="{{ route('distribusi.laporan') }}">📄 Laporan Distribusi</a>
         @endif
 
-        <hr style="border-color:white;">
 
+
+        <hr style="border-color:white;">
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button class="btn btn-danger w-100">🚪 Logout</button>
+            <button class="btn btn-danger w-100 mt-3">🚪 Logout</button>
         </form>
 
     </div>
+    <!-- ======================= END SIDEBAR ======================= -->
+
 
     <!-- CONTENT AREA -->
     <div class="content">
         @yield('content')
     </div>
 
-    <!-- BOOTSTRAP JS (WAJIB) -->
+
+    <!-- =============== BOOTSTRAP JS (TARUH DI SEBELUM </body>) =============== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>
