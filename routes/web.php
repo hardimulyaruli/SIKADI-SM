@@ -47,21 +47,6 @@ Route::get('/owner/tambah-akun', function () {
     return view('owner.tambah_akun');
 })->name('owner.add_user');
 
-// DAFTAR AKUN
-Route::get('/owner/daftar-akun', function () {
-    return view('owner.list_user');
-})->name('owner.list_user');
-
-// HAPUS AKUN
-Route::get('/owner/hapus-akun', function () {
-    return view('owner.delete_user');
-})->name('owner.delete_user');
-
-// Laporan Keuangan
-Route::get('/owner/laporan-umum', function () {
-    return view('owner.laporan');
-})->name('owner.keuangan');
-
 // Laporan Distribusi
 Route::get('/owner/laporan-distribusi', function () {
     return view('owner.laporan_distribusi');
