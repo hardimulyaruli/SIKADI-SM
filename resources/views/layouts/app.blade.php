@@ -64,7 +64,7 @@
         {{-- MENU KEUANGAN --}}
         @if(Auth::user()->peran === 'keuangan')
             <a href="{{ route('keuangan.dashboard') }}">🏠 Dashboard Keuangan</a>
-            <a href="#">💰 Gaji Pegawai</a>
+            <a href="">💰 Gaji Pegawai</a>
             <a href="#">🏦 Pinjaman</a>
             <a href="#">📥 Pemasukan</a>
             <a href="#">📤 Pengeluaran</a>
@@ -90,6 +90,8 @@
     <div class="content">
         @yield('content')
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
