@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
     <style>
-        body {
-            display: flex;
-        }
+        body { display: flex; }
 
         .sidebar {
             width: 250px;
@@ -20,6 +17,17 @@
             background: #343a40;
             color: #fff;
             padding: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 30px;
+            width: calc(100% - 250px);
+            background: #f8f9fa;
+            min-height: 100vh;
         }
 
         .sidebar a {
@@ -31,47 +39,41 @@
         }
 
         .sidebar a:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255,255,255,0.2);
             padding-left: 10px;
-            transition: 0.3s;
-        }
-
-        .content {
-            flex: 1;
-            padding: 30px;
-            background: #f8f9fa;
+            transition: .3s;
         }
     </style>
-
 </head>
-
 <body>
-@php
-    use Illuminate\Support\Facades\Auth;
-@endphp
+
+@php use Illuminate\Support\Facades\Auth; @endphp
 
     <!-- SIDEBAR -->
     <div class="sidebar">
         <h4 class="mb-4">📦 SIKADI SM</h4>
 
-        {{-- MENU OWNER --}}
         @if(Auth::user()->peran === 'owner')
             <a href="{{ route('owner.dashboard') }}">🏠 Dashboard Owner</a>
-            <a href="{{ route('owner.keuangan') }}">📊 Laporan Umum</a>
-            <a href="{{ route('owner.user_management') }}">👥 Manajemen Pengguna</a>
+            <a data-bs-toggle="collapse" href="#kelolaAkun">👥 Kelola Akun</a>
+            <div class="collapse ps-3" id="kelolaAkun">
+                <a href="{{ route('owner.list_user') }}">📄 Daftar Akun</a>
+            </div>
+
+            <a data-bs-toggle="collapse" href="#laporanK">📊 Laporan Keseluruhan</a>
+            <div class="collapse ps-3" id="laporanK">
+                <a href="{{ route('owner.keuangan') }}">💰 Laporan Keuangan</a>
+                <a href="{{ route('owner.distribusi') }}">🚚 Laporan Distribusi</a>
+            </div>
         @endif
 
-        {{-- MENU KEUANGAN --}}
         @if(Auth::user()->peran === 'keuangan')
             <a href="{{ route('keuangan.dashboard') }}">🏠 Dashboard Keuangan</a>
-            <a href="">💰 Gaji Pegawai</a>
-            <a href="#">🏦 Pinjaman</a>
-            <a href="#">📥 Pemasukan</a>
-            <a href="#">📤 Pengeluaran</a>
-            <a href="#">📄 Laporan Keuangan</a>
+            <a href="{{ route('keuangan.gaji') }}">💰 Gaji Pegawai</a>
+            <a href="{{ route('keuangan.pinjaman') }}">🏦 Pinjaman</a>
+            <a href="{{ route('keuangan.laporan') }}">📄 Laporan Keuangan</a>
         @endif
 
-        {{-- MENU DISTRIBUSI --}}
         @if(Auth::user()->peran === 'distribusi')
             <a href="{{ route('distribusi.dashboard') }}">🏠 Dashboard Distribusi</a>
             <a href="{{ route('distribusi.Barang') }}">🚚 Distribusi Barang</a>
@@ -92,7 +94,5 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
-
 </html>

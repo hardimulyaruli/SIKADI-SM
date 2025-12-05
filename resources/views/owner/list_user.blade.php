@@ -20,16 +20,27 @@
         </thead>
 
         <tbody>
+            @foreach($akun as $a)
             <tr>
-                <td>Owner SIKADI</td>
-                <td>owner@sikadi.com</td>
-                <td>owner</td>
+                <td>{{ $a->nama }}</td>
+                <td>{{ $a->email }}</td>
+                <td>{{ $a->peran }}</td>
                 <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
+                    <a href="{{ route('owner.edit_user', $a->id) }}" class="btn btn-warning btn-sm">
+    Edit
+</a>
+                    <form action="{{ route('owner.delete_user', $a->id) }}" method="POST" style="display:inline;">
+    @csrf
+    @method('DELETE')
+    <button class="btn btn-danger btn-sm" onclick="return confirm('Hapus akun ini?')">
+        Hapus
+    </button>
+</form>
                 </td>
             </tr>
+            @endforeach
         </tbody>
+
     </table>
 
 </div>

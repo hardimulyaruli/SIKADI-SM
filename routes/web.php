@@ -2,84 +2,78 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PenggunaController;
 
-// Redirect root ke login
+
+/*
+|--------------------------------------------------------------------------
+| ROUTE LOGIN
+|--------------------------------------------------------------------------
+*/
 Route::get('/', function () {
     return redirect()->route('login.page');
 });
 
-// Login
 Route::get('/login', [AuthController::class, 'loginPage'])->name('login.page');
 Route::post('/login', [AuthController::class, 'login'])->name('login.action');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Dashboard role
-Route::get('/owner/dashboard', function () {
-    return view('dashboard.owner');
-})->name('owner.dashboard');
 
-Route::get('/keuangan/dashboard', function () {
-    return view('dashboard.keuangan');
-})->name('keuangan.dashboard');
-
-Route::get('/distribusi/dashboard', function () {
-    return view('dashboard.distribusi');
-})->name('distribusi.dashboard');
-
-// OWNER MENU
-//laporan umum
-Route::get('/owner/laporan-umum', function () {
-    return view('owner.laporan');
-})->name('owner.keuangan');
-
-//akun
-Route::get('/owner/akun', function () {
-    return view('owner.list_user');
-})->name('owner.list_user');
-
-// MANAGEMEN AKUN
-Route::get('/owner/manajemen-pengguna', function () {
-    return view('owner.user-management');
-})->name('owner.user_management');
-
-// TAMBAH AKUN
-Route::get('/owner/tambah-akun', function () {
-    return view('owner.tambah_akun');
-})->name('owner.add_user');
-
-// Laporan Distribusi
-Route::get('/owner/laporan-distribusi', function () {
-    return view('owner.laporan_distribusi');
-})->name('owner.distribusi');
-
-// MENU KEUANGAN
-Route::get('/keuangan/pemasukan', function () {
-    return view('keuangan.pemasukan');
-})->name('transaksi.pemasukan');
-
-Route::get('/keuangan/pengeluaran', function () {
-    return view('keuangan.pengeluaran');
-})->name('transaksi.pengeluaran');
-
-Route::get('/keuangan/gaji-pegawai', function () {
-    return view('keuangan.gaji');
-})->name('keuangan.gaji');
-
-Route::get('/keuangan/pinjaman', function () {
-    return view('keuangan.pinjaman');
-})->name('keuangan.pinjaman');
-
-Route::get('/keuangan/laporan', function () {
-    return view('keuangan.laporan');
-
-})->name('keuangan.laporan');
-
-Route::get('/distribusi/laporan', function () {
-    return view('distribusi.Laporan');
-})->name('distribusi.laporan');
-
-Route::get('/distribusi/Barang', function () {
-    return view('distribusi.Barang');
-})->name('distribusi.Barang');
+/*
+|--------------------------------------------------------------------------
+| ROUTE DASHBOARD SEMUA ROLE
+|--------------------------------------------------------------------------
+*/
+Route::get('/owner/dashboard', fn() => view('dashboard.owner'))->name('owner.dashboard');
+Route::get('/keuangan/dashboard', fn() => view('dashboard.keuangan'))->name('keuangan.dashboard');
+Route::get('/distribusi/dashboard', fn() => view('dashboard.distribusi'))->name('distribusi.dashboard');
 
 
+/*
+|--------------------------------------------------------------------------
+| ROUTE OWNER
+|--------------------------------------------------------------------------
+*/
+
+// ⭐ LIST USER
+Route::get('/owner/akun', [PenggunaController::class, 'index'])->name('owner.list_user');
+
+// ⭐ FORM TAMBAH USER
+Route::get('/owner/tambah-akun', [PenggunaController::class, 'create'])->name('owner.add_user');
+
+// ⭐ SIMPAN USER BARU
+Route::post('/owner/tambah-akun', [PenggunaController::class, 'store'])->name('owner.store_user');
+
+// ⭐ FORM EDIT USER
+Route::get('/owner/akun/{id}/edit', [PenggunaController::class, 'edit'])->name('owner.edit_user');
+
+// ⭐ UPDATE USER
+Route::put('/owner/akun/{id}', [PenggunaController::class, 'update'])->name('owner.update_user');
+
+// ⭐ HAPUS USER
+Route::delete('/owner/akun/{id}', [PenggunaController::class, 'destroy'])->name('owner.delete_user');
+
+// ⭐ Laporan Owner
+Route::get('/owner/laporan-umum', fn() => view('owner.laporan'))->name('owner.keuangan');
+Route::get('/owner/laporan-distribusi', fn() => view('owner.laporan_distribusi'))->name('owner.distribusi');
+
+
+/*
+|--------------------------------------------------------------------------
+| ROUTE KEUANGAN
+|--------------------------------------------------------------------------
+*/
+Route::get('/keuangan/pemasukan', fn() => view('keuangan.pemasukan'))->name('transaksi.pemasukan');
+Route::get('/keuangan/pengeluaran', fn() => view('keuangan.pengeluaran'))->name('transaksi.pengeluaran');
+Route::get('/keuangan/gaji-pegawai', fn() => view('keuangan.gaji'))->name('keuangan.gaji');
+Route::get('/keuangan/pinjaman', fn() => view('keuangan.pinjaman'))->name('keuangan.pinjaman');
+Route::get('/keuangan/laporan', fn() => view('keuangan.laporan'))->name('keuangan.laporan');
+
+
+/*
+|--------------------------------------------------------------------------
+| ROUTE DISTRIBUSI
+|--------------------------------------------------------------------------
+*/
+Route::get('/distribusi/laporan', fn() => view('distribusi.laporan'))->name('distribusi.laporan');
+Route::get('/distribusi/Barang', fn() => view('distribusi.Barang'))->name('distribusi.Barang');

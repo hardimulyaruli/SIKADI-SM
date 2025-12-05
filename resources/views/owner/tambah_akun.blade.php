@@ -4,32 +4,34 @@
 <h2>➕ Tambah Akun</h2>
 
 <div class="card p-4">
-    <form>
+    <form action="{{ route('owner.store_user') }}" method="POST">
+        @csrf
+
         <div class="mb-3">
             <label class="form-label">Nama</label>
-            <input type="text" class="form-control">
+            <input type="text" name="nama" class="form-control" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Email</label>
-            <input type="email" class="form-control">
+            <input type="email" name="email" class="form-control" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Password</label>
-            <input type="password" class="form-control">
+            <input type="password" name="kata_sandi" class="form-control" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Peran</label>
-            <select class="form-control">
+            <select name="peran" class="form-control" required>
                 <option value="owner">Owner</option>
                 <option value="keuangan">Keuangan</option>
                 <option value="distribusi">Distribusi</option>
             </select>
         </div>
 
-        <button class="btn btn-primary">Simpan</button>
+        <button class="btn btn-success">Simpan</button>
     </form>
 </div>
 @endsection
