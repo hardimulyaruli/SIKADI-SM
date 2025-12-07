@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::create('pengeluarans', function (Blueprint $table) {
-        $table->id('pengeluaran_id');
-        $table->unsignedBigInteger('user_id');
-        $table->decimal('jumlah', 12, 2);
-        $table->date('tanggal_pengeluaran');
-        $table->string('keperluan')->nullable();
-        $table->text('keterangan')->nullable();
-        $table->timestamps();
+        Schema::create('pengeluarans', function (Blueprint $table) {
+            $table->id('pengeluaran_id');
+            $table->unsignedBigInteger('user_id');
+            $table->decimal('jumlah', 12, 2);
+            $table->date('tanggal_pengeluaran');
+            $table->string('keperluan')->nullable();
+            $table->text('keterangan')->nullable();
+            $table->timestamps();
 
-        $table->foreign('user_id')
-              ->references('id')->on('users')
-              ->onDelete('cascade');
-    });
+            $table->foreign('user_id')
+                ->references('id')->on('pengguna')
+                ->onDelete('cascade');
+        });
     }
 
     /**
