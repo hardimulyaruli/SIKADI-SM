@@ -10,7 +10,7 @@
         <div class="col-md-3">
             <div class="card text-white bg-primary">
                 <div class="card-body">
-                    <h4>{{ $total_keluar ?? 120 }}</h4>
+                    <h4>{{ $total_keluar ?? 0 }}</h4>
                     <p>Total Barang Keluar</p>
                 </div>
             </div>
@@ -19,7 +19,7 @@
         <div class="col-md-3">
             <div class="card text-white bg-success">
                 <div class="card-body">
-                    <h4>{{ $tujuan ?? 15 }}</h4>
+                    <h4>{{ $tujuan ?? 0 }}</h4>
                     <p>Total Tujuan Distribusi</p>
                 </div>
             </div>
@@ -28,7 +28,7 @@
         <div class="col-md-3">
             <div class="card text-white bg-info">
                 <div class="card-body">
-                    <h4>{{ $sukses ?? 95 }}</h4>
+                    <h4>{{ $sukses ?? 0 }}</h4>
                     <p>Distribusi Sukses</p>
                 </div>
             </div>
@@ -37,7 +37,7 @@
         <div class="col-md-3">
             <div class="card text-white bg-danger">
                 <div class="card-body">
-                    <h4>{{ $pending ?? 25 }}</h4>
+                    <h4>{{ $pending ?? 0 }}</h4>
                     <p>Distribusi Pending / Gagal</p>
                 </div>
             </div>

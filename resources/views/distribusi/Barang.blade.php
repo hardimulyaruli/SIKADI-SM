@@ -182,38 +182,15 @@
 
                     <tbody>
                         <tr>
-                            <td>DS1001</td>
-                            <td>Kue Pia</td>
-                            <td>30 Kotak</td>
-                            <td>Jakarta</td>
-                            <td>2025-06-20</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td>
-                                <p class="text-sampai">Sampai Tujuan</p>
+                                <p class="text-sampai"></p>
                             </td>
                         </tr>
-
-                        <tr>
-                            <td>DS1002</td>
-                            <td>Nastar</td>
-                            <td>15</td>
-                            <td>Bandung</td>
-                            <td>2025-06-25</td>
-                            <td>
-                                <p class="text-perjalanan">Dalam Perjalanan</p>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>DS1001</td>
-                            <td>Kue Bulan</td>
-                            <td>10</td>
-                            <td>Surabaya</td>
-                            <td>2025-07-01</td>
-                            <td>
-                                <p class="text-diproses">Sedang Diproses</p>
-                            </td>
-                        </tr>
-
                     </tbody>
                 </table>
             </div>
