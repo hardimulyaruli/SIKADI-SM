@@ -18,6 +18,9 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Dashboard Styles -->
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+
     <!-- GSAP for Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -715,6 +718,12 @@
 
         // Table row animation - disabled to prevent content from disappearing
     </script>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Charts Configuration -->
+    <script src="{{ asset('js/charts.js') }}"></script>
 </body>
 
 </html>
