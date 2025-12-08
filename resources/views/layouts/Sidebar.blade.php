@@ -55,7 +55,7 @@
         <h4 class="mb-4">📦 SIKADI SM</h4>
 
         <!-- ======================= MENU OWNER ======================= -->
-        @if (Auth::user()->peran === 'owner')
+        @if (Auth::user() && Auth::user()->peran === 'owner')
             <a href="{{ route('owner.dashboard') }}">🏠 Dashboard Owner</a>
             <!-- K E L O L A   A K U N -->
             <a data-bs-toggle="collapse" href="#kelolaAkun" role="button">
@@ -80,7 +80,7 @@
 
 
         <!-- ======================= MENU KEUANGAN ======================= -->
-        @if (Auth::user()->peran === 'keuangan')
+        @if (Auth::user() && Auth::user()->peran === 'keuangan')
             <a href="{{ route('keuangan.dashboard') }}">🏠 Dashboard Keuangan</a>
 
             <a data-bs-toggle="collapse" href="#kelolaKeuangan" role="button">🧾 Kelola Keuangan</a>
@@ -95,7 +95,7 @@
 
 
         <!-- ======================= MENU DISTRIBUSI ======================= -->
-        @if (Auth::user()->peran === 'distribusi')
+        @if (Auth::user() && Auth::user()->peran === 'distribusi')
             <a href="{{ route('distribusi.dashboard') }}">🏠 Dashboard Distribusi</a>
             <a href="{{ route('distribusi.Barang') }}">🚚 Distribusi Barang</a>
             <a href="{{ route('distribusi.laporan') }}">📄 Laporan Distribusi</a>

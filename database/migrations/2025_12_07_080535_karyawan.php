@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::create('karyawans', function (Blueprint $table) {
-        $table->id('karyawan_id');
-        $table->string('nama');
-        $table->string('jabatan')->nullable();
-        $table->string('no_hp')->nullable();
-        $table->string('alamat')->nullable();
-        $table->timestamps();
-    });
+        Schema::dropIfExists('karyawans');
+        Schema::create('karyawans', function (Blueprint $table) {
+            $table->id('karyawan_id');
+            $table->string('nama');
+            $table->string('jabatan')->nullable();
+            $table->string('no_hp')->nullable();
+            $table->string('alamat')->nullable();
+            $table->timestamps();
+        });
     }
     /**
      * Reverse the migrations.

@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-          Schema::create('barangs', function (Blueprint $table) {
-        $table->id('barang_id');
-        $table->string('nama_barang');
-        $table->string('satuan')->nullable();
-        $table->text('keterangan')->nullable();
-        $table->timestamps();
-    });
+                Schema::dropIfExists('barangs');
+                Schema::create('barangs', function (Blueprint $table) {
+                        $table->id('barang_id');
+                        $table->string('nama_barang');
+                        $table->string('satuan')->nullable();
+                        $table->text('keterangan')->nullable();
+                        $table->timestamps();
+                });
     }
 
     /**

@@ -35,6 +35,9 @@
                 <form action="{{ route('keuangan.transaksi.post') }}" method="POST">
                     @csrf
 
+                    {{-- Tipe --}}
+                    <input type="hidden" name="tipe" value="pengeluaran">
+
                     {{-- Kategori --}}
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kategori</label>

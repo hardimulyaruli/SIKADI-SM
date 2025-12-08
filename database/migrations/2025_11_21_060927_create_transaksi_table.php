@@ -17,8 +17,8 @@ return new class extends Migration
             // pemasukan / pengeluaran
             $table->enum('tipe', ['pemasukan', 'pengeluaran']);
 
-            // nastar, kue bulan, pia
-            $table->enum('kategori', ['nastar', 'kue bulan', 'pia'])->nullable();
+            // kategori pemasukan dan pengeluaran
+            $table->enum('kategori', ['nastar', 'kue bulan', 'pia', 'bahan', 'operasional', 'lain-lain'])->nullable();
 
             // jumlah barang
             $table->integer('qty')->default(0);
