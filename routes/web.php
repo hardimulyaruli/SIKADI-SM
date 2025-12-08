@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PenggunaController;
+use App\Http\Controllers\TransaksiController;
 
 
 /*
@@ -10,6 +11,7 @@ use App\Http\Controllers\PenggunaController;
 | ROUTE LOGIN
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return redirect()->route('login.page');
 });
@@ -63,13 +65,19 @@ Route::get('/owner/laporan-distribusi', fn() => view('owner.laporan_distribusi')
 | ROUTE KEUANGAN
 |--------------------------------------------------------------------------
 */
-Route::get('/keuangan/pemasukan', fn() => view('keuangan.pemasukan'))->name('transaksi.pemasukan');
-Route::get('/keuangan/pengeluaran', fn() => view('keuangan.pengeluaran'))->name('transaksi.pengeluaran');
+Route::get('/keuangan/add_pemasukan', fn() => view('keuangan.add_pemasukan'))->name('keuangan.add_pemasukan');
+Route::get('/keuangan/add_pengeluaran', fn() => view('keuangan.add_pengeluaran'))->name('keuangan.add_pengeluaran');
 Route::get('/keuangan/gaji-pegawai', fn() => view('keuangan.gaji'))->name('keuangan.gaji');
 Route::get('/keuangan/pinjaman', fn() => view('keuangan.pinjaman'))->name('keuangan.pinjaman');
 Route::get('/keuangan/laporan', fn() => view('keuangan.laporan'))->name('keuangan.laporan');
 
+Route::get('/keuangan/transaksi', [TransaksiController::class, 'index'])->name('keuangan.transaksi');
+// Halaman daftar transaksi
 
+// Simpan pemasukan
+Route::get('/keuangan/transaksi', [TransaksiController::class, 'index'])->name('keuangan.transaksi');
+
+Route::post('/keuangan/transaksi', [TransaksiController::class, 'store'])->name('keuangan.transaksi.post');
 /*
 |--------------------------------------------------------------------------
 | ROUTE DISTRIBUSI

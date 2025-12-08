@@ -46,17 +46,16 @@
 </head>
 
 <body>
-@php
-    use Illuminate\Support\Facades\Auth;
-@endphp
+    @php
+        use Illuminate\Support\Facades\Auth;
+    @endphp
 
     <!-- ======================= SIDEBAR ======================= -->
     <div class="sidebar">
         <h4 class="mb-4">📦 SIKADI SM</h4>
 
         <!-- ======================= MENU OWNER ======================= -->
-        @if(Auth::user()->peran === 'owner')
-
+        @if (Auth::user()->peran === 'owner')
             <a href="{{ route('owner.dashboard') }}">🏠 Dashboard Owner</a>
             <!-- K E L O L A   A K U N -->
             <a data-bs-toggle="collapse" href="#kelolaAkun" role="button">
@@ -75,14 +74,13 @@
                 <a href="{{ route('owner.distribusi') }}">🚚 Laporan Distribusi</a>
 
             </div>
-
         @endif
         <!-- =================== END MENU OWNER =================== -->
 
 
 
         <!-- ======================= MENU KEUANGAN ======================= -->
-        @if(Auth::user()->peran === 'keuangan')
+        @if (Auth::user()->peran === 'keuangan')
             <a href="{{ route('keuangan.dashboard') }}">🏠 Dashboard Keuangan</a>
 
             <a data-bs-toggle="collapse" href="#kelolaKeuangan" role="button">🧾 Kelola Keuangan</a>
@@ -90,20 +88,14 @@
                 <a href="{{ route('keuangan.gaji') }}">💰 Gaji Pegawai</a>
                 <a href="{{ route('keuangan.pinjaman') }}">🏦 Pinjaman</a>
             </div>
-
-            <a data-bs-toggle="collapse" href="#kelolaTransaksi" role="button">💵 Kelola Transaksi</a>
-            <div class="collapse ps-3" id="kelolaTransaksi">
-                <a href="{{ route('transaksi.pemasukan') }}">📥 Pemasukan</a>
-                <a href="{{ route('transaksi.pengeluaran') }}">📤 Pengeluaran</a>
-            </div>
-
+            <a href="{{ route('keuangan.transaksi') }}">💵 Kelola Transaksi</a>
             <a href="{{ route('keuangan.laporan') }}">📄 Laporan Keuangan</a>
         @endif
 
 
 
         <!-- ======================= MENU DISTRIBUSI ======================= -->
-        @if(Auth::user()->peran === 'distribusi')
+        @if (Auth::user()->peran === 'distribusi')
             <a href="{{ route('distribusi.dashboard') }}">🏠 Dashboard Distribusi</a>
             <a href="{{ route('distribusi.Barang') }}">🚚 Distribusi Barang</a>
             <a href="{{ route('distribusi.laporan') }}">📄 Laporan Distribusi</a>
@@ -131,4 +123,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>
