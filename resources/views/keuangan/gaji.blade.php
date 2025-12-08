@@ -158,9 +158,9 @@
 
     </div>
 
-    <!-- TABEL TRANSAKSI GAJI -->
+    <!-- TABEL RIWAYAT PENGGAJIAN -->
     <div class="section-box">
-        <h4 class="section-title mb-4">📋 Daftar Transaksi Gaji</h4>
+        <h4 class="section-title mb-4">📋 Riwayat Penggajian</h4>
 
         <div class="table-responsive">
             <table class="table table-custom table-hover mb-0">
@@ -171,26 +171,24 @@
                         <th style="color: #333;">Tunjangan</th>
                         <th style="color: #333;">Hari Tidak Masuk</th>
                         <th style="color: #333;">Total Gaji Diterima</th>
-                        <th style="color: #333;">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td style="color: #e0e0e0;">2025-06-20</td>
-                        <td style="color: #e0e0e0;">Ahmad Sujadi</td>
-                        <td style="color: #e0e0e0;">Rp 500.000</td>
-                        <td style="color: #e0e0e0;">0</td>
-                        <td style="color: #fff; font-weight: bold;">Rp 4.000.000</td>
-                        <td><span class="badge bg-success">Lunas</span></td>
-                    </tr>
-                    <tr>
-                        <td style="color: #e0e0e0;">2025-06-22</td>
-                        <td style="color: #e0e0e0;">Siti Nurhaliza</td>
-                        <td style="color: #e0e0e0;">Rp 400.000</td>
-                        <td style="color: #e0e0e0;">0</td>
-                        <td style="color: #fff; font-weight: bold;">Rp 3.400.000</td>
-                        <td><span class="badge bg-success">Lunas</span></td>
-                    </tr>
+                    @if($penggajian->count() > 0)
+                        @foreach($penggajian as $item)
+                        <tr>
+                            <td style="color: #e0e0e0;">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
+                            <td style="color: #e0e0e0;">{{ $item->karyawan->nama }}</td>
+                            <td style="color: #e0e0e0;">Rp {{ number_format($item->tunjangan, 0, ',', '.') }}</td>
+                            <td style="color: #e0e0e0;">{{ $item->hari_tidak_masuk }} hari</td>
+                            <td style="color: #fff; font-weight: bold;">Rp {{ number_format($item->total_gaji_diterima, 0, ',', '.') }}</td>
+                        </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="5" style="color: #e0e0e0; text-align: center; padding: 20px;">Belum ada data penggajian</td>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
         </div>

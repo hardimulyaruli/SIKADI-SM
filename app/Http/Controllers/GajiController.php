@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gaji;
+use App\Models\Karyawan;
+use App\Models\Penggajian;
+use App\Models\Pinjaman;
 use Illuminate\Http\Request;
 
 class GajiController extends Controller
@@ -12,7 +15,8 @@ class GajiController extends Controller
      */
     public function index()
     {
-        //
+        $penggajian = \App\Models\Penggajian::with('karyawan')->orderBy('tanggal', 'desc')->get();
+        return view('keuangan.gaji', compact('penggajian'));
     }
 
     /**
@@ -38,11 +42,11 @@ class GajiController extends Controller
         $tunjangan = $request->tunjangan;
         $hariTidakMasuk = $request->hari_tidak_masuk;
 
-        // Total gaji dari tabel gaji
-        $totalGaji = Gaji::where('karyawan_id', $karyawanId)->sum('jumlah_gaji');
+        // Total gaji dari tabel gaji (gaji pokok karyawan)
+        $gajiPokok = Gaji::where('karyawan_id', $karyawanId)->sum('jumlah_gaji');
 
         // Total pinjaman yang belum lunas
-        $pinjamanBelumLunas = \App\Models\Pinjaman::where('karyawan_id', $karyawanId)
+        $pinjamanBelumLunas = Pinjaman::where('karyawan_id', $karyawanId)
             ->where('status', 'belum_lunas')->get();
         $totalPinjaman = $pinjamanBelumLunas->sum('jumlah_pinjaman');
 
@@ -50,14 +54,16 @@ class GajiController extends Controller
         $potonganAbsensi = $hariTidakMasuk * 100000;
 
         // Hitung total gaji diterima
-        $totalGajiDiterima = $totalGaji - $potonganAbsensi - $totalPinjaman + $tunjangan;
+        $totalGajiDiterima = $gajiPokok - $potonganAbsensi - $totalPinjaman + $tunjangan;
 
-        // Simpan data gaji baru
-        Gaji::create([
+        // Simpan data penggajian
+        Penggajian::create([
             'karyawan_id' => $karyawanId,
-            'jumlah_gaji' => $totalGajiDiterima,
+            'tunjangan' => $tunjangan,
+            'hari_tidak_masuk' => $hariTidakMasuk,
+            'total_gaji_diterima' => $totalGajiDiterima,
             'tanggal' => now(),
-            'keterangan' => 'Gaji diterima setelah potongan dan tunjangan',
+            'keterangan' => 'Penggajian bulan ' . now()->format('F Y'),
         ]);
 
         // Update status pinjaman menjadi lunas setelah dipotong
@@ -66,7 +72,7 @@ class GajiController extends Controller
             $pinjaman->save();
         }
 
-        return redirect()->back()->with('success', 'Gaji berhasil disimpan!');
+        return redirect()->back()->with('success', 'Penggajian berhasil disimpan!');
     }
 
     /**
