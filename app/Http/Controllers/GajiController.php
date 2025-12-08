@@ -28,7 +28,45 @@ class GajiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'karyawan_id' => 'required|exists:karyawans,id',
+            'tunjangan' => 'required|numeric',
+            'hari_tidak_masuk' => 'required|integer|min:0',
+        ]);
+
+        $karyawanId = $request->karyawan_id;
+        $tunjangan = $request->tunjangan;
+        $hariTidakMasuk = $request->hari_tidak_masuk;
+
+        // Total gaji dari tabel gaji
+        $totalGaji = Gaji::where('karyawan_id', $karyawanId)->sum('jumlah_gaji');
+
+        // Total pinjaman yang belum lunas
+        $pinjamanBelumLunas = \App\Models\Pinjaman::where('karyawan_id', $karyawanId)
+            ->where('status', 'belum_lunas')->get();
+        $totalPinjaman = $pinjamanBelumLunas->sum('jumlah_pinjaman');
+
+        // Potongan hari tidak masuk
+        $potonganAbsensi = $hariTidakMasuk * 100000;
+
+        // Hitung total gaji diterima
+        $totalGajiDiterima = $totalGaji - $potonganAbsensi - $totalPinjaman + $tunjangan;
+
+        // Simpan data gaji baru
+        Gaji::create([
+            'karyawan_id' => $karyawanId,
+            'jumlah_gaji' => $totalGajiDiterima,
+            'tanggal' => now(),
+            'keterangan' => 'Gaji diterima setelah potongan dan tunjangan',
+        ]);
+
+        // Update status pinjaman menjadi lunas setelah dipotong
+        foreach ($pinjamanBelumLunas as $pinjaman) {
+            $pinjaman->status = 'lunas';
+            $pinjaman->save();
+        }
+
+        return redirect()->back()->with('success', 'Gaji berhasil disimpan!');
     }
 
     /**

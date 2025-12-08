@@ -68,6 +68,7 @@ Route::get('/owner/laporan-distribusi', fn() => view('owner.laporan_distribusi')
 Route::get('/keuangan/add_pemasukan', fn() => view('keuangan.add_pemasukan'))->name('keuangan.add_pemasukan');
 Route::get('/keuangan/add_pengeluaran', fn() => view('keuangan.add_pengeluaran'))->name('keuangan.add_pengeluaran');
 Route::get('/keuangan/gaji-pegawai', fn() => view('keuangan.gaji'))->name('keuangan.gaji');
+Route::post('/keuangan/gaji-pegawai', [\App\Http\Controllers\GajiController::class, 'store'])->name('keuangan.gaji.store');
 Route::get('/keuangan/pinjaman', fn() => view('keuangan.pinjaman'))->name('keuangan.pinjaman');
 Route::get('/keuangan/laporan', fn() => view('keuangan.laporan'))->name('keuangan.laporan');
 

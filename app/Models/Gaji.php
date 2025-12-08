@@ -9,11 +9,11 @@ class Gaji extends Model
     protected $table = 'gaji';
 
     protected $fillable = [
-        'pengguna_id', 'jumlah_gaji', 'tanggal', 'keterangan'
+        'karyawan_id', 'jumlah_gaji', 'tanggal', 'keterangan'
     ];
 
-    public function pengguna()
+    public function karyawan()
     {
-        return $this->belongsTo(Pengguna::class);
+        return $this->belongsTo(Karyawan::class, 'karyawan_id');
     }
 }

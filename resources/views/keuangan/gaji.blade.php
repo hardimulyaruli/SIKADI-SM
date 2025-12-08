@@ -77,19 +77,62 @@
 
         <h4 class="section-title">💼 Form Input Gaji</h4>
 
-        <form action="#" method="POST">
+        <form action="{{ route('keuangan.gaji.store') }}" method="POST">
+            @csrf
 
             <div class="row">
-                <div class="col-md-4 mb-3">
-                    <input type="text" class="form-control" placeholder="Nama Karyawan">
+                <div class="col-md-3 mb-3">
+                    <select name="karyawan_id" class="form-control" id="karyawan_id" onchange="updateNamaKaryawan()">
+                        <option value="">Pilih ID Karyawan</option>
+                        @foreach(App\Models\Karyawan::all() as $karyawan)
+                            <option value="{{ $karyawan->id }}">{{ $karyawan->id }}</option>
+                        @endforeach
+                    </select>
                 </div>
-
-                <div class="col-md-4 mb-3">
-                    <input type="number" class="form-control" placeholder="Gaji Pokok">
+                <div class="col-md-3 mb-3">
+                    <input type="text" class="form-control" id="nama_karyawan" placeholder="Nama Karyawan" readonly>
                 </div>
+                </script>
+                <script>
+                    const karyawanData = {
+                        @foreach(App\Models\Karyawan::all() as $karyawan)
+                            {{ $karyawan->id }}: {
+                                nama: "{{ $karyawan->nama }}",
+                                gaji: {{ App\Models\Gaji::where('karyawan_id', $karyawan->id)->sum('jumlah_gaji') ?? 0 }},
+                                pinjaman: {{ App\Models\Pinjaman::where('pengguna_id', $karyawan->id)->where('status', 'belum_lunas')->sum('jumlah_pinjaman') ?? 0 }}
+                            },
+                        @endforeach
+                    };
 
-                <div class="col-md-4 mb-3">
+                    function updateNamaKaryawan() {
+                        var id = document.getElementById('karyawan_id').value;
+                        document.getElementById('nama_karyawan').value = karyawanData[id]?.nama || '';
+                        hitungTotalGaji();
+                    }
+
+                    function hitungTotalGaji() {
+                        var id = document.getElementById('karyawan_id').value;
+                        var tunjangan = parseInt(document.querySelector('input[placeholder="Tunjangan"]').value) || 0;
+                        var hariTidakMasuk = parseInt(document.querySelector('input[placeholder="Hari Tidak Masuk"]').value) || 0;
+                        var totalGaji = karyawanData[id]?.gaji || 0;
+                        var totalPinjaman = karyawanData[id]?.pinjaman || 0;
+                        var potonganAbsensi = hariTidakMasuk * 100000;
+                        var totalGajiDiterima = totalGaji - potonganAbsensi - totalPinjaman + tunjangan;
+                        document.querySelector('input[placeholder="Total Gaji Diterima"]').value = totalGajiDiterima > 0 ? totalGajiDiterima : 0;
+                    }
+
+                    document.querySelector('input[placeholder="Tunjangan"]').addEventListener('input', hitungTotalGaji);
+                    document.querySelector('input[placeholder="Hari Tidak Masuk"]').addEventListener('input', hitungTotalGaji);
+                    document.getElementById('karyawan_id').addEventListener('change', updateNamaKaryawan);
+                </script>
+                <div class="col-md-3 mb-3">
                     <input type="number" class="form-control" placeholder="Tunjangan">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <input type="number" class="form-control" placeholder="Hari Tidak Masuk">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <input type="number" class="form-control" placeholder="Total Gaji Diterima" readonly>
                 </div>
             </div>
 
@@ -111,9 +154,9 @@
                     <tr>
                         <th>Tanggal</th>
                         <th>Nama Karyawan</th>
-                        <th>Gaji Pokok</th>
                         <th>Tunjangan</th>
-                        <th>Total Gaji</th>
+                        <th>Hari Tidak Masuk</th>
+                        <th>Total Gaji Diterima</th>
                         <th>Status</th>
                     </tr>
                 </thead>
