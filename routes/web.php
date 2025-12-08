@@ -69,7 +69,8 @@ Route::get('/keuangan/add_pemasukan', fn() => view('keuangan.add_pemasukan'))->n
 Route::get('/keuangan/add_pengeluaran', fn() => view('keuangan.add_pengeluaran'))->name('keuangan.add_pengeluaran');
 Route::get('/keuangan/gaji-pegawai', [\App\Http\Controllers\GajiController::class, 'index'])->name('keuangan.gaji');
 Route::post('/keuangan/gaji-pegawai', [\App\Http\Controllers\GajiController::class, 'store'])->name('keuangan.gaji.store');
-Route::get('/keuangan/pinjaman', fn() => view('keuangan.pinjaman'))->name('keuangan.pinjaman');
+Route::get('/keuangan/pinjaman', [\App\Http\Controllers\PinjamanController::class, 'index'])->name('keuangan.pinjaman');
+Route::post('/keuangan/pinjaman', [\App\Http\Controllers\PinjamanController::class, 'store'])->name('keuangan.pinjaman.store');
 Route::get('/keuangan/laporan', fn() => view('keuangan.laporan'))->name('keuangan.laporan');
 
 Route::get('/keuangan/transaksi', [TransaksiController::class, 'index'])->name('keuangan.transaksi');
