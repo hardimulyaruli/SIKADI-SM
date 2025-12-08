@@ -1,199 +1,304 @@
-@extends('layouts.sidebar') 
+@extends('layouts.sidebar')
 @section('content')
 
 <style>
-    .container-custom {
-        background: linear-gradient(135deg, #6a5bd1, #8b46c7);
-        padding: 25px;
-        border-radius: 15px;
-        color: #fff;
+    .page-header {
+        margin-bottom: 40px;
+        animation: slideInUp 0.6s ease;
     }
 
-    .section-box {
-        background: rgba(255, 255, 255, 0.12);
-        padding: 20px;
-        border-radius: 15px;
-        backdrop-filter: blur(5px);
-        margin-bottom: 20px;
-    }
-
-    .section-title {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 15px;
-        color: #ffeb3b;
-    }
-
-    .form-control {
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
-        color: #fff;
-    }
-
-    .form-control::placeholder {
-        color: #ddd;
-    }
-
-    .btn-custom {
-        border: none;
-        padding: 8px 18px;
-        border-radius: 8px;
-        font-weight: bold;
-    }
-
-    .btn-save {
-        background: #00c3ff;
-        color: #fff;
-    }
-
-    .btn-update {
-        background: #ff8157;
-        color: #fff;
-    }
-
-    .form-label {
-        font-size: 14px;
-        color: #fff;
+    .page-header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2d2d2d;
         margin-bottom: 8px;
-        font-weight: 500;
     }
 
-    .form-control:focus {
-        background: rgba(255, 255, 255, 0.3);
-        border-color: #00c3ff;
-        color: #fff;
-        box-shadow: 0 0 8px rgba(0, 195, 255, 0.3);
+    .page-header p {
+        color: #8a7a9e;
+        font-size: 14px;
     }
 
-    .table tbody tr {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    .form-section {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
     }
 
-    .table tbody tr:hover {
-        background: rgba(255, 255, 255, 0.08);
+    .form-group-custom {
+        flex: 1;
+        min-width: 250px;
     }
 
-    .table-custom {
-        background: rgba(255, 255, 255, 0.12);
-        border-radius: 15px;
-        overflow: hidden;
+    .form-group-custom label {
+        display: block;
+        color: #5a4a7a;
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-group-custom input,
+    .form-group-custom select {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(122, 92, 219, 0.2);
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: #2d2d2d;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .form-group-custom input::placeholder,
+    .form-group-custom select::placeholder {
+        color: rgba(122, 92, 219, 0.5);
+    }
+
+    .form-group-custom input:focus,
+    .form-group-custom select:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 1);
+        border-color: #7c5cdb;
+        box-shadow: 0 0 0 3px rgba(122, 92, 219, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #7c5cdb 0%, #6b4db8 100%);
+        color: white;
+        border: none;
+        padding: 14px 40px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        align-self: flex-end;
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(122, 92, 219, 0.4);
         color: white;
     }
 
-    .table thead {
-        background: rgba(255, 255, 255, 0.2);
+    .table-wrapper {
+        overflow-x: auto;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(122, 92, 219, 0.08);
     }
 
-    .table td, .table th {
-        color: #fff;
+    .table-custom {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .table-custom thead {
+        background: linear-gradient(135deg, rgba(122, 92, 219, 0.1) 0%, rgba(147, 112, 219, 0.1) 100%);
+        border-bottom: 2px solid rgba(122, 92, 219, 0.2);
+    }
+
+    .table-custom thead th {
+        padding: 18px 20px;
+        color: #5a4a7a;
+        font-weight: 600;
+        text-align: left;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+    }
+
+    .table-custom tbody tr {
+        border-bottom: 1px solid rgba(122, 92, 219, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .table-custom tbody tr:hover {
+        background: rgba(122, 92, 219, 0.05);
+        transform: translateX(3px);
+    }
+
+    .table-custom tbody td {
+        padding: 16px 20px;
+        color: #4a4a6a;
+        font-size: 14px;
+    }
+
+    .badge-custom {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: rgba(122, 92, 219, 0.1);
+        color: #7c5cdb;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #8a7a9e;
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .form-section {
+            flex-direction: column;
+        }
+
+        .btn-submit {
+            width: 100%;
+        }
     }
 </style>
 
-<div class="container-custom">
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <h1><i class="fas fa-money-check"></i> Kelola Data Gaji</h1>
+    <p>Kelola data penggajian karyawan dengan mudah dan cepat</p>
+</div>
 
-    <h2 class="mb-1 text-warning">Kelola Data Gaji</h2>
-    <p>Kelola data gaji karyawan dengan mudah dan cepat.</p>
+<!-- FORM INPUT GAJI -->
+<div class="card-glass animate-slide-up" style="margin-bottom: 40px;">
+    <h3 style="margin-bottom: 30px; font-size: 18px; font-weight: 600; color: #2d2d2d;">
+        <i class="fas fa-clipboard-list" style="color: #7c5cdb;"></i> Form Input Penggajian
+    </h3>
 
-    <!-- BOX FORM INPUT GAJI -->
-    <div class="section-box">
-
-        <h4 class="section-title mb-4">💼 Form Input Gaji</h4>
-        <form action="{{ route('keuangan.gaji.store') }}" method="POST" class="p-3 rounded shadow" style="background:rgba(255,255,255,0.08);">
-            @csrf
-            <div class="row g-3">
-                <div class="col-md-6 mb-3">
-                    <label for="karyawan_id" class="form-label">Pilih Karyawan</label>
-                    <select name="karyawan_id" class="form-control" id="karyawan_id">
-                        <option value="">-- Pilih Karyawan --</option>
-                        @foreach(App\Models\Karyawan::all() as $karyawan)
-                            <option value="{{ $karyawan->id }}">{{ $karyawan->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="tunjangan" class="form-label">Tunjangan</label>
-                    <input type="number" class="form-control" id="tunjangan" name="tunjangan" placeholder="Masukkan tunjangan" min="0">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="hari_tidak_masuk" class="form-label">Hari Tidak Masuk</label>
-                    <input type="number" class="form-control" id="hari_tidak_masuk" name="hari_tidak_masuk" placeholder="Jumlah hari tidak masuk" min="0">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="total_gaji_diterima" class="form-label">Total Gaji Diterima</label>
-                    <input type="number" class="form-control bg-success text-white fw-bold" id="total_gaji_diterima" name="total_gaji_diterima" placeholder="Total gaji diterima" readonly>
-                </div>
+    <form action="{{ route('keuangan.gaji.store') }}" method="POST">
+        @csrf
+        
+        <div class="form-section">
+            <div class="form-group-custom">
+                <label for="karyawan_id">Pilih Karyawan</label>
+                <select name="karyawan_id" id="karyawan_id" required>
+                    <option value="">-- Pilih Karyawan --</option>
+                    @foreach(App\Models\Karyawan::all() as $karyawan)
+                        <option value="{{ $karyawan->id }}">{{ $karyawan->nama }}</option>
+                    @endforeach
+                </select>
             </div>
-            <div class="mt-4">
-                <button type="submit" class="btn btn-custom btn-save px-5">Simpan</button>
-            </div>
-        </form>
 
+            <div class="form-group-custom">
+                <label for="tunjangan">Tunjangan (Rp)</label>
+                <input type="number" id="tunjangan" name="tunjangan" placeholder="Masukkan nominal tunjangan" min="0" step="10000">
+            </div>
+
+            <div class="form-group-custom">
+                <label for="hari_tidak_masuk">Hari Tidak Masuk</label>
+                <input type="number" id="hari_tidak_masuk" name="hari_tidak_masuk" placeholder="Jumlah hari" min="0">
+            </div>
+
+            <div class="form-group-custom">
+                <label for="total_gaji_diterima">Total Gaji Diterima (Rp)</label>
+                <input type="number" id="total_gaji_diterima" name="total_gaji_diterima" placeholder="Otomatis terhitung" readonly style="background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.3); cursor: not-allowed;">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            <i class="fas fa-save"></i> Simpan Penggajian
+        </button>
+    </form>
+</div>
+
+<!-- TABEL RIWAYAT PENGGAJIAN -->
+<div class="card-glass animate-slide-up" style="padding: 0;">
+    <div style="padding: 30px; border-bottom: 1px solid rgba(122, 92, 219, 0.1);">
+        <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #2d2d2d;">
+            <i class="fas fa-history" style="color: #7c5cdb;"></i> Riwayat Penggajian
+        </h3>
     </div>
 
-    <script>
-        const karyawanData = {
-            @foreach(App\Models\Karyawan::all() as $karyawan)
-                {{ $karyawan->id }}: {
-                    gaji: {{ App\Models\Gaji::where('karyawan_id', $karyawan->id)->sum('jumlah_gaji') ?? 0 }},
-                    pinjaman: {{ App\Models\Pinjaman::where('pengguna_id', $karyawan->id)->where('status', 'belum_lunas')->sum('jumlah_pinjaman') ?? 0 }}
-                },
-            @endforeach
-        };
-
-        function hitungTotalGaji() {
-            var id = document.getElementById('karyawan_id').value;
-            var tunjangan = parseInt(document.getElementById('tunjangan').value) || 0;
-            var hariTidakMasuk = parseInt(document.getElementById('hari_tidak_masuk').value) || 0;
-            var totalGaji = karyawanData[id]?.gaji || 0;
-            var totalPinjaman = karyawanData[id]?.pinjaman || 0;
-            var potonganAbsensi = hariTidakMasuk * 100000;
-            var totalGajiDiterima = totalGaji - potonganAbsensi - totalPinjaman + tunjangan;
-            document.getElementById('total_gaji_diterima').value = totalGajiDiterima;
-        }
-
-        document.getElementById('tunjangan').addEventListener('input', hitungTotalGaji);
-        document.getElementById('hari_tidak_masuk').addEventListener('input', hitungTotalGaji);
-        document.getElementById('karyawan_id').addEventListener('change', hitungTotalGaji);
-    </script>
-
-    </div>
-
-    <!-- TABEL RIWAYAT PENGGAJIAN -->
-    <div class="section-box">
-        <h4 class="section-title mb-4">📋 Riwayat Penggajian</h4>
-
-        <div class="table-responsive">
-            <table class="table table-custom table-hover mb-0">
-                <thead class="table-light">
+    @if($penggajian->count() > 0)
+        <div class="table-wrapper">
+            <table class="table-custom">
+                <thead>
                     <tr>
-                        <th style="color: #333;">Tanggal</th>
-                        <th style="color: #333;">Nama Karyawan</th>
-                        <th style="color: #333;">Tunjangan</th>
-                        <th style="color: #333;">Hari Tidak Masuk</th>
-                        <th style="color: #333;">Total Gaji Diterima</th>
+                        <th>Tanggal</th>
+                        <th>Nama Karyawan</th>
+                        <th>Tunjangan</th>
+                        <th>Hari Tidak Masuk</th>
+                        <th>Total Gaji Diterima</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if($penggajian->count() > 0)
-                        @foreach($penggajian as $item)
+                    @foreach($penggajian as $item)
                         <tr>
-                            <td style="color: #e0e0e0;">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                            <td style="color: #e0e0e0;">{{ $item->karyawan->nama }}</td>
-                            <td style="color: #e0e0e0;">Rp {{ number_format($item->tunjangan, 0, ',', '.') }}</td>
-                            <td style="color: #e0e0e0;">{{ $item->hari_tidak_masuk }} hari</td>
-                            <td style="color: #fff; font-weight: bold;">Rp {{ number_format($item->total_gaji_diterima, 0, ',', '.') }}</td>
+                            <td>
+                                <span class="badge-custom" style="background: rgba(122, 92, 219, 0.1); color: #7c5cdb;">
+                                    {{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}
+                                </span>
+                            </td>
+                            <td>{{ $item->karyawan->nama }}</td>
+                            <td>Rp {{ number_format($item->tunjangan, 0, ',', '.') }}</td>
+                            <td>{{ $item->hari_tidak_masuk }} hari</td>
+                            <td style="font-weight: 600; color: #7c5cdb;">Rp {{ number_format($item->total_gaji_diterima, 0, ',', '.') }}</td>
                         </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="5" style="color: #e0e0e0; text-align: center; padding: 20px;">Belum ada data penggajian</td>
-                        </tr>
-                    @endif
+                    @endforeach
                 </tbody>
             </table>
         </div>
-    </div>
-
+    @else
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>Belum ada data penggajian</p>
+            <p style="font-size: 12px; color: #b8a5d1;">Mulai dengan mengisi form di atas untuk menambahkan data penggajian</p>
+        </div>
+    @endif
 </div>
+
+<script>
+    const karyawanData = {
+        @foreach(App\Models\Karyawan::all() as $karyawan)
+            {{ $karyawan->id }}: {
+                gaji: {{ App\Models\Gaji::where('karyawan_id', $karyawan->id)->sum('jumlah_gaji') ?? 0 }},
+                pinjaman: {{ App\Models\Pinjaman::where('karyawan_id', $karyawan->id)->where('status', 'belum_lunas')->sum('jumlah_pinjaman') ?? 0 }}
+            },
+        @endforeach
+    };
+
+    function hitungTotalGaji() {
+        var id = document.getElementById('karyawan_id').value;
+        var tunjangan = parseInt(document.getElementById('tunjangan').value) || 0;
+        var hariTidakMasuk = parseInt(document.getElementById('hari_tidak_masuk').value) || 0;
+        var totalGaji = karyawanData[id]?.gaji || 0;
+        var totalPinjaman = karyawanData[id]?.pinjaman || 0;
+        var potonganAbsensi = hariTidakMasuk * 100000;
+        var totalGajiDiterima = totalGaji - potonganAbsensi - totalPinjaman + tunjangan;
+        document.getElementById('total_gaji_diterima').value = totalGajiDiterima >= 0 ? totalGajiDiterima : 0;
+    }
+
+    // Add event listeners with animations
+    ['tunjangan', 'hari_tidak_masuk', 'karyawan_id'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', hitungTotalGaji);
+        document.getElementById(id)?.addEventListener('change', hitungTotalGaji);
+    });
+
+    // GSAP animations disabled - prevent content from disappearing
+</script>
 
 @endsection

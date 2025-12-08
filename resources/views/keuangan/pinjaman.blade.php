@@ -3,169 +3,302 @@
 @section('content')
 
 <style>
-    .container-custom {
-        background: linear-gradient(135deg, #6a5bd1, #8b46c7);
-        padding: 25px;
-        border-radius: 15px;
-        color: #fff;
+    .page-header {
+        margin-bottom: 40px;
+        animation: slideInUp 0.6s ease;
     }
 
-    .section-box {
-        background: rgba(255, 255, 255, 0.12);
-        padding: 20px;
-        border-radius: 15px;
-        backdrop-filter: blur(5px);
-        margin-bottom: 20px;
-    }
-
-    .section-title {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 15px;
-        color: #ffeb3b;
-    }
-
-    .form-control {
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
-        color: #fff;
-    }
-
-    .form-control::placeholder {
-        color: #ddd;
-    }
-
-    .form-label {
-        font-size: 14px;
-        color: #fff;
+    .page-header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2d2d2d;
         margin-bottom: 8px;
-        font-weight: 500;
     }
 
-    .form-control:focus {
-        background: rgba(255, 255, 255, 0.3);
-        border-color: #00c3ff;
-        color: #fff;
-        box-shadow: 0 0 8px rgba(0, 195, 255, 0.3);
+    .page-header p {
+        color: #8a7a9e;
+        font-size: 14px;
     }
 
-    .btn-custom {
+    .form-section {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+    }
+
+    .form-group-custom {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .form-group-custom label {
+        display: block;
+        color: #5a4a7a;
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-group-custom input,
+    .form-group-custom select {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(122, 92, 219, 0.2);
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: #2d2d2d;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .form-group-custom input::placeholder,
+    .form-group-custom select::placeholder {
+        color: rgba(122, 92, 219, 0.5);
+    }
+
+    .form-group-custom input:focus,
+    .form-group-custom select:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 1);
+        border-color: #7c5cdb;
+        box-shadow: 0 0 0 3px rgba(122, 92, 219, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #7c5cdb 0%, #6b4db8 100%);
+        color: white;
         border: none;
-        padding: 8px 18px;
-        border-radius: 8px;
-        font-weight: bold;
+        padding: 14px 40px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        align-self: flex-end;
+        box-shadow: 0 4px 15px rgba(122, 92, 219, 0.3);
     }
 
-    .btn-save {
-        background: #00c3ff;
-        color: #fff;
-    }
-
-    .table tbody tr {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    .table tbody tr:hover {
-        background: rgba(255, 255, 255, 0.08);
-    }
-
-    .table-custom {
-        background: rgba(255, 255, 255, 0.12);
-        border-radius: 15px;
-        overflow: hidden;
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(122, 92, 219, 0.4);
         color: white;
     }
 
-    .table thead {
-        background: rgba(255, 255, 255, 0.2);
+    .table-wrapper {
+        overflow-x: auto;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(122, 92, 219, 0.08);
     }
 
-    .table td, .table th {
-        color: #fff;
+    .table-custom {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .table-custom thead {
+        background: linear-gradient(135deg, rgba(122, 92, 219, 0.1) 0%, rgba(147, 112, 219, 0.1) 100%);
+        border-bottom: 2px solid rgba(122, 92, 219, 0.2);
+    }
+
+    .table-custom thead th {
+        padding: 18px 20px;
+        color: #5a4a7a;
+        font-weight: 600;
+        text-align: left;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+    }
+
+    .table-custom tbody tr {
+        border-bottom: 1px solid rgba(122, 92, 219, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .table-custom tbody tr:hover {
+        background: rgba(122, 92, 219, 0.05);
+        transform: translateX(3px);
+    }
+
+    .table-custom tbody td {
+        padding: 16px 20px;
+        color: #4a4a6a;
+        font-size: 14px;
+    }
+
+    .badge-modern {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-pending {
+        background: linear-gradient(135deg, rgba(218, 165, 32, 0.15) 0%, rgba(184, 165, 209, 0.15) 100%);
+        color: #b8a5d1;
+        border: 1px solid rgba(184, 165, 209, 0.3);
+    }
+
+    .badge-paid {
+        background: linear-gradient(135deg, rgba(122, 92, 219, 0.15) 0%, rgba(147, 112, 219, 0.15) 100%);
+        color: #7c5cdb;
+        border: 1px solid rgba(122, 92, 219, 0.3);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #8a7a9e;
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .form-section {
+            flex-direction: column;
+        }
+
+        .btn-submit {
+            width: 100%;
+        }
     }
 </style>
 
-<div class="container-custom">
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <h1><i class="fas fa-hand-holding-usd"></i> Kelola Data Pinjaman</h1>
+    <p>Kelola data pinjaman karyawan dengan mudah dan transparan</p>
+</div>
 
-    <h2 class="mb-1 text-warning">Kelola Data Pinjaman</h2>
-    <p>Kelola data pinjaman karyawan dengan mudah dan cepat.</p>
+<!-- FORM INPUT PINJAMAN -->
+<div class="card-glass animate-slide-up" style="margin-bottom: 40px;">
+    <h3 style="margin-bottom: 30px; font-size: 18px; font-weight: 600;">
+        <i class="fas fa-plus-circle"></i> Form Input Pinjaman
+    </h3>
 
-    <!-- BOX FORM INPUT PINJAMAN -->
-    <div class="section-box">
-
-        <h4 class="section-title mb-4">💼 Form Input Pinjaman</h4>
-        <form action="{{ route('keuangan.pinjaman.store') }}" method="POST" class="p-3 rounded shadow" style="background:rgba(255,255,255,0.08);">
-            @csrf
-            <div class="row g-3">
-                <div class="col-md-6 mb-3">
-                    <label for="karyawan_id" class="form-label">Pilih Karyawan</label>
-                    <select name="karyawan_id" class="form-control" id="karyawan_id" required>
-                        <option value="">-- Pilih Karyawan --</option>
-                        @foreach(App\Models\Karyawan::all() as $karyawan)
-                            <option value="{{ $karyawan->id }}">{{ $karyawan->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="jumlah_pinjaman" class="form-label">Jumlah Pinjaman</label>
-                    <input type="number" class="form-control" id="jumlah_pinjaman" name="jumlah_pinjaman" placeholder="Masukkan jumlah pinjaman" min="0" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="tanggal" class="form-label">Tanggal Pinjaman</label>
-                    <input type="date" class="form-control" id="tanggal" name="tanggal" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="keterangan" class="form-label">Keterangan</label>
-                    <input type="text" class="form-control" id="keterangan" name="keterangan" placeholder="Keterangan pinjaman (opsional)">
-                </div>
+    <form action="{{ route('keuangan.pinjaman.store') }}" method="POST">
+        @csrf
+        
+        <div class="form-section">
+            <div class="form-group-custom">
+                <label for="karyawan_id">Pilih Karyawan</label>
+                <select name="karyawan_id" id="karyawan_id" required>
+                    <option value="">-- Pilih Karyawan --</option>
+                    @foreach(App\Models\Karyawan::all() as $karyawan)
+                        <option value="{{ $karyawan->id }}">{{ $karyawan->nama }}</option>
+                    @endforeach
+                </select>
             </div>
-            <div class="mt-4">
-                <button type="submit" class="btn btn-custom btn-save px-5">Simpan</button>
-            </div>
-        </form>
 
+            <div class="form-group-custom">
+                <label for="jumlah_pinjaman">Jumlah Pinjaman (Rp)</label>
+                <input type="number" id="jumlah_pinjaman" name="jumlah_pinjaman" placeholder="Masukkan nominal" min="0" step="10000" required>
+            </div>
+
+            <div class="form-group-custom">
+                <label for="tanggal">Tanggal Pinjaman</label>
+                <input type="date" id="tanggal" name="tanggal" required>
+            </div>
+
+            <div class="form-group-custom">
+                <label for="keterangan">Keterangan</label>
+                <input type="text" id="keterangan" name="keterangan" placeholder="Catatan pinjaman (opsional)">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            <i class="fas fa-plus"></i> Tambah Pinjaman
+        </button>
+    </form>
+</div>
+
+<!-- TABEL RIWAYAT PINJAMAN -->
+<div class="card-glass animate-slide-up" style="padding: 0;">
+    <div style="padding: 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+        <h3 style="margin: 0; font-size: 18px; font-weight: 600;">
+            <i class="fas fa-list-check"></i> Riwayat Pinjaman
+        </h3>
     </div>
 
-    <!-- TABEL RIWAYAT PINJAMAN -->
-    <div class="section-box">
-        <h4 class="section-title mb-4">📋 Riwayat Pinjaman</h4>
-
-        <div class="table-responsive">
-            <table class="table table-custom table-hover mb-0">
-                <thead class="table-light">
+    @if($pinjaman->count() > 0)
+        <div class="table-wrapper">
+            <table class="table-custom">
+                <thead>
                     <tr>
-                        <th style="color: #333;">Tanggal</th>
-                        <th style="color: #333;">Nama Karyawan</th>
-                        <th style="color: #333;">Jumlah Pinjaman</th>
-                        <th style="color: #333;">Status</th>
+                        <th>Tanggal</th>
+                        <th>Nama Karyawan</th>
+                        <th>Jumlah Pinjaman</th>
+                        <th>Keterangan</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if($pinjaman->count() > 0)
-                        @foreach($pinjaman as $item)
+                    @foreach($pinjaman as $item)
                         <tr>
-                            <td style="color: #e0e0e0;">{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                            <td style="color: #e0e0e0;">{{ $item->karyawan?->nama ?? '-' }}</td>
-                            <td style="color: #e0e0e0;">Rp {{ number_format($item->jumlah_pinjaman, 0, ',', '.') }}</td>
+                            <td>
+                                <span class="badge-modern" style="background: rgba(102, 126, 234, 0.2); color: #a5b4fc;">
+                                    {{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}
+                                </span>
+                            </td>
+                            <td>{{ $item->karyawan?->nama ?? '-' }}</td>
+                            <td style="font-weight: 600;">Rp {{ number_format($item->jumlah_pinjaman, 0, ',', '.') }}</td>
+                            <td style="color: rgba(255, 255, 255, 0.6); font-size: 13px;">{{ $item->keterangan ?? '-' }}</td>
                             <td>
                                 @if($item->status === 'belum_lunas')
-                                    <span class="badge bg-warning">Belum Lunas</span>
+                                    <span class="badge-modern badge-pending">
+                                        <i class="fas fa-hourglass-half"></i> Belum Lunas
+                                    </span>
                                 @else
-                                    <span class="badge bg-success">Lunas</span>
+                                    <span class="badge-modern badge-paid">
+                                        <i class="fas fa-check-circle"></i> Lunas
+                                    </span>
                                 @endif
                             </td>
                         </tr>
-                        @endforeach
-                    @else
-                        <tr>
-                            <td colspan="4" style="color: #e0e0e0; text-align: center; padding: 20px;">Belum ada data pinjaman</td>
-                        </tr>
-                    @endif
+                    @endforeach
                 </tbody>
             </table>
         </div>
-    </div>
-
+    @else
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>Belum ada data pinjaman</p>
+            <p style="font-size: 12px; opacity: 0.6;">Mulai dengan mengisi form di atas untuk menambahkan data pinjaman</p>
+        </div>
+    @endif
 </div>
+
+<script>
+    // Set default date to today
+    document.getElementById('tanggal').valueAsDate = new Date();
+
+    // GSAP animations disabled - prevent content from disappearing
+
+    // Table row animations disabled - prevent content from disappearing
+</script>
 
 @endsection
