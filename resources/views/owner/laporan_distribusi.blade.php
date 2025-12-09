@@ -58,7 +58,7 @@
 <!-- ===================== TABEL DATA ===================== -->
 <div class="table-wrapper">
     <div class="table-wrapper-header">Detail Laporan Distribusi</div>
-    <table class="table table-hover">
+    <table class="table-modern">
         <thead>
             <tr>
                 <th>ID</th>

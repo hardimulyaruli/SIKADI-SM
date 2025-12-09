@@ -8,7 +8,7 @@
 </div>
 
 <div class="table-wrapper">
-    <table class="table table-hover">
+    <table class="table-modern">
         <thead>
             <tr>
                 <th>Nama</th>

@@ -6,7 +6,7 @@
 <a href="{{ route('akun.create') }}" class="btn btn-primary mb-3">+ Tambah Akun</a>
 
 <div class="card p-4">
-    <table class="table">
+    <table class="table-modern">
         <thead>
             <tr>
                 <th>Nama</th>

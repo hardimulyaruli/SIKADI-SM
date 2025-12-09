@@ -1,33 +1,14 @@
 @extends('layouts.sidebar')
 
 @section('content')
-    <style>
-        /* Full width form area */
-        .form-wrapper {
-            width: 100%;
-            padding-right: 20px;
-        }
 
-        /* Membuat card lebih pendek (compact) */
-        .card-body {
-            padding: 15px !important;
-        }
+    <div class="container-fluid mt-3">
 
-        .card-header {
-            padding: 10px 15px !important;
-        }
-
-        /* Mengurangi jarak antar elemen */
-        .mb-3 {
-            margin-bottom: 10px !important;
-        }
-    </style>
-
-    <div class="container-fluid mt-3 form-wrapper">
-
-        <div class="card shadow-sm w-100">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Tambah Transaksi Pemasukan</h5>
+        <div class="card card-glass shadow-sm w-100">
+            <div class="card-header border-0 bg-transparent">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0">Tambah Transaksi Pemasukan</h5>
+                </div>
             </div>
 
             <div class="card-body">
@@ -41,7 +22,7 @@
                     {{-- Kategori --}}
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kategori</label>
-                        <select id="kategori" name="kategori" class="form-control">
+                        <select id="kategori" name="kategori" class="input-modern">
                             <option value="Nastar" data-harga="1500">Nastar</option>
                             <option value="Kue Bulan" data-harga="1500">Kue Bulan</option>
                             <option value="Pia" data-harga="1500">Pia</option>
@@ -51,7 +32,7 @@
                     {{-- Qty --}}
                     <div class="mb-3">
                         <label class="form-label fw-bold">Qty</label>
-                        <input type="number" id="qty" name="qty" class="form-control" min="1"
+                        <input type="number" id="qty" name="qty" class="input-modern" min="1"
                             value="1">
                     </div>
 
@@ -60,7 +41,7 @@
                         <label class="form-label fw-bold">Nominal</label>
                         <div class="input-group">
                             <span class="input-group-text">Rp</span>
-                            <input id="nominal" type="text" name="nominal" class="form-control" readonly
+                            <input id="nominal" type="text" name="nominal" class="input-modern" readonly
                                 value="1500">
                         </div>
                     </div>
@@ -68,19 +49,21 @@
                     {{-- Tanggal --}}
                     <div class="mb-3">
                         <label class="form-label fw-bold">Tanggal</label>
-                        <input type="date" name="tanggal" class="form-control"
+                        <input type="date" name="tanggal" class="input-modern"
                             value="{{ old('tanggal', date('Y-m-d')) }}">
                     </div>
 
                     {{-- Deskripsi --}}
                     <div class="mb-3">
                         <label class="form-label fw-bold">Deskripsi</label>
-                        <textarea name="deskripsi" class="form-control" rows="2"></textarea>
+                        <textarea name="deskripsi" class="input-modern" rows="2"></textarea>
                     </div>
 
                     {{-- Tombol --}}
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                    <a href="{{ route('keuangan.transaksi') }}" class="btn btn-secondary">Kembali</a>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn-modern btn-primary-modern">Simpan</button>
+                        <a href="{{ route('keuangan.transaksi') }}" class="btn-modern btn-secondary-modern ms-2">Kembali</a>
+                    </div>
 
                 </form>
 
@@ -93,13 +76,19 @@
     <script>
         function hitungNominal() {
             const kategori = document.querySelector('#kategori');
-            const harga = kategori.options[kategori.selectedIndex].getAttribute('data-harga');
-            const qty = document.querySelector('#qty').value;
-
-            document.querySelector('#nominal').value = harga * qty;
+            const qtyEl = document.querySelector('#qty');
+            const nominalEl = document.querySelector('#nominal');
+            if (!kategori || !qtyEl || !nominalEl) return;
+            const opt = kategori.options[kategori.selectedIndex];
+            const harga = parseFloat(opt?.getAttribute('data-harga')) || 0;
+            const qty = parseFloat(qtyEl.value) || 0;
+            nominalEl.value = harga * qty;
         }
 
-        document.querySelector('#kategori').addEventListener('change', hitungNominal);
-        document.querySelector('#qty').addEventListener('input', hitungNominal);
+        const kategoriEl = document.querySelector('#kategori');
+        const qtyEl = document.querySelector('#qty');
+        if (kategoriEl) kategoriEl.addEventListener('change', hitungNominal);
+        if (qtyEl) qtyEl.addEventListener('input', hitungNominal);
+        document.addEventListener('DOMContentLoaded', hitungNominal);
     </script>
 @endsection

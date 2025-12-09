@@ -14,17 +14,17 @@
 
         <div class="form-group-custom">
             <label for="nama">Nama</label>
-            <input type="text" id="nama" name="nama" value="{{ $akun->nama }}" required>
+            <input type="text" id="nama" name="nama" class="input-modern" value="{{ $akun->nama }}" required>
         </div>
 
         <div class="form-group-custom">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" value="{{ $akun->email }}" required>
+            <input type="email" id="email" name="email" class="input-modern" value="{{ $akun->email }}" required>
         </div>
 
         <div class="form-group-custom">
             <label for="peran">Peran</label>
-            <select id="peran" name="peran" required>
+            <select id="peran" name="peran" class="input-modern" required>
                 <option value="owner" {{ $akun->peran == 'owner' ? 'selected' : '' }}>Owner</option>
                 <option value="keuangan" {{ $akun->peran == 'keuangan' ? 'selected' : '' }}>Keuangan</option>
                 <option value="distribusi" {{ $akun->peran == 'distribusi' ? 'selected' : '' }}>Distribusi</option>
@@ -33,11 +33,11 @@
 
         <div class="form-group-custom">
             <label for="password">Password Baru (Opsional)</label>
-            <input type="password" id="password" name="kata_sandi" placeholder="Kosongkan jika tidak ingin mengganti">
+            <input type="password" id="password" name="kata_sandi" class="input-modern" placeholder="Kosongkan jika tidak ingin mengganti">
             <div class="form-text">Hanya isi jika ingin mengganti password</div>
         </div>
 
-        <button type="submit" class="btn-submit">💾 Simpan Perubahan</button>
+        <button type="submit" class="btn-modern btn-primary-modern">💾 Simpan Perubahan</button>
     </form>
 </div>
 

@@ -13,22 +13,22 @@
 
         <div class="form-group-custom">
             <label for="nama">Nama</label>
-            <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required>
+            <input type="text" id="nama" name="nama" class="input-modern" placeholder="Masukkan nama lengkap" required>
         </div>
 
         <div class="form-group-custom">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Masukkan email" required>
+            <input type="email" id="email" name="email" class="input-modern" placeholder="Masukkan email" required>
         </div>
 
         <div class="form-group-custom">
             <label for="password">Password</label>
-            <input type="password" id="password" name="kata_sandi" placeholder="Masukkan password" required>
+            <input type="password" id="password" name="kata_sandi" class="input-modern" placeholder="Masukkan password" required>
         </div>
 
         <div class="form-group-custom">
             <label for="peran">Peran</label>
-            <select id="peran" name="peran" required>
+            <select id="peran" name="peran" class="input-modern" required>
                 <option value="">-- Pilih Peran --</option>
                 <option value="owner">Owner</option>
                 <option value="keuangan">Keuangan</option>
@@ -36,8 +36,8 @@
             </select>
         </div>
 
-        <button type="submit" class="btn-submit">
-            💾 Simpan Akun
+        <button type="submit" class="btn-modern btn-primary-modern">
+            <i class="ri-save-line"></i> Simpan Akun
         </button>
     </form>
 </div>

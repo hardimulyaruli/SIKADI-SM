@@ -58,7 +58,7 @@
 <!-- ===================== TABEL ===================== -->
 <div class="table-wrapper">
     <div class="table-wrapper-header">Detail Transaksi Keuangan</div>
-    <table class="table table-hover">
+    <table class="table-modern">
         <thead>
             <tr>
                 <th>ID</th>

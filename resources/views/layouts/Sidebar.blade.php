@@ -14,6 +14,8 @@
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Remix Icon (modern, clean icons) -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,9 +23,7 @@
     <!-- Dashboard Styles -->
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 
-    <!-- GSAP for Animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Animations intentionally removed for a static, professional UI -->
 
     <style>
         * {
@@ -62,7 +62,7 @@
             position: relative;
         }
 
-        /* Animated background subtle */
+        /* Static subtle background accents (no animations) */
         body::before {
             content: '';
             position: fixed;
@@ -71,42 +71,30 @@
             right: 0;
             bottom: 0;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(147, 112, 219, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(3, 105, 161, 0.03) 0%, transparent 50%);
             pointer-events: none;
-            animation: gradientShift 15s ease-in-out infinite;
             z-index: 0;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% {
-                opacity: 0.5;
-                transform: translate(0, 0);
-            }
-            50% {
-                opacity: 0.3;
-                transform: translate(10px, 10px);
-            }
         }
 
         /* ====== SIDEBAR MODERN ====== */
         .sidebar {
             width: 300px;
             height: 100vh;
-            background: linear-gradient(180deg, #7c5cdb 0%, #6b4db8 100%);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(180deg, #0ea5e9 0%, #0369a1 100%);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
             padding: 30px 20px;
             position: fixed;
             left: 0;
             top: 0;
             overflow-y: auto;
             z-index: 1000;
-            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 6px 0 26px rgba(3, 105, 161, 0.08);
             color: white;
             scrollbar-width: thin;
-            scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+            scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
         }
 
         .sidebar::-webkit-scrollbar {
@@ -118,12 +106,12 @@
         }
 
         .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.5);
+            background: rgba(14, 165, 233, 0.6);
             border-radius: 10px;
         }
 
         .sidebar::-webkit-scrollbar-thumb:hover {
-            background: rgba(102, 126, 234, 0.8);
+            background: rgba(3, 105, 161, 0.85);
         }
 
         .sidebar::before {
@@ -143,10 +131,10 @@
             justify-content: center;
             margin-bottom: 40px;
             padding: 20px;
-            background: rgba(102, 126, 234, 0.15);
+            background: rgba(255, 255, 255, 0.06);
             border-radius: 15px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            animation: slideInDown 0.6s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            /* animations disabled */
         }
 
         .sidebar-header h3 {
@@ -184,55 +172,48 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            color: rgba(255, 255, 255, 0.75);
+            color: rgba(255, 255, 255, 0.95);
             text-decoration: none;
             padding: 12px 16px;
             border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 15px;
+            font-weight: 600;
             border: none;
-            background: none;
+            background: transparent;
             width: 100%;
             text-align: left;
             cursor: pointer;
         }
 
+        /* no animated pseudo-element to keep UI static */
         .sidebar a::before, .sidebar button::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
+            left: 0;
+            width: 0;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
-            transition: left 0.4s ease;
+            background: transparent;
             z-index: -1;
-        }
-
-        .sidebar a:hover::before, .sidebar button:hover::before {
-            left: 100%;
         }
 
         .sidebar a:hover, .sidebar button:hover {
             color: white;
-            transform: translateX(8px);
-            background: rgba(102, 126, 234, 0.2);
-            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.15);
-            border-left: 3px solid #667eea;
+            background: rgba(14, 165, 233, 0.14);
+            box-shadow: none;
+            border-left: 3px solid rgba(56, 189, 248, 0.95);
             padding-left: 13px;
         }
 
         .sidebar a i, .sidebar button i {
-            width: 20px;
+            width: 28px;
             text-align: center;
-            font-size: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 20px;
+            color: rgba(255,255,255,0.98);
+            display: inline-block;
+            line-height: 1;
         }
 
         .sidebar hr {
@@ -330,51 +311,49 @@
         }
 
         .btn-primary-modern {
-            background: linear-gradient(135deg, #7c5cdb 0%, #6b4db8 100%);
+            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(122, 92, 219, 0.3);
+            box-shadow: 0 6px 20px rgba(3, 105, 161, 0.15);
         }
 
         .btn-primary-modern:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(122, 92, 219, 0.4);
+            transform: none;
+            box-shadow: 0 10px 30px rgba(3, 105, 161, 0.18);
             color: white;
         }
 
         .btn-secondary-modern {
-            background: linear-gradient(135deg, #b8a5d1 0%, #9b8bb8 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(122, 92, 219, 0.2);
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%);
+            color: #0f172a;
+            box-shadow: 0 4px 10px rgba(2,6,23,0.06);
         }
 
         .btn-secondary-modern:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(122, 92, 219, 0.3);
-            color: white;
+            transform: none;
+            box-shadow: 0 8px 18px rgba(2,6,23,0.08);
+            color: #0f172a;
         }
 
         /* ====== FORM INPUTS ====== */
         .input-modern {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(122, 92, 219, 0.2);
-            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            border-radius: 10px;
             padding: 12px 16px;
-            transition: all 0.3s ease;
             font-size: 14px;
-            color: #2d2d2d;
+            color: #1f2937;
         }
 
         .input-modern::placeholder {
-            color: rgba(122, 92, 219, 0.5);
+            color: rgba(31, 41, 55, 0.45);
         }
 
         .input-modern:focus {
             outline: none;
-            background: rgba(255, 255, 255, 1);
-            border-color: #7c5cdb;
-            box-shadow: 0 0 0 3px rgba(122, 92, 219, 0.1);
-            transform: translateY(-2px);
-            color: #2d2d2d;
+            background: #ffffff;
+            border-color: #38bdf8;
+            box-shadow: none;
+            color: #1f2937;
         }
 
         .form-label {
@@ -406,13 +385,11 @@
         }
 
         .table-modern tbody tr {
-            transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(122, 92, 219, 0.1);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.08);
         }
 
         .table-modern tbody tr:hover {
-            background: rgba(122, 92, 219, 0.05);
-            transform: translateX(3px);
+            background: rgba(14, 165, 233, 0.04);
         }
 
         .table-modern tbody td {
@@ -421,60 +398,7 @@
             font-size: 14px;
         }
 
-        /* ====== ANIMATIONS ====== */
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .animate-slide-up {
-            animation: slideInUp 0.6s ease;
-        }
-
-        .animate-slide-left {
-            animation: slideInLeft 0.6s ease;
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.6s ease;
-        }
+        /* Animations removed to keep UI static and professional */
 
         /* ====== BADGE STYLES ====== */
         .badge-modern {
@@ -549,7 +473,7 @@
     <nav class="sidebar">
         <!-- Header -->
         <div class="sidebar-header">
-            <h3><i class="fas fa-box"></i> SIKADI</h3>
+            <h3><i class="ri-shopping-bag-line"></i> SIKADI</h3>
         </div>
 
         <!-- Navigation -->
@@ -561,29 +485,29 @@
             <!-- =============== OWNER MENU =============== -->
             @if (Auth::user() && Auth::user()->peran === 'owner')
                 <div class="nav-section">
-                    <div class="nav-section-title">📊 Dashboard</div>
-                    <a href="{{ route('owner.dashboard') }}" class="animate-slide-left" style="animation-delay: 0.1s;">
-                        <i class="fas fa-chart-line"></i>
+                    <div class="nav-section-title">Dashboard</div>
+                    <a href="{{ route('owner.dashboard') }}">
+                        <i class="ri-bar-chart-line"></i>
                         <span>Dashboard</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">⚙️ Manajemen</div>
-                    <a href="{{ route('owner.list_user') }}" class="animate-slide-left" style="animation-delay: 0.2s;">
-                        <i class="fas fa-users"></i>
+                    <div class="nav-section-title">Manajemen</div>
+                    <a href="{{ route('owner.list_user') }}">
+                        <i class="ri-user-3-line"></i>
                         <span>Kelola Akun</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">📈 Laporan</div>
-                    <a href="{{ route('owner.keuangan') }}" class="animate-slide-left" style="animation-delay: 0.3s;">
-                        <i class="fas fa-money-bill-wave"></i>
+                    <div class="nav-section-title">Laporan</div>
+                    <a href="{{ route('owner.keuangan') }}">
+                        <i class="ri-money-dollar-box-line"></i>
                         <span>Laporan Keuangan</span>
                     </a>
-                    <a href="{{ route('owner.distribusi') }}" class="animate-slide-left" style="animation-delay: 0.4s;">
-                        <i class="fas fa-boxes"></i>
+                    <a href="{{ route('owner.distribusi') }}">
+                        <i class="ri-stack-line"></i>
                         <span>Laporan Distribusi</span>
                     </a>
                 </div>
@@ -592,33 +516,33 @@
             <!-- =============== KEUANGAN MENU =============== -->
             @if (Auth::user() && Auth::user()->peran === 'keuangan')
                 <div class="nav-section">
-                    <div class="nav-section-title">📊 Dashboard</div>
-                    <a href="{{ route('keuangan.dashboard') }}" class="animate-slide-left" style="animation-delay: 0.1s;">
-                        <i class="fas fa-chart-pie"></i>
+                    <div class="nav-section-title">Dashboard</div>
+                    <a href="{{ route('keuangan.dashboard') }}">
+                        <i class="ri-pie-chart-line"></i>
                         <span>Dashboard</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">💰 Penggajian</div>
-                    <a href="{{ route('keuangan.gaji') }}" class="animate-slide-left" style="animation-delay: 0.2s;">
-                        <i class="fas fa-money-check"></i>
+                    <div class="nav-section-title">Penggajian</div>
+                    <a href="{{ route('keuangan.gaji') }}">
+                        <i class="ri-wallet-2-line"></i>
                         <span>Kelola Gaji</span>
                     </a>
-                    <a href="{{ route('keuangan.pinjaman') }}" class="animate-slide-left" style="animation-delay: 0.3s;">
-                        <i class="fas fa-hand-holding-usd"></i>
+                    <a href="{{ route('keuangan.pinjaman') }}">
+                        <i class="ri-hand-coin-line"></i>
                         <span>Kelola Pinjaman</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">📝 Transaksi</div>
-                    <a href="{{ route('keuangan.transaksi') }}" class="animate-slide-left" style="animation-delay: 0.4s;">
-                        <i class="fas fa-exchange-alt"></i>
+                    <div class="nav-section-title">Transaksi</div>
+                    <a href="{{ route('keuangan.transaksi') }}">
+                        <i class="ri-exchange-line"></i>
                         <span>Transaksi</span>
                     </a>
-                    <a href="{{ route('keuangan.laporan') }}" class="animate-slide-left" style="animation-delay: 0.5s;">
-                        <i class="fas fa-file-invoice"></i>
+                    <a href="{{ route('keuangan.laporan') }}">
+                        <i class="ri-file-list-3-line"></i>
                         <span>Laporan</span>
                     </a>
                 </div>
@@ -627,25 +551,25 @@
             <!-- =============== DISTRIBUSI MENU =============== -->
             @if (Auth::user() && Auth::user()->peran === 'distribusi')
                 <div class="nav-section">
-                    <div class="nav-section-title">📊 Dashboard</div>
-                    <a href="{{ route('distribusi.dashboard') }}" class="animate-slide-left" style="animation-delay: 0.1s;">
-                        <i class="fas fa-boxes"></i>
+                    <div class="nav-section-title">Dashboard</div>
+                    <a href="{{ route('distribusi.dashboard') }}">
+                        <i class="ri-stack-line"></i>
                         <span>Dashboard</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">📦 Manajemen</div>
-                    <a href="{{ route('distribusi.Barang') }}" class="animate-slide-left" style="animation-delay: 0.2s;">
-                        <i class="fas fa-clipboard-list"></i>
+                    <div class="nav-section-title">Manajemen</div>
+                    <a href="{{ route('distribusi.Barang') }}">
+                        <i class="ri-file-list-line"></i>
                         <span>Kelola Barang</span>
                     </a>
                 </div>
 
                 <div class="nav-section">
-                    <div class="nav-section-title">📈 Laporan</div>
-                    <a href="{{ route('distribusi.laporan') }}" class="animate-slide-left" style="animation-delay: 0.3s;">
-                        <i class="fas fa-file-invoice"></i>
+                    <div class="nav-section-title">Laporan</div>
+                    <a href="{{ route('distribusi.laporan') }}">
+                        <i class="ri-file-list-3-line"></i>
                         <span>Laporan Distribusi</span>
                     </a>
                 </div>
@@ -655,18 +579,18 @@
             @if(Auth::user())
                 <hr>
                 <div class="nav-section">
-                    <div class="nav-section-title">👤 Akun</div>
+                    <div class="nav-section-title">Akun</div>
                     <form method="POST" action="{{ route('logout') }}" style="width: 100%;">
                         @csrf
-                        <button type="submit" class="animate-slide-left" style="animation-delay: 0.6s;">
-                            <i class="fas fa-sign-out-alt"></i>
+                        <button type="submit">
+                            <i class="ri-logout-box-r-line"></i>
                             <span>Logout</span>
                         </button>
                     </form>
                 </div>
             @else
-                <a href="{{ route('login.page') }}" class="mt-4 animate-slide-left">
-                    <i class="fas fa-sign-in-alt"></i>
+                <a href="{{ route('login.page') }}" class="mt-4">
+                    <i class="ri-login-box-line"></i>
                     <span>Login</span>
                 </a>
             @endif
@@ -683,41 +607,7 @@
     <!-- Bootstrap & Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        // ====== GSAP ANIMATIONS ======
-        gsap.registerPlugin(ScrollTrigger);
-
-        // Sidebar animation on load
-        gsap.from('.sidebar', {
-            duration: 0.8,
-            x: -300,
-            opacity: 0,
-            ease: 'power3.out'
-        });
-
-        // Card animation on scroll - disabled to prevent content from disappearing
-
-        // Hover effect for sidebar items
-        document.querySelectorAll('.sidebar a, .sidebar button').forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                gsap.to(this, {
-                    duration: 0.3,
-                    backgroundColor: 'rgba(102, 126, 234, 0.2)',
-                    ease: 'power2.out'
-                });
-            });
-
-            item.addEventListener('mouseleave', function() {
-                gsap.to(this, {
-                    duration: 0.3,
-                    backgroundColor: 'transparent',
-                    ease: 'power2.out'
-                });
-            });
-        });
-
-        // Table row animation - disabled to prevent content from disappearing
-    </script>
+    <!-- Animations removed; interactions are pure CSS without motion. -->
 
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

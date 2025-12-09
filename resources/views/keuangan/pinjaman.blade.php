@@ -45,49 +45,29 @@
     .form-group-custom input,
     .form-group-custom select {
         width: 100%;
-        background: rgba(255, 255, 255, 0.9);
-        border: 1px solid rgba(122, 92, 219, 0.2);
-        border-radius: 12px;
+        background: #ffffff;
+        border: 1px solid rgba(56, 189, 248, 0.15);
+        border-radius: 10px;
         padding: 12px 16px;
-        color: #2d2d2d;
+        color: #1f2937;
         font-size: 14px;
-        transition: all 0.3s ease;
     }
 
     .form-group-custom input::placeholder,
     .form-group-custom select::placeholder {
-        color: rgba(122, 92, 219, 0.5);
+        color: rgba(31, 41, 55, 0.45);
     }
 
     .form-group-custom input:focus,
     .form-group-custom select:focus {
         outline: none;
-        background: rgba(255, 255, 255, 1);
-        border-color: #7c5cdb;
-        box-shadow: 0 0 0 3px rgba(122, 92, 219, 0.1);
-        transform: translateY(-2px);
+        background: #ffffff;
+        border-color: #38bdf8;
+        box-shadow: none;
     }
 
     .btn-submit {
-        background: linear-gradient(135deg, #7c5cdb 0%, #6b4db8 100%);
-        color: white;
-        border: none;
-        padding: 14px 40px;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 14px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        cursor: pointer;
-        transition: all 0.3s ease;
         align-self: flex-end;
-        box-shadow: 0 4px 15px rgba(122, 92, 219, 0.3);
-    }
-
-    .btn-submit:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(122, 92, 219, 0.4);
-        color: white;
     }
 
     .table-wrapper {
@@ -96,39 +76,37 @@
         box-shadow: 0 4px 15px rgba(122, 92, 219, 0.08);
     }
 
-    .table-custom {
+    .table-modern {
         border-collapse: collapse;
         width: 100%;
     }
 
-    .table-custom thead {
-        background: linear-gradient(135deg, rgba(122, 92, 219, 0.1) 0%, rgba(147, 112, 219, 0.1) 100%);
-        border-bottom: 2px solid rgba(122, 92, 219, 0.2);
+    .table-modern thead {
+        background: linear-gradient(135deg, rgba(14,165,233,0.06) 0%, rgba(3,105,161,0.04) 100%);
+        border-bottom: 2px solid rgba(14,165,233,0.08);
     }
 
-    .table-custom thead th {
+    .table-modern thead th {
         padding: 18px 20px;
-        color: #5a4a7a;
-        font-weight: 600;
+        color: #0f172a;
+        font-weight: 700;
         text-align: left;
         text-transform: uppercase;
         font-size: 12px;
         letter-spacing: 0.5px;
     }
 
-    .table-custom tbody tr {
-        border-bottom: 1px solid rgba(122, 92, 219, 0.1);
-        transition: all 0.3s ease;
+    .table-modern tbody tr {
+        border-bottom: 1px solid rgba(148,163,184,0.06);
     }
 
-    .table-custom tbody tr:hover {
-        background: rgba(122, 92, 219, 0.05);
-        transform: translateX(3px);
+    .table-modern tbody tr:hover {
+        background: rgba(14,165,233,0.04);
     }
 
-    .table-custom tbody td {
+    .table-modern tbody td {
         padding: 16px 20px;
-        color: #4a4a6a;
+        color: #374151;
         font-size: 14px;
     }
 
@@ -195,7 +173,7 @@
 </div>
 
 <!-- FORM INPUT PINJAMAN -->
-<div class="card-glass animate-slide-up" style="margin-bottom: 40px;">
+<div class="card-glass" style="margin-bottom: 40px;">
     <h3 style="margin-bottom: 30px; font-size: 18px; font-weight: 600;">
         <i class="fas fa-plus-circle"></i> Form Input Pinjaman
     </h3>
@@ -230,14 +208,14 @@
             </div>
         </div>
 
-        <button type="submit" class="btn-submit">
-            <i class="fas fa-plus"></i> Tambah Pinjaman
+        <button type="submit" class="btn-modern btn-primary-modern">
+            <i class="ri-add-line"></i> Tambah Pinjaman
         </button>
     </form>
 </div>
 
 <!-- TABEL RIWAYAT PINJAMAN -->
-<div class="card-glass animate-slide-up" style="padding: 0;">
+<div class="card-glass" style="padding: 0;">
     <div style="padding: 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
         <h3 style="margin: 0; font-size: 18px; font-weight: 600;">
             <i class="fas fa-list-check"></i> Riwayat Pinjaman
@@ -246,7 +224,7 @@
 
     @if($pinjaman->count() > 0)
         <div class="table-wrapper">
-            <table class="table-custom">
+            <table class="table-modern">
                 <thead>
                     <tr>
                         <th>Tanggal</th>
