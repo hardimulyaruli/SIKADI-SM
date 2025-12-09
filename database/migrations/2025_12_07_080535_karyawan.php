@@ -6,12 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+   
     public function up(): void
     {
-         Schema::create('karyawans', function (Blueprint $table) {
+         Schema::create('karyawan', function (Blueprint $table) {
         $table->id('karyawan_id');
         $table->string('nama');
         $table->string('jabatan')->nullable();
@@ -20,9 +18,7 @@ return new class extends Migration
         $table->timestamps();
     });
     }
-    /**
-     * Reverse the migrations.
-     */
+  
     public function down(): void
     {
         //

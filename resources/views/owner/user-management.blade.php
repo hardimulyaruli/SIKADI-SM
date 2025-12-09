@@ -1,42 +1,34 @@
 @extends('layouts.sidebar')
 
 @section('content')
-<h2>📄 Daftar Akun</h2>
+<h1>Tambah Akun</h1>
 
-<a href="{{ route('akun.create') }}" class="btn btn-primary mb-3">+ Tambah Akun</a>
+<form action="#" method="POST">
+    @csrf
+    <div class="mb-3">
+        <label for="nama" class="form-label">Nama</label>
+        <input type="text" class="form-control" id="nama" name="nama">
+    </div>
 
-<div class="card p-4">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nama</th>
-                <th>Email</th>
-                <th>Peran</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($akun as $a)
-                <tr>
-                    <td>{{ $a->name }}</td>
-                    <td>{{ $a->email }}</td>
-                    <td>{{ $a->role ?? '-' }}</td>
-                    <td>
-                        <a href="{{ route('akun.edit', $a->id) }}" class="btn btn-warning btn-sm">Edit</a>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email">
+    </div>
 
-                        <form action="{{ route('akun.destroy', $a->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="4" class="text-center">Tidak ada data akun</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Kata Sandi</label>
+        <input type="password" class="form-control" id="password" name="password">
+    </div>
+
+    <div class="mb-3">
+        <label for="peran" class="form-label">Peran</label>
+        <select class="form-control" name="peran">
+            <option value="owner">Owner</option>
+            <option value="keuangan">Keuangan</option>
+            <option value="distribusi">Distribusi</option>
+        </select>
+    </div>
+
+    <button class="btn btn-primary">Simpan</button>
+</form>
 @endsection
