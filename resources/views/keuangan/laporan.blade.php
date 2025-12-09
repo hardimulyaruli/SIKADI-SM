@@ -44,7 +44,7 @@
 
         <div class="row mt-3">
             <div class="col-md-4">
-                <select class="form-control">
+                <select class="input-modern">
                     <option value="">Pilih Jenis Laporan</option>
                     <option value="bulanan">Bulanan</option>
                     <option value="tahunan">Tahunan</option>
@@ -53,11 +53,11 @@
             </div>
 
             <div class="col-md-4">
-                <input type="month" class="form-control" placeholder="Pilih Bulan">
+                <input type="month" class="input-modern" placeholder="Pilih Bulan">
             </div>
 
             <div class="col-md-4">
-                <button class="btn btn-save w-100">Tampilkan</button>
+                <button class="btn-modern btn-primary-modern w-100">Tampilkan</button>
             </div>
         </div>
     </div>

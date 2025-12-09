@@ -60,7 +60,7 @@
         <h4 class="section-title">📄 Buat Laporan</h4>
         <p>Klik Tombol di bawah untuk Menghasilkan laporan distribusi terbaru berdasarkan data pengiriman</p>
         <form action="#" method="POST">
-            <button type="button" class="btn btn-custom btn-kirim">Buat Laporan Distribusi</button>
+            <button type="button" class="btn-modern btn-primary-modern">Buat Laporan Distribusi</button>
         </form>
     </div>
 </div>

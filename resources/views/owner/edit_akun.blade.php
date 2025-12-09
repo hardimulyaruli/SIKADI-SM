@@ -1,41 +1,44 @@
 @extends('layouts.sidebar')
 
 @section('content')
-<h2>✏️ Edit Akun</h2>
 
-<div class="card p-4">
-
-    <form action="{{ route('owner.update_user', $akun->id) }}" method="POST">
-    @csrf
-    @method('PUT')
-
-    <div class="mb-3">
-        <label>Nama</label>
-        <input type="text" name="nama" value="{{ $akun->nama }}" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-        <label>Email</label>
-        <input type="email" name="email" value="{{ $akun->email }}" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-        <label>Peran</label>
-        <select name="peran" class="form-control" required>
-            <option value="owner" {{ $akun->peran == 'owner' ? 'selected' : '' }}>Owner</option>
-            <option value="keuangan" {{ $akun->peran == 'keuangan' ? 'selected' : '' }}>Keuangan</option>
-            <option value="distribusi" {{ $akun->peran == 'distribusi' ? 'selected' : '' }}>Distribusi</option>
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label>Password Baru (Opsional)</label>
-        <input type="password" name="kata_sandi" class="form-control">
-        <small>Kosongkan jika tidak ingin mengganti password.</small>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-</form>
-
+<div class="page-header">
+    <h1>✏️ Edit Akun</h1>
+    <p>Ubah informasi akun pengguna</p>
 </div>
+
+<div class="card-form" style="max-width: 600px;">
+    <form action="{{ route('owner.update_user', $akun->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        <div class="form-group-custom">
+            <label for="nama">Nama</label>
+            <input type="text" id="nama" name="nama" class="input-modern" value="{{ $akun->nama }}" required>
+        </div>
+
+        <div class="form-group-custom">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" class="input-modern" value="{{ $akun->email }}" required>
+        </div>
+
+        <div class="form-group-custom">
+            <label for="peran">Peran</label>
+            <select id="peran" name="peran" class="input-modern" required>
+                <option value="owner" {{ $akun->peran == 'owner' ? 'selected' : '' }}>Owner</option>
+                <option value="keuangan" {{ $akun->peran == 'keuangan' ? 'selected' : '' }}>Keuangan</option>
+                <option value="distribusi" {{ $akun->peran == 'distribusi' ? 'selected' : '' }}>Distribusi</option>
+            </select>
+        </div>
+
+        <div class="form-group-custom">
+            <label for="password">Password Baru (Opsional)</label>
+            <input type="password" id="password" name="kata_sandi" class="input-modern" placeholder="Kosongkan jika tidak ingin mengganti">
+            <div class="form-text">Hanya isi jika ingin mengganti password</div>
+        </div>
+
+        <button type="submit" class="btn-modern btn-primary-modern">💾 Simpan Perubahan</button>
+    </form>
+</div>
+
 @endsection

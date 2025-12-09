@@ -7,59 +7,37 @@ use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $transaksi = Transaksi::orderBy('tanggal', 'desc')->get();
+        return view('keuangan.transaksi', compact('transaksi'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // ==========================
+    // SIMPAN PEMASUKAN
+    // ==========================
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'tipe'      => 'required|in:pemasukan,pengeluaran',
+            'kategori'  => 'required',
+            'qty'       => 'required|integer|min:1',
+            'nominal'   => 'required|integer|min:0',
+            'tanggal'   => 'required|date',
+            'deskripsi' => 'nullable|string'
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Transaksi $transaksi)
-    {
-        //
-    }
+        Transaksi::create([
+            'tipe'      => $request->tipe,
+            'kategori'  => $request->kategori,
+            'qty'       => $request->qty,
+            'nominal'   => $request->nominal,
+            'tanggal'   => $request->tanggal,
+            'deskripsi' => $request->deskripsi,
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Transaksi $transaksi)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Transaksi $transaksi)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Transaksi $transaksi)
-    {
-        //
+        return redirect()
+            ->route('keuangan.transaksi')
+            ->with('success', 'Transaksi berhasil ditambahkan!');
     }
 }

@@ -12,17 +12,28 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transaksi', function (Blueprint $table) {
-        $table->id();
-        $table->unsignedBigInteger('pengguna_id');
-        $table->enum('jenis', ['pemasukan', 'pengeluaran']);
-        $table->integer('jumlah');
-        $table->string('kategori');
-        $table->date('tanggal');
-        $table->text('deskripsi')->nullable();
-        $table->timestamps();
+            $table->id();
 
-        $table->foreign('pengguna_id')->references('id')->on('pengguna')->onDelete('cascade');
-    });
+            // pemasukan / pengeluaran
+            $table->enum('tipe', ['pemasukan', 'pengeluaran']);
+
+            // kategori pemasukan dan pengeluaran
+            $table->enum('kategori', ['nastar', 'kue bulan', 'pia', 'bahan', 'operasional', 'lain-lain'])->nullable();
+
+            // jumlah barang
+            $table->integer('qty')->default(0);
+
+            // total nominal (qty × harga kategori)
+            $table->bigInteger('nominal')->default(0);
+
+            // tanggal transaksi
+            $table->date('tanggal');
+
+            // deskripsi tambahan (opsional)
+            $table->text('deskripsi')->nullable();
+
+            $table->timestamps();
+        });
     }
 
     /**
