@@ -20,7 +20,7 @@ return new class extends Migration
         $table->text('keterangan')->nullable();
         $table->timestamps();
 
-        $table->foreign('karyawan_id')->references('karyawan_id')->on('karyawan')->onDelete('cascade');
+        $table->foreign('karyawan_id')->references('id')->on('karyawans')->onDelete('cascade');
     });
     }
 

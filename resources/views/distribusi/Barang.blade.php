@@ -46,37 +46,40 @@
 
             <h4 class="section-title">Input Data Distribusi</h4>
 
-            <form action="#" method="POST">
+            @if(session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+
+            <form action="{{ route('distribusi.barang.store') }}" method="POST">
+                @csrf
 
                 <div class="row">
                     <div class="col-md-4 mb-3">
-                        <input type="text" class="input-modern" placeholder="Nama Barang (Contoh: Kue Pia)">
+                        <input type="text" name="catatan" class="input-modern" placeholder="Nama Barang (disimpan sebagai catatan)">
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <input type="number" class="input-modern" placeholder="Jumlah Barang yang Dikirim" min="0">
+                        <input type="number" name="jumlah_produk" class="input-modern" placeholder="Jumlah Barang yang Dikirim" min="0">
                     </div>
                 </div>
 
                 <div class ="row">
                     <div class="col-md-4 mb-3">
-                        <input type="text" class="input-modern" placeholder="Alamat">
+                        <input type="text" name="toko_tujuan" class="input-modern" placeholder="Toko/Alamat Tujuan">
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="select-wrapper">
-                            <select class="input-modern">
+                            <select name="status" class="input-modern">
                                 <option value="" disabled selected>Status Barang</option>
-                                <option value="transport">Sampai Tujuan</option>
-                                <option value="makan">Dalam Perjalanan</option>
-                                <option value="kesehatan">Pengemasan</option>
+                                <option value="terkirim">Terkirim</option>
+                                <option value="pending">Pending</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <button type="button" class="btn-modern btn-primary-modern">Simpan Data</button>
-                <button type="button" class="btn-modern btn-secondary-modern">Update status</button>
+                <button type="submit" class="btn-modern btn-primary-modern">Simpan Data</button>
             </form>
         </div>
 
@@ -87,26 +90,42 @@
                 <table class="table-modern table-bordered mb-0">
                     <thead>
                         <tr>
-                            <th>Kode</th>
-                            <th>Nama Barang</th>
-                            <th>Jumlah barang</th>
-                            <th>Alamat</th>
-                            <th>Tanggal Kirim</th>
+                            <th>ID</th>
+                            <th>Nama Barang (Catatan)</th>
+                            <th>Jumlah</th>
+                            <th>Tujuan</th>
+                            <th>Tanggal</th>
                             <th>Status</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
 
                     <tbody>
+                        @forelse(($distribusis ?? []) as $d)
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{ $d->id }}</td>
+                            <td>{{ $d->catatan }}</td>
+                            <td>{{ $d->jumlah_produk }}</td>
+                            <td>{{ $d->toko_tujuan }}</td>
+                            <td>{{ $d->tanggal }}</td>
+                            <td>{{ ucfirst($d->status) }}</td>
                             <td>
-                                <p class="text-sampai"></p>
+                                <form action="{{ route('distribusi.barang.updateStatus', $d->id) }}" method="POST" style="display:inline-flex; gap:8px; align-items:center;">
+                                    @csrf
+                                    @method('PATCH')
+                                    <select name="status" class="input-modern" style="max-width:160px;">
+                                        <option value="terkirim" {{ $d->status==='terkirim' ? 'selected' : '' }}>Terkirim</option>
+                                        <option value="pending" {{ $d->status==='pending' ? 'selected' : '' }}>Pending</option>
+                                    </select>
+                                    <button type="submit" class="btn-modern btn-secondary-modern">Update status</button>
+                                </form>
                             </td>
                         </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="text-center">Belum ada data distribusi.</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

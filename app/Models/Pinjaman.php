@@ -9,7 +9,7 @@ class Pinjaman extends Model
     protected $table = 'pinjaman';
 
     protected $fillable = [
-        'pengguna_id', 'jumlah_pinjaman', 'tanggal', 'status', 'keterangan', 'karyawan_id'
+        'jumlah_pinjaman', 'tanggal', 'status', 'keterangan', 'karyawan_id'
     ];
     public function karyawan()
     {

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Laporan;
+use App\Models\Transaksi;
+use App\Models\Pinjaman;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class LaporanController extends Controller
 {
@@ -12,7 +15,86 @@ class LaporanController extends Controller
      */
     public function index()
     {
-        //
+        return view('keuangan.laporan');
+    }
+
+    /**
+     * Get filtered report data
+     */
+    public function getFilteredReport(Request $request)
+    {
+        $jenis = $request->input('jenis_laporan');
+        $bulan = $request->input('bulan');
+
+        $data = [
+            'pemasukan' => 0,
+            'pengeluaran' => 0,
+            'pinjaman' => 0,
+            'saldo' => 0,
+            'jenis' => $jenis,
+        ];
+
+        try {
+            if ($jenis == 'bulanan' && $bulan) {
+                $year = Carbon::parse($bulan)->year;
+                $month = Carbon::parse($bulan)->month;
+
+                // Pemasukan
+                $pemasukan = Transaksi::where('tipe', 'pemasukan')
+                    ->whereYear('tanggal', $year)
+                    ->whereMonth('tanggal', $month)
+                    ->sum('nominal');
+
+                // Pengeluaran
+                $pengeluaran = Transaksi::where('tipe', 'pengeluaran')
+                    ->whereYear('tanggal', $year)
+                    ->whereMonth('tanggal', $month)
+                    ->sum('nominal');
+
+                $data['pemasukan'] = $pemasukan;
+                $data['pengeluaran'] = $pengeluaran;
+                $data['saldo'] = $pemasukan - $pengeluaran;
+
+            } elseif ($jenis == 'tahunan' && $bulan) {
+                $year = Carbon::parse($bulan)->year;
+
+                // Pemasukan tahunan
+                $pemasukan = Transaksi::where('tipe', 'pemasukan')
+                    ->whereYear('tanggal', $year)
+                    ->sum('nominal');
+
+                // Pengeluaran tahunan
+                $pengeluaran = Transaksi::where('tipe', 'pengeluaran')
+                    ->whereYear('tanggal', $year)
+                    ->sum('nominal');
+
+                $data['pemasukan'] = $pemasukan;
+                $data['pengeluaran'] = $pengeluaran;
+                $data['saldo'] = $pemasukan - $pengeluaran;
+
+            } elseif ($jenis == 'pinjaman') {
+                // Total pinjaman yang belum lunas
+                $pinjaman_belum_lunas = Pinjaman::where('status', 'belum_lunas')->sum('jumlah_pinjaman');
+                
+                // Total pinjaman yang sudah lunas
+                $pinjaman_lunas = Pinjaman::where('status', 'lunas')->sum('jumlah_pinjaman');
+
+                $data['pinjaman'] = $pinjaman_belum_lunas;
+                $data['pinjaman_lunas'] = $pinjaman_lunas;
+                $data['saldo'] = -$pinjaman_belum_lunas;
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

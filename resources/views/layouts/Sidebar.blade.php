@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>SIKADI SM</title>
 
     <!-- Tailwind CSS -->
@@ -560,7 +561,7 @@
 
                 <div class="nav-section">
                     <div class="nav-section-title">Manajemen</div>
-                    <a href="{{ route('distribusi.Barang') }}">
+                    <a href="{{ route('distribusi.barang') }}">
                         <i class="ri-file-list-line"></i>
                         <span>Kelola Barang</span>
                     </a>

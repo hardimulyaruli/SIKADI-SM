@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Distribusi;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 
 class DistribusiController extends Controller
@@ -12,7 +14,8 @@ class DistribusiController extends Controller
      */
     public function index()
     {
-        //
+        $distribusis = Distribusi::orderBy('tanggal', 'desc')->get();
+        return view('distribusi.Barang', compact('distribusis'));
     }
 
     /**
@@ -28,7 +31,23 @@ class DistribusiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'toko_tujuan' => 'required|string|max:255',
+            'jumlah_produk' => 'required|integer|min:0',
+            'status' => 'required|in:terkirim,pending',
+            'catatan' => 'nullable|string',
+        ]);
+
+        Distribusi::create([
+            'pengguna_id' => Auth::id(),
+            'toko_tujuan' => $validated['toko_tujuan'],
+            'jumlah_produk' => $validated['jumlah_produk'],
+            'tanggal' => now()->toDateString(),
+            'status' => $validated['status'],
+            'catatan' => $validated['catatan'] ?? null,
+        ]);
+
+        return redirect()->back()->with('success', 'Data distribusi tersimpan.');
     }
 
     /**
@@ -50,9 +69,17 @@ class DistribusiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Distribusi $distribusi)
+    public function updateStatus(Request $request, $id)
     {
-        //
+        $request->validate([
+            'status' => 'required|in:terkirim,pending',
+        ]);
+
+        $row = Distribusi::findOrFail($id);
+        $row->status = $request->status;
+        $row->save();
+
+        return redirect()->back()->with('success', 'Status distribusi diperbarui.');
     }
 
     /**

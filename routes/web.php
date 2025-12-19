@@ -26,8 +26,18 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 | ROUTE DASHBOARD SEMUA ROLE
 |--------------------------------------------------------------------------
 */
-Route::get('/owner/dashboard', fn() => view('dashboard.owner'))->name('owner.dashboard');
-Route::get('/keuangan/dashboard', fn() => view('dashboard.keuangan'))->name('keuangan.dashboard');
+Route::get('/owner/dashboard', function () {
+    $total_pemasukan = \App\Models\Transaksi::where('tipe', 'pemasukan')->sum('nominal');
+    $total_pengeluaran = \App\Models\Transaksi::where('tipe', 'pengeluaran')->sum('nominal');
+    // You could also compute distribusi here if needed
+    return view('dashboard.owner', compact('total_pemasukan', 'total_pengeluaran'));
+})->name('owner.dashboard');
+
+Route::get('/keuangan/dashboard', function () {
+    $total_pemasukan = \App\Models\Transaksi::where('tipe', 'pemasukan')->sum('nominal');
+    $total_pengeluaran = \App\Models\Transaksi::where('tipe', 'pengeluaran')->sum('nominal');
+    return view('dashboard.keuangan', compact('total_pemasukan', 'total_pengeluaran'));
+})->name('keuangan.dashboard');
 Route::get('/distribusi/dashboard', fn() => view('dashboard.distribusi'))->name('distribusi.dashboard');
 
 
@@ -71,7 +81,8 @@ Route::get('/keuangan/gaji-pegawai', [\App\Http\Controllers\GajiController::clas
 Route::post('/keuangan/gaji-pegawai', [\App\Http\Controllers\GajiController::class, 'store'])->name('keuangan.gaji.store');
 Route::get('/keuangan/pinjaman', [\App\Http\Controllers\PinjamanController::class, 'index'])->name('keuangan.pinjaman');
 Route::post('/keuangan/pinjaman', [\App\Http\Controllers\PinjamanController::class, 'store'])->name('keuangan.pinjaman.store');
-Route::get('/keuangan/laporan', fn() => view('keuangan.laporan'))->name('keuangan.laporan');
+Route::get('/keuangan/laporan', [\App\Http\Controllers\LaporanController::class, 'index'])->name('keuangan.laporan');
+Route::post('/keuangan/laporan/filter', [\App\Http\Controllers\LaporanController::class, 'getFilteredReport'])->name('keuangan.laporan.filter');
 
 Route::get('/keuangan/transaksi', [TransaksiController::class, 'index'])->name('keuangan.transaksi');
 // Halaman daftar transaksi
@@ -86,4 +97,6 @@ Route::post('/keuangan/transaksi', [TransaksiController::class, 'store'])->name(
 |--------------------------------------------------------------------------
 */
 Route::get('/distribusi/laporan', fn() => view('distribusi.laporan'))->name('distribusi.laporan');
-Route::get('/distribusi/Barang', fn() => view('distribusi.Barang'))->name('distribusi.Barang');
+Route::get('/distribusi/barang', [\App\Http\Controllers\DistribusiController::class, 'index'])->name('distribusi.barang');
+Route::post('/distribusi/barang', [\App\Http\Controllers\DistribusiController::class, 'store'])->name('distribusi.barang.store');
+Route::patch('/distribusi/barang/{id}/status', [\App\Http\Controllers\DistribusiController::class, 'updateStatus'])->name('distribusi.barang.updateStatus');

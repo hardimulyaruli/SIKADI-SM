@@ -10,13 +10,13 @@
 <div class="row">
     <div class="col-md-6 mb-4">
         <div class="card-stat">
-            <h3>Rp 0</h3>
+            <h3>Rp {{ number_format($total_pemasukan ?? 0, 0, ',', '.') }}</h3>
             <p>Total Pemasukan</p>
         </div>
     </div>
     <div class="col-md-6 mb-4">
         <div class="card-stat">
-            <h3>Rp 0</h3>
+            <h3>Rp {{ number_format($total_pengeluaran ?? 0, 0, ',', '.') }}</h3>
             <p>Total Pengeluaran</p>
         </div>
     </div>

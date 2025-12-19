@@ -38,7 +38,6 @@ class PinjamanController extends Controller
 
         Pinjaman::create([
             'karyawan_id' => $request->karyawan_id,
-            'pengguna_id' => null,
             'jumlah_pinjaman' => $request->jumlah_pinjaman,
             'tanggal' => $request->tanggal,
             'status' => 'belum_lunas',

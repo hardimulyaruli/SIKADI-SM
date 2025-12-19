@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('pinjaman', function (Blueprint $table) {
-            $table->unsignedBigInteger('karyawan_id')->nullable()->after('pengguna_id');
-            $table->foreign('karyawan_id')->references('id')->on('karyawans')->onDelete('cascade');
-        });
+        // karyawan_id already exists in pinjaman table creation
+        // This migration can be skipped
     }
 
     /**
