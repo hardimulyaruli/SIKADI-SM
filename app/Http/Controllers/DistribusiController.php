@@ -31,24 +31,33 @@ class DistribusiController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'toko_tujuan' => 'required|string|max:255',
-            'jumlah_produk' => 'required|integer|min:0',
-            'status' => 'required|in:terkirim,pending',
-            'catatan' => 'nullable|string',
-        ]);
+        $validated = $request->validate(
+            [
+                'toko_tujuan'    => 'required|string|max:255',
+                'jumlah_produk'  => 'required|integer|min:1',
+                'status'         => 'required|in:terkirim,pending',
+                'catatan'        => 'nullable|string|max:255',
+            ],
+            [
+                'toko_tujuan.required'   => 'Tujuan pengiriman wajib diisi.',
+                'jumlah_produk.required' => 'Jumlah barang wajib diisi.',
+                'jumlah_produk.min'      => 'Jumlah barang minimal 1.',
+                'status.required'        => 'Status barang wajib dipilih.',
+            ]
+        );
 
         Distribusi::create([
-            'pengguna_id' => Auth::id(),
-            'toko_tujuan' => $validated['toko_tujuan'],
-            'jumlah_produk' => $validated['jumlah_produk'],
-            'tanggal' => now()->toDateString(),
-            'status' => $validated['status'],
-            'catatan' => $validated['catatan'] ?? null,
+            'pengguna_id'    => Auth::id(),
+            'toko_tujuan'    => $validated['toko_tujuan'],
+            'jumlah_produk'  => $validated['jumlah_produk'],
+            'tanggal'        => now()->toDateString(),
+            'status'         => $validated['status'],
+            'catatan'        => $validated['catatan'] ?? null,
         ]);
 
         return redirect()->back()->with('success', 'Data distribusi tersimpan.');
     }
+
 
     /**
      * Display the specified resource.
@@ -61,32 +70,49 @@ class DistribusiController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Distribusi $distribusi)
+    public function edit($id)
     {
-        //
+        $distribusi = Distribusi::findOrFail($id);
+        return view('distribusi.edit', compact('distribusi'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function updateStatus(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
+            'catatan' => 'required|string|max:255',
+            'toko_tujuan' => 'required|string|max:255',
+            'jumlah_produk' => 'required|integer|min:1',
             'status' => 'required|in:terkirim,pending',
         ]);
 
-        $row = Distribusi::findOrFail($id);
-        $row->status = $request->status;
-        $row->save();
+        $distribusi = Distribusi::findOrFail($id);
 
-        return redirect()->back()->with('success', 'Status distribusi diperbarui.');
+        $distribusi->catatan = $request->catatan;
+        $distribusi->toko_tujuan = $request->toko_tujuan;
+        $distribusi->jumlah_produk = $request->jumlah_produk;
+        $distribusi->status = $request->status;
+
+        $distribusi->save();
+
+        return redirect()
+        ->route('distribusi.barang')
+        ->with('success', 'Data distribusi berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Distribusi $distribusi)
+    public function destroy($id)
     {
-        //
+        $distribusi = Distribusi::findOrFail($id);
+        $distribusi->delete();
+
+        return redirect()
+        ->route('distribusi.barang')
+        ->with('success', 'Data distribusi berhasil dihapus.');
     }
 }

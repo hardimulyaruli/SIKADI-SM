@@ -99,4 +99,6 @@ Route::post('/keuangan/transaksi', [TransaksiController::class, 'store'])->name(
 Route::get('/distribusi/laporan', fn() => view('distribusi.laporan'))->name('distribusi.laporan');
 Route::get('/distribusi/barang', [\App\Http\Controllers\DistribusiController::class, 'index'])->name('distribusi.barang');
 Route::post('/distribusi/barang', [\App\Http\Controllers\DistribusiController::class, 'store'])->name('distribusi.barang.store');
-Route::patch('/distribusi/barang/{id}/status', [\App\Http\Controllers\DistribusiController::class, 'updateStatus'])->name('distribusi.barang.updateStatus');
+Route::get('/distribusi/barang/{id}/edit',[\App\Http\Controllers\DistribusiController::class, 'edit'])->name('distribusi.edit');
+Route::patch('/distribusi/barang/{id}',[\App\Http\Controllers\DistribusiController::class, 'update'])->name('distribusi.update');
+Route::delete('/distribusi/barang/{id}',[\App\Http\Controllers\DistribusiController::class, 'destroy'])->name('distribusi.destroy');
