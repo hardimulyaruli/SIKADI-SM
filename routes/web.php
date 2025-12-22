@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\OwnerKaryawanController;
+use App\Http\Controllers\LaporanController;
 
 
 /*
@@ -27,12 +28,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 | ROUTE DASHBOARD SEMUA ROLE
 |--------------------------------------------------------------------------
 */
-Route::get('/owner/dashboard', function () {
-    $total_pemasukan = \App\Models\Transaksi::where('tipe', 'pemasukan')->sum('nominal');
-    $total_pengeluaran = \App\Models\Transaksi::where('tipe', 'pengeluaran')->sum('nominal');
-    // You could also compute distribusi here if needed
-    return view('dashboard.owner', compact('total_pemasukan', 'total_pengeluaran'));
-})->name('owner.dashboard');
+Route::get('/owner/dashboard', [LaporanController::class, 'ownerDashboard'])->name('owner.dashboard');
 
 Route::get('/keuangan/dashboard', function () {
     $total_pemasukan = \App\Models\Transaksi::where('tipe', 'pemasukan')->sum('nominal');
@@ -78,8 +74,10 @@ Route::put('/owner/karyawan/{id}', [OwnerKaryawanController::class, 'update'])->
 Route::delete('/owner/karyawan/{id}', [OwnerKaryawanController::class, 'destroy'])->name('owner.karyawan.destroy');
 
 // ⭐ Laporan Owner
-Route::get('/owner/laporan-umum', fn() => view('owner.laporan'))->name('owner.keuangan');
+Route::get('/owner/laporan-umum', [LaporanController::class, 'ownerSummary'])->name('owner.keuangan');
 Route::get('/owner/laporan-distribusi', fn() => view('owner.laporan_distribusi'))->name('owner.distribusi');
+Route::get('/owner/api/chart-transaksi', [LaporanController::class, 'chartTransaksi'])->name('owner.chart.transaksi');
+Route::get('/owner/api/chart-gaji-pinjaman', [LaporanController::class, 'chartGajiPinjaman'])->name('owner.chart.gaji_pinjaman');
 
 
 /*

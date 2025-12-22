@@ -7,45 +7,89 @@
 
     <style>
         body {
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
-        }
-
-        .role-btn {
-            border-radius: 20px;
-            font-size: 14px;
-            padding: 6px 15px;
-            border: 1px solid white;
-            background: transparent;
-            color: white;
-        }
-
-        .role-btn.active {
-            background: #00eaff;
-            color: #000;
-            border: none;
+            background: radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.08), transparent 30%),
+                radial-gradient(circle at 80% 0%, rgba(56, 189, 248, 0.12), transparent 32%),
+                #f8fafc;
+            color: #0f172a;
+            padding: 16px;
         }
 
         .login-card {
-            width: 380px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
+            width: 400px;
+            background: #ffffff;
+            padding: 28px 30px;
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
         }
 
-        input {
-            border-radius: 10px !important;
+        .brand {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .brand h3 {
+            margin: 0;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .brand p {
+            margin: 4px 0 0;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 12px 14px;
+            background: #f9fafb;
+        }
+
+        .form-control:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+            background: #fff;
+        }
+
+        .role-btn {
+            border-radius: 12px;
+            font-size: 13px;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .role-btn.active {
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+            color: #fff;
+            border: none;
+            box-shadow: 0 12px 30px rgba(56, 189, 248, 0.25);
         }
 
         .btn-login {
-            border-radius: 30px;
-            background: linear-gradient(to right, #ff512f, #f09819);
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
             border: none;
+            padding: 12px;
+            font-weight: 800;
+            box-shadow: 0 16px 40px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-login:hover {
+            filter: brightness(1.05);
         }
     </style>
 
@@ -63,8 +107,10 @@
 
     <div class="login-card">
 
-        <h3 class="text-center mb-1">SIKADI SM</h3>
-        <p class="text-center mb-4">Sistem Keuangan & Distribusi</p>
+        <div class="brand">
+            <h3>SIKADI SM</h3>
+            <p>Sistem Keuangan & Distribusi</p>
+        </div>
 
         <!-- ERROR -->
         @if (session('error'))
@@ -77,7 +123,7 @@
 
             <!-- PILIH ROLE (TIDAK MEMPENGARUHI LOGIKA LOGIN) -->
             <label class="mb-2">Pilih Role:</label>
-            <div class="d-flex gap-2 mb-3">
+            <div class="d-flex gap-2 mb-3 flex-wrap">
                 <button type="button" id="btn-owner" class="role-btn active"
                     onclick="selectRole('owner')">Owner</button>
                 <button type="button" id="btn-keuangan" class="role-btn"
@@ -94,7 +140,7 @@
                 autocomplete="off">
 
             <label>Password:</label>
-            <input type="password" name="password" class="form-control mb-3" placeholder="Masukkan password" required>
+            <input type="password" name="password" class="form-control mb-4" placeholder="Masukkan password" required>
 
             <button class="btn btn-login w-100">Login ke Sistem</button>
         </form>

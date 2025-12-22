@@ -201,6 +201,19 @@
                     </a>
                 </div>
             </div>
+            <form method="GET" action="{{ route('keuangan.laporan') }}" class="d-flex gap-2 flex-wrap mb-3 align-items-end">
+                <div>
+                    <label style="font-size:12px; color:#6b7280;">Mulai</label>
+                    <input type="date" name="pg_start_date" class="form-control" value="{{ $pgStart ?? '' }}">
+                </div>
+                <div>
+                    <label style="font-size:12px; color:#6b7280;">Selesai</label>
+                    <input type="date" name="pg_end_date" class="form-control" value="{{ $pgEnd ?? '' }}">
+                </div>
+                <button type="submit" class="btn-modern btn-primary-modern" style="font-size:12px; padding:8px 14px;">
+                    Terapkan Filter
+                </button>
+            </form>
             <div class="summary-badges">
                 <div class="summary-pill">
                     <span class="summary-label">Total Gaji Diterima</span>

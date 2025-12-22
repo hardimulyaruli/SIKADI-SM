@@ -2,65 +2,68 @@
 @section('content')
 
 <style>
-    .container-custom {
-        background: linear-gradient(135deg, #6a5bd1, #8b46c7);
-        padding: 25px;
-        border-radius: 15px;
-        color: #fff;
+    .page-shell {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 18px;
     }
 
-    .section-box {
-        background: rgba(255, 255, 255, 0.12);
-        padding: 20px;
-        border-radius: 15px;
-        backdrop-filter: blur(5px);
-        margin-bottom: 20px;
+    .card-glass {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 18px 20px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+    }
+
+    .card-head h2 {
+        margin: 0;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .card-head p {
+        margin: 6px 0 0;
+        color: #6b7280;
     }
 
     .section-title {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 15px;
-        color: #ffeb3b;
+        font-size: 18px;
+        font-weight: 800;
+        margin: 0 0 6px;
+        color: #0f172a;
     }
 
-    .form-control {
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
+    .section-sub {
+        margin: 0;
+        color: #6b7280;
+    }
+
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #0ea5e9, #38bdf8);
         color: #fff;
-    }
-
-    .form-control::placeholder {
-        color: #ddd;
-    }
-
-    .btn-custom {
         border: none;
-        padding: 8px 18px;
-        border-radius: 8px;
-        font-weight: bold;
+        border-radius: 12px;
+        padding: 10px 16px;
+        font-weight: 700;
+        box-shadow: 0 12px 30px rgba(56, 189, 248, 0.28);
     }
-
-    .btn-kirim {
-        background: #00c3ff;
-        color: #fff;
-    }
-
-
 </style>
 
-<div class="container-custom">
+<div class="page-shell">
+    <div class="card-head mb-3">
+        <h2>Laporan Distribusi</h2>
+        <p>Upload laporan distribusi ke owner dengan gaya yang konsisten.</p>
+    </div>
 
-    <h2 class="mb-1 text-warning">Laporan Distribusi</h2>
-    <p>Upload Laporan Distribusi ke Owner.</p>
+    <div class="card-glass d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+        <div>
+            <h4 class="section-title">Buat Laporan Distribusi</h4>
+            <p class="section-sub">Hasilkan laporan terbaru berdasarkan data pengiriman terkini.</p>
+        </div>
 
-    <!-- BOX FORM INPUT GAJI -->
-    <div class="section-box">
-
-        <h4 class="section-title">📄 Buat Laporan</h4>
-        <p>Klik Tombol di bawah untuk Menghasilkan laporan distribusi terbaru berdasarkan data pengiriman</p>
-        <form action="#" method="POST">
-            <button type="button" class="btn-modern btn-primary-modern">Buat Laporan Distribusi</button>
+        <form action="#" method="POST" class="m-0">
+            @csrf
+            <button type="button" class="btn-primary-modern">Buat Laporan</button>
         </form>
     </div>
 </div>

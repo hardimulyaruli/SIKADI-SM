@@ -20,9 +20,20 @@ class LaporanController extends Controller
      */
     public function index(Request $request)
     {
-        // Data untuk laporan penggajian (gaji & pinjaman)
-        $penggajian = Penggajian::with('karyawan')->orderByDesc('tanggal')->get();
-        $pinjaman = Pinjaman::with('karyawan')->orderByDesc('tanggal')->get();
+        // Filter tanggal penggajian & pinjaman
+        $pgStart = $request->input('pg_start_date');
+        $pgEnd = $request->input('pg_end_date');
+
+        $penggajianQuery = Penggajian::with('karyawan')->orderByDesc('tanggal');
+        $pinjamanQuery = Pinjaman::with('karyawan')->orderByDesc('tanggal');
+
+        if ($pgStart && $pgEnd) {
+            $penggajianQuery->whereBetween('tanggal', [$pgStart, $pgEnd]);
+            $pinjamanQuery->whereBetween('tanggal', [$pgStart, $pgEnd]);
+        }
+
+        $penggajian = $penggajianQuery->get();
+        $pinjaman = $pinjamanQuery->get();
 
         $total_gaji_diterima = $penggajian->sum('total_gaji_diterima');
         $total_pinjaman = $pinjaman->sum('jumlah_pinjaman');
@@ -68,8 +79,139 @@ class LaporanController extends Controller
             'weeklyPenjualan',
             'filterMode',
             'startDate',
-            'endDate'
+            'endDate',
+            'pgStart',
+            'pgEnd'
         ));
+    }
+
+    /**
+     * Laporan ringkas untuk Owner yang menampilkan pemasukan, pengeluaran, gaji, dan pinjaman.
+     */
+    public function ownerSummary()
+    {
+        $total_pemasukan = Transaksi::where('tipe', 'pemasukan')->sum('nominal');
+        $total_pengeluaran = Transaksi::where('tipe', 'pengeluaran')->sum('nominal');
+        $gaji_pegawai = Penggajian::sum('total_gaji_diterima');
+        $total_pinjaman = Pinjaman::sum('jumlah_pinjaman');
+
+        // Saldo akhir dengan mempertimbangkan semua arus kas
+        $saldo_akhir = $total_pemasukan - ($total_pengeluaran + $gaji_pegawai + $total_pinjaman);
+
+        // Riwayat transaksi terbaru untuk tabel owner (batasi 50 entri)
+        $transaksi = Transaksi::orderByDesc('tanggal')->limit(50)->get();
+
+        // Data chart garis: 6 bulan terakhir pemasukan vs pengeluaran
+        $chartLabels = [];
+        $chartPemasukan = [];
+        $chartPengeluaran = [];
+
+        for ($i = 5; $i >= 0; $i--) {
+            $month = Carbon::now()->subMonths($i);
+            $chartLabels[] = $month->format('M Y');
+
+            $chartPemasukan[] = Transaksi::where('tipe', 'pemasukan')
+                ->whereYear('tanggal', $month->year)
+                ->whereMonth('tanggal', $month->month)
+                ->sum('nominal');
+
+            $chartPengeluaran[] = Transaksi::where('tipe', 'pengeluaran')
+                ->whereYear('tanggal', $month->year)
+                ->whereMonth('tanggal', $month->month)
+                ->sum('nominal');
+        }
+
+        // Data pie: fokus ke gaji & pinjaman karyawan
+        $pengeluaranBreakdown = [
+            'Gaji Pegawai' => $gaji_pegawai,
+            'Pinjaman Karyawan' => $total_pinjaman,
+        ];
+
+        return view('owner.laporan', compact(
+            'total_pemasukan',
+            'total_pengeluaran',
+            'gaji_pegawai',
+            'total_pinjaman',
+            'saldo_akhir',
+            'transaksi',
+            'chartLabels',
+            'chartPemasukan',
+            'chartPengeluaran',
+            'pengeluaranBreakdown'
+        ));
+    }
+
+    /**
+     * Dashboard Owner: ringkasan cepat dan grafik.
+     */
+    public function ownerDashboard()
+    {
+        $total_pemasukan = Transaksi::where('tipe', 'pemasukan')->sum('nominal');
+        $total_pengeluaran = Transaksi::where('tipe', 'pengeluaran')->sum('nominal');
+        $gaji_pegawai = Penggajian::sum('total_gaji_diterima');
+        $total_pinjaman = Pinjaman::sum('jumlah_pinjaman');
+        $saldo_akhir = $total_pemasukan - ($total_pengeluaran + $gaji_pegawai + $total_pinjaman);
+
+        $total_distribusi = class_exists('App\\Models\\Distribusi')
+            ? \App\Models\Distribusi::count()
+            : 0;
+
+        return view('dashboard.owner', compact(
+            'total_pemasukan',
+            'total_pengeluaran',
+            'gaji_pegawai',
+            'total_pinjaman',
+            'saldo_akhir',
+            'total_distribusi'
+        ));
+    }
+
+    /**
+     * API: data grafik pemasukan vs pengeluaran (6 bulan terakhir).
+     */
+    public function chartTransaksi()
+    {
+        $labels = [];
+        $pemasukan = [];
+        $pengeluaran = [];
+
+        for ($i = 5; $i >= 0; $i--) {
+            $month = Carbon::now()->subMonths($i);
+            $labels[] = $month->format('M Y');
+
+            $pemasukan[] = Transaksi::where('tipe', 'pemasukan')
+                ->whereYear('tanggal', $month->year)
+                ->whereMonth('tanggal', $month->month)
+                ->sum('nominal');
+
+            $pengeluaran[] = Transaksi::where('tipe', 'pengeluaran')
+                ->whereYear('tanggal', $month->year)
+                ->whereMonth('tanggal', $month->month)
+                ->sum('nominal');
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'pemasukan' => $pemasukan,
+            'pengeluaran' => $pengeluaran,
+        ]);
+    }
+
+    /**
+     * API: data grafik gaji vs pinjaman (total kumulatif terkini).
+     */
+    public function chartGajiPinjaman()
+    {
+        $gaji = Penggajian::sum('total_gaji_diterima');
+        $pinjaman = Pinjaman::sum('jumlah_pinjaman');
+
+        return response()->json([
+            'labels' => ['Gaji Pegawai', 'Pinjaman Karyawan'],
+            'values' => [
+                (int) $gaji,
+                (int) $pinjaman,
+            ],
+        ]);
     }
 
     /**
