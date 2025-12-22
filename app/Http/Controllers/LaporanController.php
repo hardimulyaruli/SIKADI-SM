@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Laporan;
 use App\Models\Transaksi;
 use App\Models\Pinjaman;
+use App\Models\Penggajian;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -15,7 +16,29 @@ class LaporanController extends Controller
      */
     public function index()
     {
-        return view('keuangan.laporan');
+        // Data untuk laporan penggajian (gaji & pinjaman)
+        $penggajian = Penggajian::with('karyawan')->orderByDesc('tanggal')->get();
+        $pinjaman = Pinjaman::with('karyawan')->orderByDesc('tanggal')->get();
+
+        $total_gaji_diterima = $penggajian->sum('total_gaji_diterima');
+        $total_pinjaman = $pinjaman->sum('jumlah_pinjaman');
+
+        // Data untuk laporan transaksi (pemasukan & pengeluaran)
+        $transaksi = Transaksi::orderByDesc('tanggal')->get();
+        $total_pemasukan = Transaksi::where('tipe', 'pemasukan')->sum('nominal');
+        $total_pengeluaran = Transaksi::where('tipe', 'pengeluaran')->sum('nominal');
+        $saldo_transaksi = $total_pemasukan - $total_pengeluaran;
+
+        return view('keuangan.laporan', compact(
+            'penggajian',
+            'pinjaman',
+            'total_gaji_diterima',
+            'total_pinjaman',
+            'transaksi',
+            'total_pemasukan',
+            'total_pengeluaran',
+            'saldo_transaksi'
+        ));
     }
 
     /**
@@ -54,7 +77,6 @@ class LaporanController extends Controller
                 $data['pemasukan'] = $pemasukan;
                 $data['pengeluaran'] = $pengeluaran;
                 $data['saldo'] = $pemasukan - $pengeluaran;
-
             } elseif ($jenis == 'tahunan' && $bulan) {
                 $year = Carbon::parse($bulan)->year;
 
@@ -71,11 +93,10 @@ class LaporanController extends Controller
                 $data['pemasukan'] = $pemasukan;
                 $data['pengeluaran'] = $pengeluaran;
                 $data['saldo'] = $pemasukan - $pengeluaran;
-
             } elseif ($jenis == 'pinjaman') {
                 // Total pinjaman yang belum lunas
                 $pinjaman_belum_lunas = Pinjaman::where('status', 'belum_lunas')->sum('jumlah_pinjaman');
-                
+
                 // Total pinjaman yang sudah lunas
                 $pinjaman_lunas = Pinjaman::where('status', 'lunas')->sum('jumlah_pinjaman');
 
@@ -88,7 +109,6 @@ class LaporanController extends Controller
                 'success' => true,
                 'data' => $data
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

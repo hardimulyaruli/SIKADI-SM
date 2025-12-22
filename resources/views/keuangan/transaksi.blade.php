@@ -1,64 +1,265 @@
 @extends('layouts.sidebar')
 
 @section('content')
-    <div class="card card-glass mb-3">
-        <div class="card-header d-flex align-items-center justify-content-between">
-            <h2 class="mb-0">📄 Dashboard Transaksi</h2>
-            <div>
-                <a href="{{ route('keuangan.add_pemasukan') }}" class="btn-modern btn-primary-modern me-2">➕ Tambah pemasukan</a>
-                <a href="{{ route('keuangan.add_pengeluaran') }}" class="btn-modern btn-secondary-modern">➖ Tambah pengeluaran</a>
-            </div>
-        </div>
 
-        <div class="card-body">
-            <h4 class="mb-3">📌 Riwayat Transaksi</h4>
+    <style>
+        .page-header {
+            margin-bottom: 24px;
+            animation: slideInUp 0.6s ease;
+        }
 
-            @if ($transaksi->count() == 0)
-                <div class="alert alert-info mt-3">Belum ada transaksi yang tercatat.</div>
-            @else
-                <div class="table-responsive mt-2">
-                    <table class="table-modern table-bordered w-100">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Tipe</th>
-                                <th>Kategori</th>
-                                <th>Qty</th>
-                                <th>Nominal</th>
-                                <th>Tanggal</th>
-                                <th>Deskripsi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($transaksi as $t)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d2d2d;
+            margin-bottom: 6px;
+        }
 
-                                    {{-- Tipe --}}
-                                    <td>
-                                        @if ($t->tipe === 'pemasukan')
-                                            <span style="background:rgba(3,105,161,0.07); color:#0369a1; font-weight:600; padding:.2rem .5rem; border-radius:.4rem;">Pemasukan</span>
-                                        @else
-                                            <span style="background:rgba(220,38,38,0.06); color:#dc2626; font-weight:600; padding:.2rem .5rem; border-radius:.4rem;">Pengeluaran</span>
-                                        @endif
-                                    </td>
+        .page-header p {
+            color: #8a7a9e;
+            font-size: 13px;
+        }
 
-                                    <td>{{ $t->kategori }}</td>
-                                    <td>{{ $t->qty }}</td>
+        .form-section {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
 
-                                    {{-- Format Rp --}}
-                                    <td>Rp {{ number_format($t->nominal, 0, ',', '.') }}</td>
+        .form-group-custom {
+            flex: 1;
+            min-width: 200px;
+        }
 
-                                    {{-- Format tanggal --}}
-                                    <td>{{ \Carbon\Carbon::parse($t->tanggal)->format('d/m/Y') }}</td>
+        .form-group-custom label {
+            display: block;
+            color: #5a4a7a;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
 
-                                    <td>{{ $t->deskripsi ?? '-' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @endif
-        </div>
+        .form-group-custom input,
+        .form-group-custom select,
+        .form-group-custom textarea {
+            width: 100%;
+            background: #fff;
+            border: 1px solid rgba(56, 189, 248, 0.12);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .form-group-custom input:focus,
+        .form-group-custom select:focus,
+        .form-group-custom textarea:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+
+        .btn-submit {
+            align-self: flex-end;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(122, 92, 219, 0.06);
+        }
+
+        .table-modern {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table-modern thead {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.05) 0%, rgba(3, 105, 161, 0.03) 100%);
+            border-bottom: 2px solid rgba(14, 165, 233, 0.06);
+        }
+
+        .table-modern thead th {
+            padding: 14px 18px;
+            color: #0f172a;
+            font-weight: 700;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .table-modern tbody tr {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+        }
+
+        .table-modern tbody tr:hover {
+            background: rgba(14, 165, 233, 0.03);
+        }
+
+        .table-modern tbody td {
+            padding: 12px 18px;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .badge-custom {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: rgba(122, 92, 219, 0.1);
+            color: #7c5cdb;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: #8a7a9e;
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 16px;
+            opacity: 0.28;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width:768px) {
+            .form-section {
+                flex-direction: column;
+            }
+
+            .btn-submit {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1><i class="fas fa-receipt"></i> Kelola Transaksi Keuangan</h1>
+        <p>Tambah, lihat, dan kelola transaksi pemasukan dan pengeluaran</p>
     </div>
+
+    <!-- FORM INPUT TRANSAKSI -->
+    <div class="card-glass" style="margin-bottom:28px;">
+        <h3 style="margin-bottom:22px; font-size:18px; font-weight:600; color:#2d2d2d;">
+            <i class="fas fa-clipboard-list" style="color:#7c5cdb;"></i> Form Input Transaksi
+        </h3>
+
+        <form action="{{ route('keuangan.transaksi.post') }}" method="POST">
+            @csrf
+            <div class="form-section">
+                <div class="form-group-custom">
+                    <label for="tipe">Tipe Transaksi</label>
+                    <select name="tipe" id="tipe" required>
+                        <option value="">-- Pilih Tipe --</option>
+                        <option value="pemasukan">Pemasukan</option>
+                        <option value="pengeluaran">Pengeluaran</option>
+                    </select>
+                </div>
+
+                <div class="form-group-custom">
+                    <label for="kategori">Kategori</label>
+                    <input type="text" id="kategori" name="kategori"
+                        placeholder="Contoh: Penjualan / Gaji / Operasional" required>
+                </div>
+
+                <div class="form-group-custom">
+                    <label for="qty">Qty</label>
+                    <input type="number" id="qty" name="qty" min="1" value="1">
+                </div>
+
+                <div class="form-group-custom">
+                    <label for="nominal">Nominal (Rp)</label>
+                    <input type="number" id="nominal" name="nominal" placeholder="Masukkan nominal" min="0"
+                        step="1000" required>
+                </div>
+
+                <div class="form-group-custom">
+                    <label for="tanggal">Tanggal</label>
+                    <input type="date" id="tanggal" name="tanggal" value="{{ date('Y-m-d') }}" required>
+                </div>
+
+                <div class="form-group-custom">
+                    <label for="deskripsi">Deskripsi</label>
+                    <textarea id="deskripsi" name="deskripsi" rows="1" placeholder="Keterangan tambahan (opsional)"></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-modern btn-primary-modern">
+                <i class="ri-save-line"></i> Simpan Transaksi
+            </button>
+        </form>
+    </div>
+
+    <!-- TABEL RIWAYAT TRANSAKSI -->
+    <div class="card-glass" style="padding:0;">
+        <div style="padding:20px 30px; border-bottom:1px solid rgba(122,92,219,0.08);">
+            <h3 style="margin:0; font-size:18px; font-weight:600; color:#2d2d2d;"><i class="fas fa-history"
+                    style="color:#7c5cdb;"></i> Riwayat Transaksi</h3>
+        </div>
+
+        @if ($transaksi->count() > 0)
+            <div class="table-wrapper">
+                <table class="table-modern">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tipe</th>
+                            <th>Kategori</th>
+                            <th>Qty</th>
+                            <th>Nominal</th>
+                            <th>Tanggal</th>
+                            <th>Deskripsi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($transaksi as $t)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>
+                                    @if ($t->tipe === 'pemasukan')
+                                        <span class="badge-custom"
+                                            style="background:rgba(3,105,161,0.07); color:#0369a1;">Pemasukan</span>
+                                    @else
+                                        <span class="badge-custom"
+                                            style="background:rgba(220,38,38,0.06); color:#dc2626;">Pengeluaran</span>
+                                    @endif
+                                </td>
+                                <td>{{ $t->kategori }}</td>
+                                <td>{{ $t->qty }}</td>
+                                <td style="font-weight:600; color:#7c5cdb;">Rp {{ number_format($t->nominal, 0, ',', '.') }}
+                                </td>
+                                <td>{{ \Carbon\Carbon::parse($t->tanggal)->format('d M Y') }}</td>
+                                <td>{{ $t->deskripsi ?? '-' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>Belum ada transaksi</p>
+                <p style="font-size:12px; color:#b8a5d1;">Gunakan form di atas untuk menambahkan pemasukan atau pengeluaran
+                </p>
+            </div>
+        @endif
+    </div>
+
 @endsection
