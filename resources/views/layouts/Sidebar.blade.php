@@ -19,7 +19,9 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <!-- Dashboard Styles -->
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
@@ -52,7 +54,8 @@
         }
 
         /* ====== BODY & MAIN LAYOUT ====== */
-        html, body {
+        html,
+        body {
             height: 100%;
             overflow: hidden;
         }
@@ -71,7 +74,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
+            background:
                 radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.04) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(3, 105, 161, 0.03) 0%, transparent 50%);
             pointer-events: none;
@@ -122,7 +125,7 @@
             left: 0;
             right: 0;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             pointer-events: none;
         }
 
@@ -142,7 +145,7 @@
             margin: 0;
             font-size: 24px;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+            background: linear-gradient(90deg, #ffffff, #d1d5db);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -169,7 +172,8 @@
             padding: 0 12px;
         }
 
-        .sidebar a, .sidebar button {
+        .sidebar a,
+        .sidebar button {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -189,7 +193,8 @@
         }
 
         /* no animated pseudo-element to keep UI static */
-        .sidebar a::before, .sidebar button::before {
+        .sidebar a::before,
+        .sidebar button::before {
             content: '';
             position: absolute;
             top: 0;
@@ -200,7 +205,8 @@
             z-index: -1;
         }
 
-        .sidebar a:hover, .sidebar button:hover {
+        .sidebar a:hover,
+        .sidebar button:hover {
             color: white;
             background: rgba(14, 165, 233, 0.14);
             box-shadow: none;
@@ -208,11 +214,12 @@
             padding-left: 13px;
         }
 
-        .sidebar a i, .sidebar button i {
+        .sidebar a i,
+        .sidebar button i {
             width: 28px;
             text-align: center;
             font-size: 20px;
-            color: rgba(255,255,255,0.98);
+            color: rgba(255, 255, 255, 0.98);
             display: inline-block;
             line-height: 1;
         }
@@ -220,7 +227,7 @@
         .sidebar hr {
             border: none;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             margin: 20px 0;
         }
 
@@ -324,14 +331,14 @@
         }
 
         .btn-secondary-modern {
-            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 249, 250, 0.9) 100%);
             color: #0f172a;
-            box-shadow: 0 4px 10px rgba(2,6,23,0.06);
+            box-shadow: 0 4px 10px rgba(2, 6, 23, 0.06);
         }
 
         .btn-secondary-modern:hover {
             transform: none;
-            box-shadow: 0 8px 18px rgba(2,6,23,0.08);
+            box-shadow: 0 8px 18px rgba(2, 6, 23, 0.08);
             color: #0f172a;
         }
 
@@ -577,7 +584,7 @@
             @endif
 
             <!-- =============== AUTH =============== -->
-            @if(Auth::user())
+            @if (Auth::user())
                 <hr>
                 <div class="nav-section">
                     <div class="nav-section-title">Akun</div>
@@ -612,7 +619,7 @@
 
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <!-- Charts Configuration -->
     <script src="{{ asset('js/charts.js') }}"></script>
 </body>

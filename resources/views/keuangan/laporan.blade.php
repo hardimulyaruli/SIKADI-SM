@@ -194,6 +194,12 @@
                     <p class="mb-0" style="font-size:12px; color:#6b7280;">Total gaji yang diterima karyawan dan total
                         pinjaman yang tercatat.</p>
                 </div>
+                <div>
+                    <a href="{{ route('keuangan.laporan.export.penggajian') }}" class="btn-modern btn-primary-modern"
+                        style="font-size:12px; padding:6px 14px; border-radius:999px;">
+                        <i class="fas fa-file-excel"></i> Export Excel
+                    </a>
+                </div>
             </div>
             <div class="summary-badges">
                 <div class="summary-pill">
@@ -295,6 +301,12 @@
                     <h5 class="mb-1" style="font-weight:600; color:#111827;">Ringkasan Transaksi</h5>
                     <p class="mb-0" style="font-size:12px; color:#6b7280;">Total pemasukan, pengeluaran, dan saldo
                         keuangan.</p>
+                </div>
+                <div>
+                    <a href="{{ route('keuangan.laporan.export.transaksi') }}" class="btn-modern btn-primary-modern"
+                        style="font-size:12px; padding:6px 14px; border-radius:999px;">
+                        <i class="fas fa-file-excel"></i> Export Excel
+                    </a>
                 </div>
             </div>
             <div class="summary-badges">

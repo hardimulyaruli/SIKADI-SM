@@ -8,6 +8,10 @@ use App\Models\Pinjaman;
 use App\Models\Penggajian;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class LaporanController extends Controller
 {
@@ -107,14 +111,182 @@ class LaporanController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $data
+                'data' => $data,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
+                'message' => 'Error: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Export laporan penggajian (gaji & pinjaman) ke file Excel (.xlsx) dengan format rapi.
+     */
+    public function exportPenggajian()
+    {
+        $penggajian = Penggajian::with('karyawan')->orderByDesc('tanggal')->get();
+        $pinjaman = Pinjaman::with('karyawan')->orderByDesc('tanggal')->get();
+
+        $spreadsheet = new Spreadsheet();
+
+        // Sheet 1: Penggajian
+        $sheetGaji = $spreadsheet->getActiveSheet();
+        $sheetGaji->setTitle('Penggajian');
+
+        $sheetGaji->fromArray([
+            ['Laporan Penggajian'],
+            [],
+            ['Tanggal', 'Nama Karyawan', 'Tunjangan', 'Hari Tidak Masuk', 'Total Gaji Diterima'],
+        ], null, 'A1');
+
+        $rowIndex = 4;
+        foreach ($penggajian as $row) {
+            $tanggal = $row->tanggal ? Carbon::parse($row->tanggal)->format('Y-m-d') : '';
+
+            $sheetGaji->fromArray([
+                [
+                    $tanggal,
+                    optional($row->karyawan)->nama,
+                    $row->tunjangan,
+                    $row->hari_tidak_masuk,
+                    $row->total_gaji_diterima,
+                ],
+            ], null, 'A' . $rowIndex);
+            $rowIndex++;
+        }
+
+        // Header style Penggajian
+        $headerStyle = [
+            'font' => ['bold' => true],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FFE5E7EB'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF9CA3AF'],
+                ],
+            ],
+        ];
+        $sheetGaji->getStyle('A3:E3')->applyFromArray($headerStyle);
+        $sheetGaji->getStyle('A4:E' . max(4, $rowIndex - 1))->getBorders()->getAllBorders()
+            ->setBorderStyle(Border::BORDER_THIN)->getColor()->setARGB('FFE5E7EB');
+
+        foreach (range('A', 'E') as $col) {
+            $sheetGaji->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Sheet 2: Pinjaman
+        $sheetPinjaman = $spreadsheet->createSheet(1);
+        $sheetPinjaman->setTitle('Pinjaman');
+
+        $sheetPinjaman->fromArray([
+            ['Laporan Pinjaman'],
+            [],
+            ['Tanggal', 'Nama Karyawan', 'Jumlah Pinjaman', 'Status', 'Keterangan'],
+        ], null, 'A1');
+
+        $rowIndex = 4;
+        foreach ($pinjaman as $row) {
+            $tanggal = $row->tanggal ? Carbon::parse($row->tanggal)->format('Y-m-d') : '';
+
+            $sheetPinjaman->fromArray([
+                [
+                    $tanggal,
+                    optional($row->karyawan)->nama,
+                    $row->jumlah_pinjaman,
+                    $row->status,
+                    $row->keterangan,
+                ],
+            ], null, 'A' . $rowIndex);
+            $rowIndex++;
+        }
+
+        $sheetPinjaman->getStyle('A3:E3')->applyFromArray($headerStyle);
+        $sheetPinjaman->getStyle('A4:E' . max(4, $rowIndex - 1))->getBorders()->getAllBorders()
+            ->setBorderStyle(Border::BORDER_THIN)->getColor()->setARGB('FFE5E7EB');
+
+        foreach (range('A', 'E') as $col) {
+            $sheetPinjaman->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $fileName = 'laporan_penggajian_' . now()->format('Ymd_His') . '.xlsx';
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
+    /**
+     * Export laporan transaksi (pemasukan & pengeluaran) ke file Excel (.xlsx) dengan format rapi.
+     */
+    public function exportTransaksi()
+    {
+        $transaksi = Transaksi::orderByDesc('tanggal')->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Transaksi');
+
+        $sheet->fromArray([
+            ['Laporan Transaksi'],
+            [],
+            ['Tanggal', 'Tipe', 'Kategori', 'Qty', 'Nominal', 'Deskripsi'],
+        ], null, 'A1');
+
+        $rowIndex = 4;
+        foreach ($transaksi as $row) {
+            $tanggal = $row->tanggal ? Carbon::parse($row->tanggal)->format('Y-m-d') : '';
+
+            $sheet->fromArray([
+                [
+                    $tanggal,
+                    $row->tipe,
+                    $row->kategori,
+                    $row->qty,
+                    $row->nominal,
+                    $row->deskripsi,
+                ],
+            ], null, 'A' . $rowIndex);
+            $rowIndex++;
+        }
+
+        $headerStyle = [
+            'font' => ['bold' => true],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FFE5E7EB'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF9CA3AF'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle('A3:F3')->applyFromArray($headerStyle);
+        $sheet->getStyle('A4:F' . max(4, $rowIndex - 1))->getBorders()->getAllBorders()
+            ->setBorderStyle(Border::BORDER_THIN)->getColor()->setARGB('FFE5E7EB');
+
+        foreach (range('A', 'F') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $fileName = 'laporan_transaksi_' . now()->format('Ymd_His') . '.xlsx';
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     /**

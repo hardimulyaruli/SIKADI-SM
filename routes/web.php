@@ -87,6 +87,8 @@ Route::get('/keuangan/pinjaman', [\App\Http\Controllers\PinjamanController::clas
 Route::post('/keuangan/pinjaman', [\App\Http\Controllers\PinjamanController::class, 'store'])->name('keuangan.pinjaman.store');
 Route::get('/keuangan/laporan', [\App\Http\Controllers\LaporanController::class, 'index'])->name('keuangan.laporan');
 Route::post('/keuangan/laporan/filter', [\App\Http\Controllers\LaporanController::class, 'getFilteredReport'])->name('keuangan.laporan.filter');
+Route::get('/keuangan/laporan/export/penggajian', [\App\Http\Controllers\LaporanController::class, 'exportPenggajian'])->name('keuangan.laporan.export.penggajian');
+Route::get('/keuangan/laporan/export/transaksi', [\App\Http\Controllers\LaporanController::class, 'exportTransaksi'])->name('keuangan.laporan.export.transaksi');
 
 Route::get('/keuangan/transaksi', [TransaksiController::class, 'index'])->name('keuangan.transaksi');
 // Halaman daftar transaksi

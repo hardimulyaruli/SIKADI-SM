@@ -175,8 +175,9 @@
 
                 <div class="form-group-custom">
                     <label for="kategori">Kategori</label>
-                    <input type="text" id="kategori" name="kategori"
-                        placeholder="Contoh: Penjualan / Gaji / Operasional" required>
+                    <select id="kategori" name="kategori" required>
+                        <option value="">-- Pilih Kategori --</option>
+                    </select>
                 </div>
 
                 <div class="form-group-custom">
@@ -263,3 +264,97 @@
     </div>
 
 @endsection
+
+@push('scripts')
+    <script>
+        // Daftar kategori per tipe
+        const pemasukanCategories = [{
+                value: 'penjualan',
+                label: 'Penjualan'
+            },
+            {
+                value: 'investasi',
+                label: 'Investasi'
+            },
+            {
+                value: 'lain-lain',
+                label: 'Lain-lain'
+            },
+        ];
+
+        // Daftar kategori pengeluaran beserta harga satuan dasar (ubah sesuai kebutuhan)
+        const pengeluaranCategories = [{
+                value: 'nastar',
+                label: 'Nastar',
+                price: 25000
+            },
+            {
+                value: 'kue bulan',
+                label: 'Kue Bulan',
+                price: 30000
+            },
+            {
+                value: 'pia',
+                label: 'Pia',
+                price: 20000
+            },
+            {
+                value: 'bahan',
+                label: 'Bahan',
+                price: 50000
+            },
+            {
+                value: 'operasional',
+                label: 'Operasional',
+                price: 75000
+            },
+            {
+                value: 'lain-lain',
+                label: 'Lain-lain',
+                price: 0
+            },
+        ];
+
+        const tipeSelect = document.getElementById('tipe');
+        const kategoriSelect = document.getElementById('kategori');
+        const qtyInput = document.getElementById('qty');
+        const nominalInput = document.getElementById('nominal');
+
+        function populateKategori() {
+            const tipe = tipeSelect.value;
+            kategoriSelect.innerHTML = '<option value="">-- Pilih Kategori --</option>';
+
+            const source = tipe === 'pengeluaran' ? pengeluaranCategories : pemasukanCategories;
+            source.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.value;
+                opt.textContent = item.label;
+                kategoriSelect.appendChild(opt);
+            });
+
+            // Atur nominal: untuk pengeluaran auto, untuk pemasukan manual
+            nominalInput.readOnly = (tipe === 'pengeluaran');
+            nominalInput.value = '';
+            updateNominal();
+        }
+
+        function updateNominal() {
+            const tipe = tipeSelect.value;
+            const qty = parseInt(qtyInput.value, 10) || 0;
+
+            if (tipe === 'pengeluaran') {
+                const selected = pengeluaranCategories.find(c => c.value === kategoriSelect.value);
+                const price = selected ? selected.price : 0;
+                nominalInput.value = price * qty;
+            }
+        }
+
+        // Event listeners
+        tipeSelect.addEventListener('change', populateKategori);
+        kategoriSelect.addEventListener('change', updateNominal);
+        qtyInput.addEventListener('input', updateNominal);
+
+        // Init on load
+        populateKategori();
+    </script>
+@endpush
