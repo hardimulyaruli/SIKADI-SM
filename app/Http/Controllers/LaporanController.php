@@ -18,7 +18,7 @@ class LaporanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Data untuk laporan penggajian (gaji & pinjaman)
         $penggajian = Penggajian::with('karyawan')->orderByDesc('tanggal')->get();
@@ -27,11 +27,34 @@ class LaporanController extends Controller
         $total_gaji_diterima = $penggajian->sum('total_gaji_diterima');
         $total_pinjaman = $pinjaman->sum('jumlah_pinjaman');
 
-        // Data untuk laporan transaksi (pemasukan & pengeluaran)
-        $transaksi = Transaksi::orderByDesc('tanggal')->get();
+        // Ringkasan transaksi keseluruhan
         $total_pemasukan = Transaksi::where('tipe', 'pemasukan')->sum('nominal');
         $total_pengeluaran = Transaksi::where('tipe', 'pengeluaran')->sum('nominal');
         $saldo_transaksi = $total_pemasukan - $total_pengeluaran;
+
+        // Tabel 1: Penjualan (pemasukan) minggu ini (Senin-Minggu)
+        $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
+        $endOfWeek = Carbon::now()->endOfWeek(Carbon::SUNDAY);
+        $weeklyPenjualan = Transaksi::where('tipe', 'pemasukan')
+            ->whereBetween('tanggal', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
+            ->orderByDesc('tanggal')
+            ->get();
+
+        // Tabel 2: Transaksi keseluruhan dengan filter
+        $filterMode = $request->input('filter_mode', 'all');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if ($filterMode === 'last_month') {
+            $startDate = Carbon::now()->subMonth()->startOfMonth()->toDateString();
+            $endDate = Carbon::now()->subMonth()->endOfMonth()->toDateString();
+        }
+
+        $transaksiQuery = Transaksi::orderByDesc('tanggal');
+        if ($filterMode !== 'all' && $startDate && $endDate) {
+            $transaksiQuery->whereBetween('tanggal', [$startDate, $endDate]);
+        }
+        $transaksi = $transaksiQuery->get();
 
         return view('keuangan.laporan', compact(
             'penggajian',
@@ -41,7 +64,11 @@ class LaporanController extends Controller
             'transaksi',
             'total_pemasukan',
             'total_pengeluaran',
-            'saldo_transaksi'
+            'saldo_transaksi',
+            'weeklyPenjualan',
+            'filterMode',
+            'startDate',
+            'endDate'
         ));
     }
 

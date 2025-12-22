@@ -506,6 +506,10 @@
                         <i class="ri-user-3-line"></i>
                         <span>Kelola Akun</span>
                     </a>
+                    <a href="{{ route('owner.karyawan') }}">
+                        <i class="ri-team-line"></i>
+                        <span>Data Karyawan</span>
+                    </a>
                 </div>
 
                 <div class="nav-section">
@@ -622,6 +626,8 @@
 
     <!-- Charts Configuration -->
     <script src="{{ asset('js/charts.js') }}"></script>
+
+    @stack('scripts')
 </body>
 
 </html>

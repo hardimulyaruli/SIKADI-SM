@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\OwnerKaryawanController;
 
 
 /*
@@ -68,6 +69,13 @@ Route::put('/owner/akun/{id}', [PenggunaController::class, 'update'])->name('own
 
 // ⭐ HAPUS USER
 Route::delete('/owner/akun/{id}', [PenggunaController::class, 'destroy'])->name('owner.delete_user');
+
+// ⭐ Data Karyawan (Owner)
+Route::get('/owner/karyawan', [OwnerKaryawanController::class, 'index'])->name('owner.karyawan');
+Route::post('/owner/karyawan', [OwnerKaryawanController::class, 'store'])->name('owner.karyawan.store');
+Route::get('/owner/karyawan/{id}/edit', [OwnerKaryawanController::class, 'edit'])->name('owner.karyawan.edit');
+Route::put('/owner/karyawan/{id}', [OwnerKaryawanController::class, 'update'])->name('owner.karyawan.update');
+Route::delete('/owner/karyawan/{id}', [OwnerKaryawanController::class, 'destroy'])->name('owner.karyawan.destroy');
 
 // ⭐ Laporan Owner
 Route::get('/owner/laporan-umum', fn() => view('owner.laporan'))->name('owner.keuangan');

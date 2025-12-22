@@ -42,16 +42,21 @@ class GajiController extends Controller
         $tunjangan = $request->tunjangan;
         $hariTidakMasuk = $request->hari_tidak_masuk;
 
-        // Total gaji dari tabel gaji (gaji pokok karyawan)
-        $gajiPokok = Gaji::where('karyawan_id', $karyawanId)->sum('jumlah_gaji');
+        // Gaji pokok dari entri terbaru (anggap gaji per bulan). Jika belum ada, 0.
+        $gajiPokok = Gaji::where('karyawan_id', $karyawanId)
+            ->orderByDesc('tanggal')
+            ->value('jumlah_gaji') ?? 0;
+
+        // Hitung potongan per hari berdasarkan gaji bulanan dan asumsi 24 hari kerja
+        $potonganPerHari = $gajiPokok ? ($gajiPokok / 24) : 0;
 
         // Total pinjaman yang belum lunas
         $pinjamanBelumLunas = Pinjaman::where('karyawan_id', $karyawanId)
             ->where('status', 'belum_lunas')->get();
         $totalPinjaman = $pinjamanBelumLunas->sum('jumlah_pinjaman');
 
-        // Potongan hari tidak masuk
-        $potonganAbsensi = $hariTidakMasuk * 100000;
+        // Potongan hari tidak masuk dinamis dari gaji pokok
+        $potonganAbsensi = $hariTidakMasuk * $potonganPerHari;
 
         // Hitung total gaji diterima
         $totalGajiDiterima = $gajiPokok - $potonganAbsensi - $totalPinjaman + $tunjangan;

@@ -12,6 +12,7 @@ class Transaksi extends Model
         'tipe',
         'kategori',
         'qty',
+        'harga_satuan',
         'nominal',
         'tanggal',
         'deskripsi'

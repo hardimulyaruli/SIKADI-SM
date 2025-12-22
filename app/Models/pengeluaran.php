@@ -9,7 +9,8 @@ class Pengeluaran extends Model
 {
     use HasFactory;
 
-    protected $table = 'pengeluaran';
+    // Mengikuti nama tabel pada migrasi
+    protected $table = 'pengeluarans';
     protected $primaryKey = 'pengeluaran_id'; // Penting: sesuai migrasi Anda
 
     protected $fillable = [

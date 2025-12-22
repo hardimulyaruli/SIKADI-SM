@@ -168,7 +168,7 @@
                     <label for="tipe">Tipe Transaksi</label>
                     <select name="tipe" id="tipe" required>
                         <option value="">-- Pilih Tipe --</option>
-                        <option value="pemasukan">Pemasukan</option>
+                        <option value="pemasukan" selected>Pemasukan</option>
                         <option value="pengeluaran">Pengeluaran</option>
                     </select>
                 </div>
@@ -186,9 +186,16 @@
                 </div>
 
                 <div class="form-group-custom">
+                    <label for="harga_satuan">Harga Satuan (Rp)</label>
+                    <input type="number" id="harga_satuan" name="harga_satuan" min="0" step="100"
+                        value="0">
+                </div>
+
+                <div class="form-group-custom">
                     <label for="nominal">Nominal (Rp)</label>
-                    <input type="number" id="nominal" name="nominal" placeholder="Masukkan nominal" min="0"
-                        step="1000" required>
+                    <input type="hidden" id="nominal" name="nominal" min="0" step="1" required>
+                    <input type="text" id="nominal_display" class="form-control" placeholder="Nominal" readonly
+                        style="background: rgba(34, 197, 94, 0.08); border-color: rgba(34, 197, 94, 0.2);">
                 </div>
 
                 <div class="form-group-custom">
@@ -269,56 +276,46 @@
     <script>
         // Daftar kategori per tipe
         const pemasukanCategories = [{
-                value: 'penjualan',
-                label: 'Penjualan'
+                value: 'nastar',
+                label: 'Nastar',
+                price: 5000
             },
             {
-                value: 'investasi',
-                label: 'Investasi'
+                value: 'bapia',
+                label: 'Bapia',
+                price: 5000
             },
             {
-                value: 'lain-lain',
-                label: 'Lain-lain'
+                value: 'kremes',
+                label: 'Kremes',
+                price: 5000
             },
         ];
 
-        // Daftar kategori pengeluaran beserta harga satuan dasar (ubah sesuai kebutuhan)
-        const pengeluaranCategories = [{
-                value: 'nastar',
-                label: 'Nastar',
-                price: 25000
+        // Daftar kategori pengeluaran dari DB (bahan) + operasional tetap
+        const bahanCategories = @json(($barangs ?? collect())->map(fn($b) => ['value' => $b->nama_barang, 'label' => $b->nama_barang])->values());
+        const operasionalCategories = [{
+                value: 'gas-lpg',
+                label: 'Gas LPG'
             },
             {
-                value: 'kue bulan',
-                label: 'Kue Bulan',
-                price: 30000
+                value: 'bensin',
+                label: 'Bensin'
             },
             {
-                value: 'pia',
-                label: 'Pia',
-                price: 20000
-            },
-            {
-                value: 'bahan',
-                label: 'Bahan',
-                price: 50000
-            },
-            {
-                value: 'operasional',
-                label: 'Operasional',
-                price: 75000
-            },
-            {
-                value: 'lain-lain',
-                label: 'Lain-lain',
-                price: 0
+                value: 'operasional-lain',
+                label: 'Operasional Lain-lain'
             },
         ];
+
+        const pengeluaranCategories = [...bahanCategories, ...operasionalCategories];
 
         const tipeSelect = document.getElementById('tipe');
         const kategoriSelect = document.getElementById('kategori');
         const qtyInput = document.getElementById('qty');
+        const hargaInput = document.getElementById('harga_satuan');
         const nominalInput = document.getElementById('nominal');
+        const nominalDisplay = document.getElementById('nominal_display');
 
         function populateKategori() {
             const tipe = tipeSelect.value;
@@ -332,29 +329,60 @@
                 kategoriSelect.appendChild(opt);
             });
 
-            // Atur nominal: untuk pengeluaran auto, untuk pemasukan manual
-            nominalInput.readOnly = (tipe === 'pengeluaran');
+            const autoNominal = true; // nominal selalu auto dari harga_satuan × qty
+            nominalInput.readOnly = autoNominal;
+            hargaInput.readOnly = (tipe === 'pemasukan');
+            hargaInput.value = tipe === 'pengeluaran' ? 0 : '';
             nominalInput.value = '';
+            nominalDisplay.value = '';
             updateNominal();
         }
 
         function updateNominal() {
             const tipe = tipeSelect.value;
             const qty = parseInt(qtyInput.value, 10) || 0;
+            let price = 0;
 
-            if (tipe === 'pengeluaran') {
-                const selected = pengeluaranCategories.find(c => c.value === kategoriSelect.value);
-                const price = selected ? selected.price : 0;
-                nominalInput.value = price * qty;
+            if (tipe === 'pemasukan') {
+                const selected = pemasukanCategories.find(c => c.value === kategoriSelect.value);
+                price = selected ? selected.price : 0;
+                hargaInput.value = price;
+            } else {
+                price = parseFloat(hargaInput.value) || 0;
             }
+
+            const nominal = price * qty;
+            nominalInput.value = Math.round(nominal);
+            nominalDisplay.value = formatRupiah(Math.round(nominal));
+        }
+
+        function validateBeforeSubmit(event) {
+            const tipe = tipeSelect.value;
+            const price = parseFloat(hargaInput.value) || 0;
+
+            if (tipe === 'pengeluaran' && price <= 0) {
+                event.preventDefault();
+                alert('Harga satuan pengeluaran wajib diisi dan lebih dari 0');
+                hargaInput.focus();
+            }
+        }
+
+        function formatRupiah(angka) {
+            const numberString = (angka || 0).toString();
+            return 'Rp ' + numberString.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
 
         // Event listeners
         tipeSelect.addEventListener('change', populateKategori);
         kategoriSelect.addEventListener('change', updateNominal);
         qtyInput.addEventListener('input', updateNominal);
+        hargaInput.addEventListener('input', updateNominal);
 
-        // Init on load
-        populateKategori();
+        document.querySelector('form').addEventListener('submit', validateBeforeSubmit);
+
+        // Init on load setelah DOM siap
+        document.addEventListener('DOMContentLoaded', () => {
+            populateKategori();
+        });
     </script>
 @endpush
