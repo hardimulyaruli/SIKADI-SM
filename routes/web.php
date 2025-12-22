@@ -36,7 +36,11 @@ Route::get('/owner/dashboard', function () {
 Route::get('/keuangan/dashboard', function () {
     $total_pemasukan = \App\Models\Transaksi::where('tipe', 'pemasukan')->sum('nominal');
     $total_pengeluaran = \App\Models\Transaksi::where('tipe', 'pengeluaran')->sum('nominal');
-    return view('dashboard.keuangan', compact('total_pemasukan', 'total_pengeluaran'));
+    $saldo = $total_pemasukan - $total_pengeluaran;
+
+    $transaksi_terbaru = \App\Models\Transaksi::orderByDesc('tanggal')->limit(5)->get();
+
+    return view('dashboard.keuangan', compact('total_pemasukan', 'total_pengeluaran', 'saldo', 'transaksi_terbaru'));
 })->name('keuangan.dashboard');
 Route::get('/distribusi/dashboard', fn() => view('dashboard.distribusi'))->name('distribusi.dashboard');
 
@@ -99,6 +103,6 @@ Route::post('/keuangan/transaksi', [TransaksiController::class, 'store'])->name(
 Route::get('/distribusi/laporan', fn() => view('distribusi.laporan'))->name('distribusi.laporan');
 Route::get('/distribusi/barang', [\App\Http\Controllers\DistribusiController::class, 'index'])->name('distribusi.barang');
 Route::post('/distribusi/barang', [\App\Http\Controllers\DistribusiController::class, 'store'])->name('distribusi.barang.store');
-Route::get('/distribusi/barang/{id}/edit',[\App\Http\Controllers\DistribusiController::class, 'edit'])->name('distribusi.edit');
-Route::patch('/distribusi/barang/{id}',[\App\Http\Controllers\DistribusiController::class, 'update'])->name('distribusi.update');
-Route::delete('/distribusi/barang/{id}',[\App\Http\Controllers\DistribusiController::class, 'destroy'])->name('distribusi.destroy');
+Route::get('/distribusi/barang/{id}/edit', [\App\Http\Controllers\DistribusiController::class, 'edit'])->name('distribusi.edit');
+Route::patch('/distribusi/barang/{id}', [\App\Http\Controllers\DistribusiController::class, 'update'])->name('distribusi.update');
+Route::delete('/distribusi/barang/{id}', [\App\Http\Controllers\DistribusiController::class, 'destroy'])->name('distribusi.destroy');
