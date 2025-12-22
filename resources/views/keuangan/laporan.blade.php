@@ -175,7 +175,8 @@
     </div>
 
     <div class="tabs-wrapper">
-        <button class="tab-btn {{ ($activeTab ?? 'penggajian') === 'penggajian' ? 'active' : '' }}" data-target="tab-penggajian">
+        <button class="tab-btn {{ ($activeTab ?? 'penggajian') === 'penggajian' ? 'active' : '' }}"
+            data-target="tab-penggajian">
             <i class="fas fa-user-tie"></i>
             Laporan Penggajian
         </button>
@@ -186,7 +187,8 @@
     </div>
 
     {{-- TAB PENGGAJIAN: GAJI & PINJAMAN --}}
-    <div id="tab-penggajian" class="tab-pane" style="display:{{ ($activeTab ?? 'penggajian') === 'penggajian' ? 'block' : 'none' }};">
+    <div id="tab-penggajian" class="tab-pane"
+        style="display:{{ ($activeTab ?? 'penggajian') === 'penggajian' ? 'block' : 'none' }};">
         <div class="card-glass-soft">
             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                 <div>
@@ -201,7 +203,8 @@
                     </a>
                 </div>
             </div>
-            <form method="GET" action="{{ route('keuangan.laporan') }}" class="d-flex gap-2 flex-wrap mb-3 align-items-end">
+            <form method="GET" action="{{ route('keuangan.laporan') }}"
+                class="d-flex gap-2 flex-wrap mb-3 align-items-end">
                 <input type="hidden" name="tab" value="penggajian">
                 <div>
                     <label style="font-size:12px; color:#6b7280;">Tanggal</label>
@@ -381,7 +384,8 @@
                 <div>
                     <h6 style="font-weight:600; color:#111827; margin-bottom:4px;"><i class="fas fa-filter"
                             style="color:#6366f1;"></i> Filter Transaksi</h6>
-                    <p class="mb-0" style="font-size:12px; color:#6b7280;">Pilih satu tanggal transaksi untuk ditampilkan.</p>
+                    <p class="mb-0" style="font-size:12px; color:#6b7280;">Pilih satu tanggal transaksi untuk
+                        ditampilkan.</p>
                 </div>
                 <form method="GET" action="{{ route('keuangan.laporan') }}"
                     class="d-flex gap-2 flex-wrap align-items-end">

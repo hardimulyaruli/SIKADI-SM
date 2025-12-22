@@ -300,7 +300,10 @@
 
         fetch('{{ route('owner.chart.gaji_pinjaman') }}')
             .then(res => res.json())
-            .then(({ labels, values }) => {
+            .then(({
+                labels,
+                values
+            }) => {
                 initDoughnutChart('chartPersen', labels, values, {
                     backgroundColor: ['#0ea5e9', '#f97316'],
                     borderWidth: 1,
