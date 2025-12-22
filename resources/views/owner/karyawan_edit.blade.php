@@ -30,7 +30,7 @@
             </div>
             <div class="mb-3">
                 <label class="text-muted">Jabatan</label>
-                @php $jabatanOptions = ['produksi','distribusi','keuangan','admin','marketing','lainnya']; @endphp
+                @php $jabatanOptions = ['produksi','keuangan','distribusi']; @endphp
                 <select name="jabatan" class="form-control">
                     <option value="">-- Pilih Jabatan --</option>
                     @foreach ($jabatanOptions as $opt)

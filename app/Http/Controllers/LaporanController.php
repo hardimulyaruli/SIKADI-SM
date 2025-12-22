@@ -20,16 +20,15 @@ class LaporanController extends Controller
      */
     public function index(Request $request)
     {
-        // Filter tanggal penggajian & pinjaman
-        $pgStart = $request->input('pg_start_date');
-        $pgEnd = $request->input('pg_end_date');
+        // Filter tanggal penggajian & pinjaman (single date)
+        $pgDate = $request->input('pg_date');
 
         $penggajianQuery = Penggajian::with('karyawan')->orderByDesc('tanggal');
         $pinjamanQuery = Pinjaman::with('karyawan')->orderByDesc('tanggal');
 
-        if ($pgStart && $pgEnd) {
-            $penggajianQuery->whereBetween('tanggal', [$pgStart, $pgEnd]);
-            $pinjamanQuery->whereBetween('tanggal', [$pgStart, $pgEnd]);
+        if ($pgDate) {
+            $penggajianQuery->whereDate('tanggal', $pgDate);
+            $pinjamanQuery->whereDate('tanggal', $pgDate);
         }
 
         $penggajian = $penggajianQuery->get();
@@ -51,21 +50,23 @@ class LaporanController extends Controller
             ->orderByDesc('tanggal')
             ->get();
 
-        // Tabel 2: Transaksi keseluruhan dengan filter
-        $filterMode = $request->input('filter_mode', 'all');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-
-        if ($filterMode === 'last_month') {
-            $startDate = Carbon::now()->subMonth()->startOfMonth()->toDateString();
-            $endDate = Carbon::now()->subMonth()->endOfMonth()->toDateString();
-        }
+        // Tabel 2: Transaksi keseluruhan dengan filter satu tanggal
+        $txDate = $request->input('tx_date');
 
         $transaksiQuery = Transaksi::orderByDesc('tanggal');
-        if ($filterMode !== 'all' && $startDate && $endDate) {
-            $transaksiQuery->whereBetween('tanggal', [$startDate, $endDate]);
+        if ($txDate) {
+            $transaksiQuery->whereDate('tanggal', $txDate);
         }
         $transaksi = $transaksiQuery->get();
+
+        // Tentukan tab aktif agar tetap di tab transaksi setelah filter
+        $activeTab = $request->input('tab');
+        if (!$activeTab && $request->filled('tx_date')) {
+            $activeTab = 'transaksi';
+        }
+        if (!$activeTab) {
+            $activeTab = 'penggajian';
+        }
 
         return view('keuangan.laporan', compact(
             'penggajian',
@@ -77,11 +78,9 @@ class LaporanController extends Controller
             'total_pengeluaran',
             'saldo_transaksi',
             'weeklyPenjualan',
-            'filterMode',
-            'startDate',
-            'endDate',
-            'pgStart',
-            'pgEnd'
+            'txDate',
+            'pgDate',
+            'activeTab'
         ));
     }
 

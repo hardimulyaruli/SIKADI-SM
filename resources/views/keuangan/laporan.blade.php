@@ -175,18 +175,18 @@
     </div>
 
     <div class="tabs-wrapper">
-        <button class="tab-btn active" data-target="tab-penggajian">
+        <button class="tab-btn {{ ($activeTab ?? 'penggajian') === 'penggajian' ? 'active' : '' }}" data-target="tab-penggajian">
             <i class="fas fa-user-tie"></i>
             Laporan Penggajian
         </button>
-        <button class="tab-btn" data-target="tab-transaksi">
+        <button class="tab-btn {{ ($activeTab ?? '') === 'transaksi' ? 'active' : '' }}" data-target="tab-transaksi">
             <i class="fas fa-exchange-alt"></i>
             Laporan Transaksi
         </button>
     </div>
 
     {{-- TAB PENGGAJIAN: GAJI & PINJAMAN --}}
-    <div id="tab-penggajian" class="tab-pane" style="display:block;">
+    <div id="tab-penggajian" class="tab-pane" style="display:{{ ($activeTab ?? 'penggajian') === 'penggajian' ? 'block' : 'none' }};">
         <div class="card-glass-soft">
             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                 <div>
@@ -202,13 +202,10 @@
                 </div>
             </div>
             <form method="GET" action="{{ route('keuangan.laporan') }}" class="d-flex gap-2 flex-wrap mb-3 align-items-end">
+                <input type="hidden" name="tab" value="penggajian">
                 <div>
-                    <label style="font-size:12px; color:#6b7280;">Mulai</label>
-                    <input type="date" name="pg_start_date" class="form-control" value="{{ $pgStart ?? '' }}">
-                </div>
-                <div>
-                    <label style="font-size:12px; color:#6b7280;">Selesai</label>
-                    <input type="date" name="pg_end_date" class="form-control" value="{{ $pgEnd ?? '' }}">
+                    <label style="font-size:12px; color:#6b7280;">Tanggal</label>
+                    <input type="date" name="pg_date" class="form-control" value="{{ $pgDate ?? '' }}">
                 </div>
                 <button type="submit" class="btn-modern btn-primary-modern" style="font-size:12px; padding:8px 14px;">
                     Terapkan Filter
@@ -307,7 +304,7 @@
     </div>
 
     {{-- TAB TRANSAKSI: PEMASUKAN & PENGELUARAN --}}
-    <div id="tab-transaksi" class="tab-pane" style="display:none;">
+    <div id="tab-transaksi" class="tab-pane" style="display:{{ ($activeTab ?? '') === 'transaksi' ? 'block' : 'none' }};">
         <div class="card-glass-soft">
             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                 <div>
@@ -384,18 +381,14 @@
                 <div>
                     <h6 style="font-weight:600; color:#111827; margin-bottom:4px;"><i class="fas fa-filter"
                             style="color:#6366f1;"></i> Filter Transaksi</h6>
-                    <p class="mb-0" style="font-size:12px; color:#6b7280;">Pilih rentang tanggal manual atau bulan
-                        terakhir.</p>
+                    <p class="mb-0" style="font-size:12px; color:#6b7280;">Pilih satu tanggal transaksi untuk ditampilkan.</p>
                 </div>
                 <form method="GET" action="{{ route('keuangan.laporan') }}"
                     class="d-flex gap-2 flex-wrap align-items-end">
+                    <input type="hidden" name="tab" value="transaksi">
                     <div>
-                        <label style="font-size:12px; color:#6b7280;">Mulai</label>
-                        <input type="date" name="start_date" class="form-control" value="{{ $startDate ?? '' }}">
-                    </div>
-                    <div>
-                        <label style="font-size:12px; color:#6b7280;">Selesai</label>
-                        <input type="date" name="end_date" class="form-control" value="{{ $endDate ?? '' }}">
+                        <label style="font-size:12px; color:#6b7280;">Tanggal</label>
+                        <input type="date" name="tx_date" class="form-control" value="{{ $txDate ?? '' }}">
                     </div>
                     <button type="submit" class="btn-modern btn-primary-modern"
                         style="font-size:12px; padding:8px 14px;">

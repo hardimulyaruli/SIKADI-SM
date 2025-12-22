@@ -81,7 +81,7 @@
                 <label class="text-muted">Jabatan</label>
                 <select name="jabatan" class="form-control">
                     <option value="">-- Pilih Jabatan --</option>
-                    @php $jabatanOptions = ['produksi','distribusi','keuangan','admin','marketing','lainnya']; @endphp
+                    @php $jabatanOptions = ['produksi','keuangan','distribusi']; @endphp
                     @foreach ($jabatanOptions as $opt)
                         <option value="{{ $opt }}" {{ old('jabatan') === $opt ? 'selected' : '' }}>
                             {{ ucfirst($opt) }}</option>
