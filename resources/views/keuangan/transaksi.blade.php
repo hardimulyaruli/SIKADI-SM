@@ -276,19 +276,19 @@
     <script>
         // Daftar kategori per tipe
         const pemasukanCategories = [{
+                value: 'kue-pia',
+                label: 'Kue Pia',
+                price: 30000
+            },
+            {
+                value: 'kue-kacang',
+                label: 'Kue Kacang',
+                price: 30000
+            },
+            {
                 value: 'nastar',
                 label: 'Nastar',
-                price: 5000
-            },
-            {
-                value: 'bapia',
-                label: 'Bapia',
-                price: 5000
-            },
-            {
-                value: 'kremes',
-                label: 'Kremes',
-                price: 5000
+                price: 30000
             },
         ];
 

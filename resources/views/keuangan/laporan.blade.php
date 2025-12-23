@@ -197,7 +197,8 @@
                         pinjaman yang tercatat.</p>
                 </div>
                 <div>
-                    <a href="{{ route('keuangan.laporan.export.penggajian') }}" class="btn-modern btn-primary-modern"
+                    <a href="{{ route('keuangan.laporan.export.penggajian', ['pg_date' => $pgDate ?? request('pg_date')]) }}"
+                        class="btn-modern btn-primary-modern"
                         style="font-size:12px; padding:6px 14px; border-radius:999px;">
                         <i class="fas fa-file-excel"></i> Export Excel
                     </a>
@@ -316,12 +317,24 @@
                         keuangan.</p>
                 </div>
                 <div>
-                    <a href="{{ route('keuangan.laporan.export.transaksi') }}" class="btn-modern btn-primary-modern"
+                    <a href="{{ route('keuangan.laporan.export.transaksi', ['tx_date' => $txDate ?? request('tx_date')]) }}"
+                        class="btn-modern btn-primary-modern"
                         style="font-size:12px; padding:6px 14px; border-radius:999px;">
                         <i class="fas fa-file-excel"></i> Export Excel
                     </a>
                 </div>
             </div>
+            <form method="GET" action="{{ route('keuangan.laporan') }}"
+                class="d-flex gap-2 flex-wrap mb-3 align-items-end">
+                <input type="hidden" name="tab" value="transaksi">
+                <div>
+                    <label style="font-size:12px; color:#6b7280;">Tanggal</label>
+                    <input type="date" name="tx_date" class="form-control" value="{{ $txDate ?? '' }}">
+                </div>
+                <button type="submit" class="btn-modern btn-primary-modern" style="font-size:12px; padding:8px 14px;">
+                    Terapkan Filter
+                </button>
+            </form>
             <div class="summary-badges">
                 <div class="summary-pill">
                     <span class="summary-label">Total Pemasukan</span>
@@ -340,114 +353,53 @@
             </div>
         </div>
 
-        <div class="card-glass-soft">
-            <h6 style="font-weight:600; color:#111827; margin-bottom:10px;"><i class="fas fa-calendar-week"
-                    style="color:#0ea5e9;"></i> Penjualan Minggu Ini (Senin - Minggu)</h6>
-            @if (($weeklyPenjualan ?? collect())->count() > 0)
-                <div class="table-wrapper">
-                    <table class="table-modern">
-                        <thead>
+        <h6 style="font-weight:600; color:#111827; margin-bottom:10px;"><i class="fas fa-receipt"
+                style="color:#0ea5e9;"></i> Riwayat Transaksi</h6>
+        @if (($transaksi ?? collect())->count() > 0)
+            <div class="table-wrapper">
+                <table class="table-modern">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Tipe</th>
+                            <th>Kategori</th>
+                            <th>Qty</th>
+                            <th>Harga Satuan</th>
+                            <th>Nominal</th>
+                            <th>Deskripsi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($transaksi as $t)
                             <tr>
-                                <th>Tanggal</th>
-                                <th>Kategori</th>
-                                <th>Qty</th>
-                                <th>Harga Satuan</th>
-                                <th>Nominal</th>
-                                <th>Deskripsi</th>
+                                <td>{{ \Carbon\Carbon::parse($t->tanggal)->format('d M Y') }}</td>
+                                <td>
+                                    @if ($t->tipe === 'pemasukan')
+                                        <span class="badge-status"
+                                            style="background:rgba(34,197,94,0.08); color:#16a34a;">Pemasukan</span>
+                                    @else
+                                        <span class="badge-status"
+                                            style="background:rgba(239,68,68,0.08); color:#dc2626;">Pengeluaran</span>
+                                    @endif
+                                </td>
+                                <td>{{ $t->kategori }}</td>
+                                <td>{{ $t->qty }}</td>
+                                <td>Rp {{ number_format($t->harga_satuan ?? 0, 0, ',', '.') }}</td>
+                                <td style="font-weight:600; color:#7c5cdb;">Rp
+                                    {{ number_format($t->nominal ?? 0, 0, ',', '.') }}</td>
+                                <td>{{ $t->deskripsi ?? '-' }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($weeklyPenjualan as $t)
-                                <tr>
-                                    <td>{{ \Carbon\Carbon::parse($t->tanggal)->format('d M Y') }}</td>
-                                    <td>{{ $t->kategori }}</td>
-                                    <td>{{ $t->qty }}</td>
-                                    <td>Rp {{ number_format($t->harga_satuan ?? 0, 0, ',', '.') }}</td>
-                                    <td style="font-weight:600; color:#7c5cdb;">Rp
-                                        {{ number_format($t->nominal ?? 0, 0, ',', '.') }}</td>
-                                    <td>{{ $t->deskripsi ?? '-' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <div class="empty-state">
-                    <i class="fas fa-inbox"></i>
-                    <p>Belum ada penjualan di minggu ini.</p>
-                </div>
-            @endif
-        </div>
-
-        <div class="card-glass-soft">
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                <div>
-                    <h6 style="font-weight:600; color:#111827; margin-bottom:4px;"><i class="fas fa-filter"
-                            style="color:#6366f1;"></i> Filter Transaksi</h6>
-                    <p class="mb-0" style="font-size:12px; color:#6b7280;">Pilih satu tanggal transaksi untuk
-                        ditampilkan.</p>
-                </div>
-                <form method="GET" action="{{ route('keuangan.laporan') }}"
-                    class="d-flex gap-2 flex-wrap align-items-end">
-                    <input type="hidden" name="tab" value="transaksi">
-                    <div>
-                        <label style="font-size:12px; color:#6b7280;">Tanggal</label>
-                        <input type="date" name="tx_date" class="form-control" value="{{ $txDate ?? '' }}">
-                    </div>
-                    <button type="submit" class="btn-modern btn-primary-modern"
-                        style="font-size:12px; padding:8px 14px;">
-                        Terapkan
-                    </button>
-                </form>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-
-            <h6 style="font-weight:600; color:#111827; margin-bottom:10px;"><i class="fas fa-receipt"
-                    style="color:#0ea5e9;"></i> Riwayat Transaksi</h6>
-            @if (($transaksi ?? collect())->count() > 0)
-                <div class="table-wrapper">
-                    <table class="table-modern">
-                        <thead>
-                            <tr>
-                                <th>Tanggal</th>
-                                <th>Tipe</th>
-                                <th>Kategori</th>
-                                <th>Qty</th>
-                                <th>Harga Satuan</th>
-                                <th>Nominal</th>
-                                <th>Deskripsi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($transaksi as $t)
-                                <tr>
-                                    <td>{{ \Carbon\Carbon::parse($t->tanggal)->format('d M Y') }}</td>
-                                    <td>
-                                        @if ($t->tipe === 'pemasukan')
-                                            <span class="badge-status"
-                                                style="background:rgba(34,197,94,0.08); color:#16a34a;">Pemasukan</span>
-                                        @else
-                                            <span class="badge-status"
-                                                style="background:rgba(239,68,68,0.08); color:#dc2626;">Pengeluaran</span>
-                                        @endif
-                                    </td>
-                                    <td>{{ $t->kategori }}</td>
-                                    <td>{{ $t->qty }}</td>
-                                    <td>Rp {{ number_format($t->harga_satuan ?? 0, 0, ',', '.') }}</td>
-                                    <td style="font-weight:600; color:#7c5cdb;">Rp
-                                        {{ number_format($t->nominal ?? 0, 0, ',', '.') }}</td>
-                                    <td>{{ $t->deskripsi ?? '-' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <div class="empty-state">
-                    <i class="fas fa-inbox"></i>
-                    <p>Belum ada transaksi tercatat.</p>
-                </div>
-            @endif
-        </div>
+        @else
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>Belum ada transaksi tercatat.</p>
+            </div>
+        @endif
+    </div>
     </div>
 
     <script>

@@ -159,7 +159,7 @@
     <!-- PAGE HEADER -->
     <div class="page-header">
         <h1><i class="fas fa-money-check"></i> Kelola Data Gaji</h1>
-        <p>Kelola data penggajian karyawan dengan mudah dan cepat</p>
+        <p>Kelola data penggajian karyawan </p>
     </div>
 
     <!-- FORM INPUT GAJI -->
@@ -183,7 +183,7 @@
                 </div>
 
                 <div class="form-group-custom">
-                    <label for="tunjangan">Tunjangan (Rp)</label>
+                    <label for="tunjangan">Bonus (Rp)</label>
                     <input type="number" id="tunjangan" name="tunjangan" placeholder="Masukkan nominal tunjangan"
                         min="0" step="10000">
                 </div>
@@ -224,7 +224,7 @@
                         <tr>
                             <th>Tanggal</th>
                             <th>Nama Karyawan</th>
-                            <th>Tunjangan</th>
+                            <th>Bonus</th>
                             <th>Hari Tidak Masuk</th>
                             <th>Total Gaji Diterima</th>
                         </tr>

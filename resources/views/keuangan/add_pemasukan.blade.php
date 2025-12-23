@@ -1,7 +1,6 @@
 @extends('layouts.sidebar')
 
 @section('content')
-
     <div class="container-fluid mt-3">
 
         <div class="card card-glass shadow-sm w-100">
@@ -23,9 +22,9 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kategori</label>
                         <select id="kategori" name="kategori" class="input-modern">
-                            <option value="Nastar" data-harga="1500">Nastar</option>
-                            <option value="Kue Bulan" data-harga="1500">Kue Bulan</option>
-                            <option value="Pia" data-harga="1500">Pia</option>
+                            <option value="Kue Pia" data-harga="30000">Kue Pia</option>
+                            <option value="Kue Kacang" data-harga="30000">Kue Kacang</option>
+                            <option value="Nastar" data-harga="30000">Nastar</option>
                         </select>
                     </div>
 
@@ -42,7 +41,7 @@
                         <div class="input-group">
                             <span class="input-group-text">Rp</span>
                             <input id="nominal" type="text" name="nominal" class="input-modern" readonly
-                                value="1500">
+                                value="30000">
                         </div>
                     </div>
 

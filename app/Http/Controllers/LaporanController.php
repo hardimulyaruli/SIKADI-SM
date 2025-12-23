@@ -292,18 +292,27 @@ class LaporanController extends Controller
     /**
      * Export laporan penggajian (gaji & pinjaman) ke file Excel (.xlsx) dengan format rapi.
      */
-    public function exportPenggajian()
+    public function exportPenggajian(Request $request)
     {
-        $penggajian = Penggajian::with('karyawan')->orderByDesc('tanggal')->get();
-        $pinjaman = Pinjaman::with('karyawan')->orderByDesc('tanggal')->get();
+        $pgDate = $request->input('pg_date');
+
+        $penggajianQuery = Penggajian::with('karyawan')->orderByDesc('tanggal');
+        $pinjamanQuery = Pinjaman::with('karyawan')->orderByDesc('tanggal');
+
+        if ($pgDate) {
+            $penggajianQuery->whereDate('tanggal', $pgDate);
+            $pinjamanQuery->whereDate('tanggal', $pgDate);
+        }
+
+        $penggajian = $penggajianQuery->get();
+        $pinjaman = $pinjamanQuery->get();
 
         $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Penggajian & Pinjaman');
 
-        // Sheet 1: Penggajian
-        $sheetGaji = $spreadsheet->getActiveSheet();
-        $sheetGaji->setTitle('Penggajian');
-
-        $sheetGaji->fromArray([
+        // Tabel 1: Penggajian
+        $sheet->fromArray([
             ['Laporan Penggajian'],
             [],
             ['Tanggal', 'Nama Karyawan', 'Tunjangan', 'Hari Tidak Masuk', 'Total Gaji Diterima'],
@@ -313,7 +322,7 @@ class LaporanController extends Controller
         foreach ($penggajian as $row) {
             $tanggal = $row->tanggal ? Carbon::parse($row->tanggal)->format('Y-m-d') : '';
 
-            $sheetGaji->fromArray([
+            $sheet->fromArray([
                 [
                     $tanggal,
                     optional($row->karyawan)->nama,
@@ -339,29 +348,28 @@ class LaporanController extends Controller
                 ],
             ],
         ];
-        $sheetGaji->getStyle('A3:E3')->applyFromArray($headerStyle);
-        $sheetGaji->getStyle('A4:E' . max(4, $rowIndex - 1))->getBorders()->getAllBorders()
+        $sheet->getStyle('A3:E3')->applyFromArray($headerStyle);
+        $sheet->getStyle('A4:E' . max(4, $rowIndex - 1))->getBorders()->getAllBorders()
             ->setBorderStyle(Border::BORDER_THIN)->getColor()->setARGB('FFE5E7EB');
 
         foreach (range('A', 'E') as $col) {
-            $sheetGaji->getColumnDimension($col)->setAutoSize(true);
+            $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
-        // Sheet 2: Pinjaman
-        $sheetPinjaman = $spreadsheet->createSheet(1);
-        $sheetPinjaman->setTitle('Pinjaman');
-
-        $sheetPinjaman->fromArray([
+        // Spacer dan Tabel 2: Pinjaman (masih di sheet yang sama)
+        $rowIndex += 2; // satu baris kosong antar tabel
+        $pinjamanHeaderRow = $rowIndex;
+        $sheet->fromArray([
             ['Laporan Pinjaman'],
             [],
             ['Tanggal', 'Nama Karyawan', 'Jumlah Pinjaman', 'Status', 'Keterangan'],
-        ], null, 'A1');
+        ], null, 'A' . $pinjamanHeaderRow);
 
-        $rowIndex = 4;
+        $rowIndex = $pinjamanHeaderRow + 2;
         foreach ($pinjaman as $row) {
             $tanggal = $row->tanggal ? Carbon::parse($row->tanggal)->format('Y-m-d') : '';
 
-            $sheetPinjaman->fromArray([
+            $sheet->fromArray([
                 [
                     $tanggal,
                     optional($row->karyawan)->nama,
@@ -373,12 +381,12 @@ class LaporanController extends Controller
             $rowIndex++;
         }
 
-        $sheetPinjaman->getStyle('A3:E3')->applyFromArray($headerStyle);
-        $sheetPinjaman->getStyle('A4:E' . max(4, $rowIndex - 1))->getBorders()->getAllBorders()
+        $sheet->getStyle('A' . ($pinjamanHeaderRow + 2) . ':E' . ($pinjamanHeaderRow + 2))->applyFromArray($headerStyle);
+        $sheet->getStyle('A' . ($pinjamanHeaderRow + 2) . ':E' . max($pinjamanHeaderRow + 2, $rowIndex - 1))->getBorders()->getAllBorders()
             ->setBorderStyle(Border::BORDER_THIN)->getColor()->setARGB('FFE5E7EB');
 
         foreach (range('A', 'E') as $col) {
-            $sheetPinjaman->getColumnDimension($col)->setAutoSize(true);
+            $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
         $fileName = 'laporan_penggajian_' . now()->format('Ymd_His') . '.xlsx';
@@ -394,9 +402,16 @@ class LaporanController extends Controller
     /**
      * Export laporan transaksi (pemasukan & pengeluaran) ke file Excel (.xlsx) dengan format rapi.
      */
-    public function exportTransaksi()
+    public function exportTransaksi(Request $request)
     {
-        $transaksi = Transaksi::orderByDesc('tanggal')->get();
+        $txDate = $request->input('tx_date');
+
+        $transaksiQuery = Transaksi::orderByDesc('tanggal');
+        if ($txDate) {
+            $transaksiQuery->whereDate('tanggal', $txDate);
+        }
+
+        $transaksi = $transaksiQuery->get();
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
