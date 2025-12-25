@@ -22,9 +22,9 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Kategori</label>
                         <select id="kategori" name="kategori" class="input-modern">
-                            <option value="Kue Pia" data-harga="30000">Kue Pia</option>
-                            <option value="Kue Kacang" data-harga="30000">Kue Kacang</option>
-                            <option value="Nastar" data-harga="30000">Nastar</option>
+                            <option value="kue pia" data-harga="30000">Kue Pia</option>
+                            <option value="kue kacang" data-harga="30000">Kue Kacang</option>
+                            <option value="nastar" data-harga="30000">Nastar</option>
                         </select>
                     </div>
 
@@ -43,6 +43,7 @@
                             <input id="nominal" type="text" name="nominal" class="input-modern" readonly
                                 value="30000">
                         </div>
+                        <input type="hidden" id="harga_satuan" name="harga_satuan" value="30000">
                     </div>
 
                     {{-- Tanggal --}}
@@ -77,11 +78,14 @@
             const kategori = document.querySelector('#kategori');
             const qtyEl = document.querySelector('#qty');
             const nominalEl = document.querySelector('#nominal');
-            if (!kategori || !qtyEl || !nominalEl) return;
+            const hargaEl = document.querySelector('#harga_satuan');
+            if (!kategori || !qtyEl || !nominalEl || !hargaEl) return;
             const opt = kategori.options[kategori.selectedIndex];
             const harga = parseFloat(opt?.getAttribute('data-harga')) || 0;
             const qty = parseFloat(qtyEl.value) || 0;
-            nominalEl.value = harga * qty;
+            const total = harga * qty;
+            nominalEl.value = total;
+            hargaEl.value = harga;
         }
 
         const kategoriEl = document.querySelector('#kategori');

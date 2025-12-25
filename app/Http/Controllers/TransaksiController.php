@@ -47,7 +47,15 @@ class TransaksiController extends Controller
         $qty = (int) $request->qty;
 
         if ($request->tipe === 'pemasukan') {
-            $hargaSatuan = $pemasukanPrices[$request->kategori] ?? 0;
+            // Ambil harga dari input (misal diisi via UI) atau hitung dari nominal/qty jika dikirim
+            $hargaSatuan = (float) ($request->harga_satuan ?? 0);
+            if ($hargaSatuan <= 0 && $request->filled('nominal') && $qty > 0) {
+                $hargaSatuan = (float) $request->nominal / $qty;
+            }
+            // Fallback ke harga default map jika masih 0
+            if ($hargaSatuan <= 0) {
+                $hargaSatuan = $pemasukanPrices[strtolower($request->kategori)] ?? 0;
+            }
         } else {
             $hargaSatuan = (float) $request->harga_satuan;
         }
@@ -58,7 +66,9 @@ class TransaksiController extends Controller
                 ->withErrors(['harga_satuan' => 'Harga satuan pengeluaran wajib diisi dan lebih dari 0']);
         }
 
-        $nominal = $hargaSatuan * $qty;
+        $nominal = $request->filled('nominal') && $request->nominal > 0
+            ? (float) $request->nominal
+            : $hargaSatuan * $qty;
 
         Transaksi::create([
             'tipe'      => $request->tipe,

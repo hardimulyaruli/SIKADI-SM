@@ -194,6 +194,7 @@ class LaporanController extends Controller
             'labels' => $labels,
             'pemasukan' => $pemasukan,
             'pengeluaran' => $pengeluaran,
+            'type' => 'bar',
         ]);
     }
 

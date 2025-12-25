@@ -273,8 +273,7 @@
             var hariTidakMasuk = parseInt(document.getElementById('hari_tidak_masuk').value) || 0;
             var totalGaji = karyawanData[id]?.gaji || 0; // gaji bulanan terbaru
             var totalPinjaman = karyawanData[id]?.pinjaman || 0;
-            var potonganPerHari = totalGaji / 24; // asumsi 24 hari kerja per bulan
-            var potonganAbsensi = Math.round(hariTidakMasuk * potonganPerHari);
+            var potonganAbsensi = hariTidakMasuk * 100000; // flat 100k per absen
             var totalGajiDiterima = Math.round(totalGaji - potonganAbsensi - totalPinjaman + tunjangan);
             var nilaiBulat = totalGajiDiterima >= 0 ? totalGajiDiterima : 0;
             document.getElementById('total_gaji_diterima').value = nilaiBulat;

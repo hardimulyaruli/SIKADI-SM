@@ -34,12 +34,12 @@ class GajiController extends Controller
     {
         $request->validate([
             'karyawan_id' => 'required|exists:karyawans,id',
-            'tunjangan' => 'required|numeric',
+            'tunjangan' => 'nullable|numeric|min:0',
             'hari_tidak_masuk' => 'required|integer|min:0',
         ]);
 
         $karyawanId = $request->karyawan_id;
-        $tunjangan = $request->tunjangan;
+        $tunjangan = $request->tunjangan ?? 0;
         $hariTidakMasuk = $request->hari_tidak_masuk;
 
         // Gaji pokok dari entri terbaru (anggap gaji per bulan). Jika belum ada, 0.
@@ -47,19 +47,19 @@ class GajiController extends Controller
             ->orderByDesc('tanggal')
             ->value('jumlah_gaji') ?? 0;
 
-        // Hitung potongan per hari berdasarkan gaji bulanan dan asumsi 24 hari kerja
-        $potonganPerHari = $gajiPokok ? ($gajiPokok / 24) : 0;
-
         // Total pinjaman yang belum lunas
         $pinjamanBelumLunas = Pinjaman::where('karyawan_id', $karyawanId)
             ->where('status', 'belum_lunas')->get();
         $totalPinjaman = $pinjamanBelumLunas->sum('jumlah_pinjaman');
 
-        // Potongan hari tidak masuk dinamis dari gaji pokok
-        $potonganAbsensi = $hariTidakMasuk * $potonganPerHari;
+        // Potongan absensi flat: 100.000 per hari tidak masuk
+        $potonganAbsensi = $hariTidakMasuk * 100000;
 
-        // Hitung total gaji diterima
-        $totalGajiDiterima = $gajiPokok - $potonganAbsensi - $totalPinjaman + $tunjangan;
+        // Gaji bersih sebelum potongan pinjaman
+        $gajiBersihSebelumPinjaman = $gajiPokok - $potonganAbsensi + $tunjangan;
+
+        // Kurangi gaji dengan pinjaman; minimal 0 agar tidak minus
+        $totalGajiDiterima = max($gajiBersihSebelumPinjaman - $totalPinjaman, 0);
 
         // Simpan data penggajian
         Penggajian::create([
@@ -71,10 +71,12 @@ class GajiController extends Controller
             'keterangan' => 'Penggajian bulan ' . now()->format('F Y'),
         ]);
 
-        // Update status pinjaman menjadi lunas setelah dipotong
-        foreach ($pinjamanBelumLunas as $pinjaman) {
-            $pinjaman->status = 'lunas';
-            $pinjaman->save();
+        // Tandai pinjaman lunas hanya jika gaji cukup menutup total pinjaman
+        if ($gajiBersihSebelumPinjaman >= $totalPinjaman && $totalPinjaman > 0) {
+            foreach ($pinjamanBelumLunas as $pinjaman) {
+                $pinjaman->status = 'lunas';
+                $pinjaman->save();
+            }
         }
 
         return redirect()->back()->with('success', 'Penggajian berhasil disimpan!');

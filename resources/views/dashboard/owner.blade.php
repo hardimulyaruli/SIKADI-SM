@@ -190,8 +190,8 @@
                 </div>
                 <canvas id="chartKeuangan"></canvas>
                 <div class="chart-legend">
-                    <span class="chart-chip"><span class="chart-dot" style="background:#16a34a;"></span>Pemasukan</span>
-                    <span class="chart-chip"><span class="chart-dot" style="background:#ef4444;"></span>Pengeluaran</span>
+                    <span class="chart-chip"><span class="chart-dot" style="background:#1d7ecb;"></span>Pemasukan</span>
+                    <span class="chart-chip"><span class="chart-dot" style="background:#d97706;"></span>Pengeluaran</span>
                 </div>
             </div>
         </div>
@@ -204,7 +204,7 @@
                 </div>
                 <canvas id="chartDistribusi"></canvas>
                 <div class="chart-legend">
-                    <span class="chart-chip"><span class="chart-dot" style="background:#6366f1;"></span>Jumlah Produk</span>
+                    <span class="chart-chip"><span class="chart-dot" style="background:#1d7ecb;"></span>Jumlah Produk</span>
                 </div>
             </div>
         </div>
@@ -219,7 +219,7 @@
                 } = chart;
                 chart.data.datasets.forEach((dataset, idx) => {
                     const meta = chart.getDatasetMeta(idx);
-                    if (!meta || !meta.data) return;
+                    if (!meta || meta.type !== 'line' || !meta.data) return;
                     ctx.save();
                     ctx.shadowColor = 'rgba(15,23,42,0.12)';
                     ctx.shadowBlur = 10;
@@ -237,6 +237,35 @@
                     });
                     ctx.stroke();
                     ctx.restore();
+                });
+            },
+        };
+
+        const valueLabelPlugin = {
+            id: 'valueLabelPlugin',
+            afterDatasetsDraw(chart) {
+                if (chart.config.type !== 'bar') return;
+                const {
+                    ctx
+                } = chart;
+                chart.data.datasets.forEach((dataset, idx) => {
+                    const meta = chart.getDatasetMeta(idx);
+                    if (!meta || !meta.data) return;
+                    meta.data.forEach((bar, i) => {
+                        const value = dataset.data[i];
+                        if (value === null || value === undefined) return;
+                        const {
+                            x,
+                            y
+                        } = bar.tooltipPosition();
+                        ctx.save();
+                        ctx.font = '600 11px "Inter", sans-serif';
+                        ctx.fillStyle = '#0f172a';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'bottom';
+                        ctx.fillText(Number(value).toLocaleString('id-ID'), x, y - 6);
+                        ctx.restore();
+                    });
                 });
             },
         };
@@ -265,28 +294,28 @@
                 x: {
                     grid: {
                         display: true,
-                        color: 'rgba(226, 232, 240, 0.55)',
-                        borderDash: [3, 4],
+                        color: 'rgba(226, 232, 240, 0.85)',
+                        borderDash: [],
                         drawBorder: false
                     },
                     ticks: {
-                        color: '#475569',
+                        color: '#1f2937',
                         font: {
                             weight: '600'
                         },
-                        maxRotation: 18,
-                        minRotation: 18
+                        maxRotation: 0,
+                        minRotation: 0
                     },
                 },
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(226, 232, 240, 0.55)',
-                        borderDash: [3, 4],
+                        color: 'rgba(226, 232, 240, 0.85)',
+                        borderDash: [],
                         drawBorder: false
                     },
                     ticks: {
-                        color: '#475569',
+                        color: '#1f2937',
                         font: {
                             weight: '600'
                         }
@@ -320,37 +349,49 @@
                 pengeluaran
             }) => {
                 new Chart(ctxKeuangan, {
-                    type: 'line',
+                    type: 'bar',
                     data: {
                         labels,
                         datasets: [{
                                 label: 'Pemasukan',
                                 data: pemasukan,
-                                borderColor: '#0ea5e9',
-                                backgroundColor: gradIn,
-                                borderWidth: 3,
-                                pointRadius: 5,
-                                pointHoverRadius: 8,
-                                pointBackgroundColor: '#fff',
-                                pointBorderColor: '#0ea5e9',
-                                fill: true,
+                                backgroundColor: '#1d7ecb',
+                                borderColor: '#155d96',
+                                borderWidth: 1.2,
+                                borderRadius: 10,
+                                maxBarThickness: 44,
                             },
                             {
                                 label: 'Pengeluaran',
                                 data: pengeluaran,
-                                borderColor: '#fb923c',
-                                backgroundColor: gradOut,
-                                borderWidth: 3,
-                                pointRadius: 5,
-                                pointHoverRadius: 8,
-                                pointBackgroundColor: '#fff',
-                                pointBorderColor: '#fb923c',
-                                fill: true,
+                                backgroundColor: '#d97706',
+                                borderColor: '#b45309',
+                                borderWidth: 1.2,
+                                borderRadius: 10,
+                                maxBarThickness: 44,
                             },
                         ],
                     },
-                    options: chartBaseOptions,
-                    plugins: [shadowPlugin],
+                    options: {
+                        ...chartBaseOptions,
+                        scales: {
+                            ...chartBaseOptions.scales,
+                            x: {
+                                ...chartBaseOptions.scales.x,
+                                stacked: false,
+                                ticks: {
+                                    ...chartBaseOptions.scales.x.ticks,
+                                    maxRotation: 0,
+                                    minRotation: 0
+                                }
+                            },
+                            y: {
+                                ...chartBaseOptions.scales.y,
+                                stacked: false
+                            },
+                        },
+                    },
+                    plugins: [shadowPlugin, valueLabelPlugin],
                 });
                 document.getElementById('chart-status').textContent = 'Data terbarui otomatis';
             })
@@ -359,9 +400,6 @@
             });
 
         const distributionCtx = document.getElementById('chartDistribusi').getContext('2d');
-        const gradDistribusi = distributionCtx.createLinearGradient(0, 0, 0, 320);
-        gradDistribusi.addColorStop(0, 'rgba(34,197,94,0.30)');
-        gradDistribusi.addColorStop(1, 'rgba(34,197,94,0.06)');
 
         fetch('{{ route('owner.chart.distribusi') }}')
             .then(res => res.json())
@@ -370,21 +408,18 @@
                 values
             }) => {
                 new Chart(distributionCtx, {
-                    type: 'line',
+                    type: 'bar',
                     data: {
                         labels,
                         datasets: [{
                             label: 'Distribusi / Bulan',
                             data: values,
-                            borderColor: '#22c55e',
-                            backgroundColor: gradDistribusi,
-                            borderWidth: 3,
-                            pointRadius: 5,
-                            pointHoverRadius: 8,
-                            pointBackgroundColor: '#fff',
-                            pointBorderColor: '#22c55e',
-                            fill: true,
-                        }, ],
+                            backgroundColor: '#1d7ecb',
+                            borderColor: '#155d96',
+                            borderWidth: 1.2,
+                            borderRadius: 10,
+                            maxBarThickness: 44,
+                        }],
                     },
                     options: {
                         ...chartBaseOptions,
@@ -392,37 +427,34 @@
                             ...chartBaseOptions.scales,
                             x: {
                                 ...chartBaseOptions.scales.x,
-                                ticks: {
-                                    ...chartBaseOptions.scales.x.ticks,
-                                    maxRotation: 35,
-                                    minRotation: 35
-                                }
+                                stacked: false
+                            },
+                            y: {
+                                ...chartBaseOptions.scales.y,
+                                stacked: false
                             },
                         },
                     },
-                    plugins: [shadowPlugin],
+                    plugins: [shadowPlugin, valueLabelPlugin],
                 });
             })
             .catch(() => {
                 new Chart(distributionCtx, {
-                    type: 'line',
+                    type: 'bar',
                     data: {
                         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
                         datasets: [{
                             label: 'Distribusi / Bulan',
                             data: [0, 0, 0, 0, 0, 0],
-                            borderColor: '#22c55e',
-                            backgroundColor: gradDistribusi,
-                            borderWidth: 3,
-                            pointRadius: 5,
-                            pointHoverRadius: 8,
-                            pointBackgroundColor: '#fff',
-                            pointBorderColor: '#22c55e',
-                            fill: true,
-                        }, ],
+                            backgroundColor: '#1d7ecb',
+                            borderColor: '#155d96',
+                            borderWidth: 1.2,
+                            borderRadius: 10,
+                            maxBarThickness: 44,
+                        }],
                     },
                     options: chartBaseOptions,
-                    plugins: [shadowPlugin],
+                    plugins: [shadowPlugin, valueLabelPlugin],
                 });
             });
     </script>
