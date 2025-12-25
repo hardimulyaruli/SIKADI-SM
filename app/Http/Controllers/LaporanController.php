@@ -6,6 +6,7 @@ use App\Models\Laporan;
 use App\Models\Transaksi;
 use App\Models\Pinjaman;
 use App\Models\Penggajian;
+use App\Models\Distribusi;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -193,6 +194,29 @@ class LaporanController extends Controller
             'labels' => $labels,
             'pemasukan' => $pemasukan,
             'pengeluaran' => $pengeluaran,
+        ]);
+    }
+
+    public function chartDistribusi()
+    {
+        // Gunakan Distribusi jika tersedia, jika tidak kembalikan nol
+        $labels = [];
+        $totalDistribusi = [];
+
+        for ($i = 5; $i >= 0; $i--) {
+            $month = Carbon::now()->subMonths($i);
+            $labels[] = $month->format('M Y');
+
+            $jumlah = Distribusi::whereYear('tanggal', $month->year)
+                ->whereMonth('tanggal', $month->month)
+                ->sum('jumlah_produk');
+
+            $totalDistribusi[] = (int) $jumlah;
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'values' => $totalDistribusi,
         ]);
     }
 

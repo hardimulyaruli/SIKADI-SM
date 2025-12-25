@@ -6,6 +6,7 @@ use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\OwnerKaryawanController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\DistribusiController;
 
 
 /*
@@ -39,7 +40,7 @@ Route::get('/keuangan/dashboard', function () {
 
     return view('dashboard.keuangan', compact('total_pemasukan', 'total_pengeluaran', 'saldo', 'transaksi_terbaru'));
 })->name('keuangan.dashboard');
-Route::get('/distribusi/dashboard', fn() => view('dashboard.distribusi'))->name('distribusi.dashboard');
+Route::get('/distribusi/dashboard', [DistribusiController::class, 'dashboard'])->name('distribusi.dashboard');
 
 
 /*
@@ -77,6 +78,7 @@ Route::delete('/owner/karyawan/{id}', [OwnerKaryawanController::class, 'destroy'
 Route::get('/owner/laporan-umum', [LaporanController::class, 'ownerSummary'])->name('owner.keuangan');
 Route::get('/owner/laporan-distribusi', fn() => view('owner.laporan_distribusi'))->name('owner.distribusi');
 Route::get('/owner/api/chart-transaksi', [LaporanController::class, 'chartTransaksi'])->name('owner.chart.transaksi');
+Route::get('/owner/api/chart-distribusi', [LaporanController::class, 'chartDistribusi'])->name('owner.chart.distribusi');
 Route::get('/owner/api/chart-gaji-pinjaman', [LaporanController::class, 'chartGajiPinjaman'])->name('owner.chart.gaji_pinjaman');
 
 
@@ -108,7 +110,8 @@ Route::post('/keuangan/transaksi', [TransaksiController::class, 'store'])->name(
 | ROUTE DISTRIBUSI
 |--------------------------------------------------------------------------
 */
-Route::get('/distribusi/laporan', fn() => view('distribusi.laporan'))->name('distribusi.laporan');
+Route::get('/distribusi/laporan', [DistribusiController::class, 'laporan'])->name('distribusi.laporan');
+Route::get('/distribusi/laporan/export', [DistribusiController::class, 'exportExcel'])->name('distribusi.laporan.export');
 Route::get('/distribusi/barang', [\App\Http\Controllers\DistribusiController::class, 'index'])->name('distribusi.barang');
 Route::post('/distribusi/barang', [\App\Http\Controllers\DistribusiController::class, 'store'])->name('distribusi.barang.store');
 Route::get('/distribusi/barang/{id}/edit', [\App\Http\Controllers\DistribusiController::class, 'edit'])->name('distribusi.edit');

@@ -6,9 +6,107 @@ use App\Models\Distribusi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class DistribusiController extends Controller
 {
+    public function dashboard()
+    {
+        $totalBarang = Distribusi::sum('jumlah_produk');
+        $distribusiTerkirim = Distribusi::where('status', 'terkirim')->count();
+        $riwayatDistribusi = Distribusi::orderByDesc('tanggal')->limit(5)->get();
+
+        return view('dashboard.distribusi', compact(
+            'totalBarang',
+            'distribusiTerkirim',
+            'riwayatDistribusi'
+        ));
+    }
+
+    public function laporan()
+    {
+        $totalDistribusi = Distribusi::count();
+        $totalBarang = Distribusi::sum('jumlah_produk');
+        $pendingCount = Distribusi::where('status', 'pending')->count();
+        $terkirimCount = Distribusi::where('status', 'terkirim')->count();
+
+        $daftarDistribusi = Distribusi::orderByDesc('tanggal')->orderByDesc('id')->get();
+
+        return view('distribusi.laporan', compact(
+            'totalDistribusi',
+            'totalBarang',
+            'pendingCount',
+            'terkirimCount',
+            'daftarDistribusi'
+        ));
+    }
+
+    public function exportExcel()
+    {
+        $rows = Distribusi::orderByDesc('tanggal')->orderByDesc('id')->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Laporan Distribusi');
+
+        $sheet->fromArray([
+            ['Laporan Distribusi'],
+            [],
+            ['No', 'Nama Produk', 'Jumlah', 'Tujuan', 'Tanggal', 'Status'],
+        ], null, 'A1');
+
+        $rowIndex = 4;
+        foreach ($rows as $index => $row) {
+            $sheet->fromArray([
+                [
+                    $index + 1,
+                    $row->catatan,
+                    $row->jumlah_produk,
+                    $row->toko_tujuan,
+                    $row->tanggal,
+                    ucfirst($row->status),
+                ],
+            ], null, 'A' . $rowIndex);
+            $rowIndex++;
+        }
+
+        $headerStyle = [
+            'font' => ['bold' => true],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FFE5E7EB'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF9CA3AF'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle('A3:F3')->applyFromArray($headerStyle);
+        $sheet->getStyle('A4:F' . max(4, $rowIndex - 1))
+            ->getBorders()->getAllBorders()
+            ->setBorderStyle(Border::BORDER_THIN)
+            ->getColor()->setARGB('FFE5E7EB');
+
+        foreach (range('A', 'F') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $fileName = 'laporan_distribusi_' . now()->format('Ymd_His') . '.xlsx';
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -99,8 +197,8 @@ class DistribusiController extends Controller
         $distribusi->save();
 
         return redirect()
-        ->route('distribusi.barang')
-        ->with('success', 'Data distribusi berhasil diperbarui.');
+            ->route('distribusi.barang')
+            ->with('success', 'Data distribusi berhasil diperbarui.');
     }
 
     /**
@@ -112,7 +210,7 @@ class DistribusiController extends Controller
         $distribusi->delete();
 
         return redirect()
-        ->route('distribusi.barang')
-        ->with('success', 'Data distribusi berhasil dihapus.');
+            ->route('distribusi.barang')
+            ->with('success', 'Data distribusi berhasil dihapus.');
     }
 }
