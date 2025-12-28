@@ -25,6 +25,65 @@
             border: 1px solid #e5e7eb;
         }
 
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            border-radius: 16px;
+            padding: 18px 20px;
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.14);
+            background: linear-gradient(135deg, #f8faff, #f3ecff);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .stat-card .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-card.income .stat-icon {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        .stat-card.outcome .stat-icon {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .stat-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-meta .stat-value {
+            margin: 0;
+            font-weight: 800;
+            color: #312e81;
+            font-size: 24px;
+        }
+
+        .stat-meta .stat-label {
+            margin: 0;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.01em;
+        }
+
         .chart-box canvas {
             width: 100% !important;
             height: 320px !important;
@@ -67,6 +126,23 @@
     <div class="page-header">
         <h1><i class="fas fa-gauge-high"></i> Dashboard Owner</h1>
         <p>Grafik keuangan dan distribusi terbaru</p>
+    </div>
+
+    <div class="stat-cards">
+        <div class="stat-card income">
+            <span class="stat-icon"><i class="fas fa-arrow-trend-up"></i></span>
+            <div class="stat-meta">
+                <p class="stat-value">Rp {{ number_format($total_pemasukan ?? 0, 0, ',', '.') }}</p>
+                <p class="stat-label">Total Pemasukan</p>
+            </div>
+        </div>
+        <div class="stat-card outcome">
+            <span class="stat-icon"><i class="fas fa-arrow-trend-down"></i></span>
+            <div class="stat-meta">
+                <p class="stat-value">Rp {{ number_format($total_pengeluaran ?? 0, 0, ',', '.') }}</p>
+                <p class="stat-label">Total Pengeluaran</p>
+            </div>
+        </div>
     </div>
 
     <!-- ===================== GRAFIK ===================== -->
