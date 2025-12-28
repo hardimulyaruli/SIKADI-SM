@@ -65,10 +65,6 @@
             gap: 8px;
             box-shadow: 0 10px 24px rgba(99, 102, 241, 0.28);
         }
-
-        .btn-primary-modern:hover {
-            filter: brightness(1.05);
-        }
     </style>
 
     <div class="page-header">

@@ -18,19 +18,38 @@
             color: #6b7280;
         }
 
-        .btn-primary-soft {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+        .card-glass-soft {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px 20px;
+            box-shadow: 0 3px 16px rgba(148, 163, 184, 0.16);
+            margin-bottom: 18px;
+        }
+
+        .form-inline {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .form-inline .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-inline input,
+        .form-inline select {
+            width: 100%;
+        }
+
+        .btn-primary-modern {
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
             color: #fff;
+            font-weight: 700;
             border: none;
             border-radius: 12px;
             padding: 12px 16px;
-            font-weight: 800;
-            box-shadow: 0 16px 36px rgba(56, 189, 248, 0.25);
-            text-decoration: none;
-            margin-bottom: 14px;
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.28);
         }
 
         .table-card {
@@ -48,7 +67,7 @@
         }
 
         .table-modern thead th {
-            background: #f0f9ff;
+            background: rgba(14, 165, 233, 0.08);
             color: #0f172a;
             font-size: 12px;
             text-transform: uppercase;
@@ -99,16 +118,48 @@
             background: rgba(248, 113, 113, 0.12);
             color: #dc2626;
         }
+
+        .text-muted {
+            color: #6b7280;
+            font-size: 12px;
+        }
     </style>
 
     <div class="page-header">
         <h1><i class="fas fa-users"></i> Daftar Akun</h1>
-        <p>Kelola akun pengguna sistem</p>
+        <p class="text-muted">Kelola akun pengguna sistem</p>
     </div>
 
-    <a href="{{ route('owner.add_user') }}" class="btn-primary-soft">
-        <i class="fas fa-plus"></i> Tambah Akun
-    </a>
+    <div class="card-glass-soft">
+        <h5 style="font-weight:600; color:#0f172a; margin-bottom:12px;">Tambah Akun Baru</h5>
+        <form action="{{ route('owner.store_user') }}" method="POST" class="form-inline">
+            @csrf
+            <div class="form-group">
+                <label class="text-muted">Nama</label>
+                <input type="text" name="nama" class="form-control" placeholder="Masukkan nama lengkap" required>
+            </div>
+            <div class="form-group">
+                <label class="text-muted">Email</label>
+                <input type="email" name="email" class="form-control" placeholder="Masukkan email" required>
+            </div>
+            <div class="form-group">
+                <label class="text-muted">Password</label>
+                <input type="password" name="kata_sandi" class="form-control" placeholder="Masukkan password" required>
+            </div>
+            <div class="form-group">
+                <label class="text-muted">Peran</label>
+                <select name="peran" class="form-control" required>
+                    <option value="">-- Pilih Peran --</option>
+                    <option value="owner">Owner</option>
+                    <option value="keuangan">Keuangan</option>
+                    <option value="distribusi">Distribusi</option>
+                </select>
+            </div>
+            <div class="form-group" style="align-self:flex-end;">
+                <button type="submit" class="btn-primary-modern">Simpan Akun</button>
+            </div>
+        </form>
+    </div>
 
     <div class="table-card">
         <table class="table-modern">
