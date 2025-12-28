@@ -167,6 +167,27 @@ class LaporanController extends Controller
     }
 
     /**
+     * Owner: Laporan Distribusi (menyamai laporan distribusi role distribusi).
+     */
+    public function ownerDistribusi()
+    {
+        $totalDistribusi = Distribusi::count();
+        $totalBarang = Distribusi::sum('jumlah_produk');
+        $pendingCount = Distribusi::where('status', 'pending')->count();
+        $terkirimCount = Distribusi::where('status', 'terkirim')->count();
+
+        $daftarDistribusi = Distribusi::orderByDesc('tanggal')->orderByDesc('id')->get();
+
+        return view('owner.laporan_distribusi', compact(
+            'totalDistribusi',
+            'totalBarang',
+            'pendingCount',
+            'terkirimCount',
+            'daftarDistribusi'
+        ));
+    }
+
+    /**
      * API: data grafik pemasukan vs pengeluaran (6 bulan terakhir).
      */
     public function chartTransaksi()

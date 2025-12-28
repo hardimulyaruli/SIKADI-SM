@@ -4,36 +4,42 @@
 
 <div class="page-header">
     <h1>📦 Laporan Distribusi</h1>
-    <p>Ringkasan dan detail laporan distribusi barang</p>
+    <p>Ringkasan kinerja distribusi dan detail pengiriman.</p>
 </div>
+
+<style>
+    /* Samakan ukuran chart: status & distribusi per bulan */
+    #chartStatus, #chartDistribusi { height: 220px !important; max-height: 220px !important; }
+    .chart-box { padding: 12px; }
+</style>
 
 <!-- ===================== STATISTIK CARD ===================== -->
 <div class="row mb-4">
     <div class="col-md-3 mb-3">
         <div class="card-stat">
-            <h4>{{ $total_keluar ?? 0 }}</h4>
-            <p>Total Barang Keluar</p>
+            <h4>{{ number_format($totalDistribusi ?? 0) }}</h4>
+            <p>Total Distribusi</p>
         </div>
     </div>
 
     <div class="col-md-3 mb-3">
         <div class="card-stat">
-            <h4>{{ $tujuan ?? 0 }}</h4>
-            <p>Total Tujuan Distribusi</p>
+            <h4>{{ number_format($totalBarang ?? 0) }}</h4>
+            <p>Total Barang</p>
         </div>
     </div>
 
     <div class="col-md-3 mb-3">
         <div class="card-stat">
-            <h4>{{ $sukses ?? 0 }}</h4>
-            <p>Distribusi Sukses</p>
+            <h4>{{ number_format($terkirimCount ?? 0) }}</h4>
+            <p>Terkirim</p>
         </div>
     </div>
 
     <div class="col-md-3 mb-3">
         <div class="card-stat">
-            <h4>{{ $pending ?? 0 }}</h4>
-            <p>Distribusi Pending / Gagal</p>
+            <h4>{{ number_format($pendingCount ?? 0) }}</h4>
+            <p>Pending</p>
         </div>
     </div>
 </div>
@@ -57,37 +63,67 @@
 
 <!-- ===================== TABEL DATA ===================== -->
 <div class="table-wrapper">
-    <div class="table-wrapper-header">Detail Laporan Distribusi</div>
+    <div class="table-wrapper-header">Detail Distribusi</div>
     <table class="table-modern">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Nama Barang</th>
-                <th>Tujuan</th>
+                <th>No</th>
+                <th>Nama Produk</th>
                 <th>Jumlah</th>
-                <th>Tanggal Kirim</th>
+                <th>Tujuan</th>
+                <th>Tanggal</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Data will be populated here -->
+            @forelse ($daftarDistribusi ?? [] as $d)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $d->catatan }}</td>
+                    <td>{{ $d->jumlah_produk }}</td>
+                    <td>{{ $d->toko_tujuan }}</td>
+                    <td>{{ $d->tanggal }}</td>
+                    <td>{{ ucfirst($d->status) }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="6" class="text-center">Belum ada data distribusi.</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 </div>
 
+@push('scripts')
 <script>
-const distributionDatasets = [{
-    label: 'Barang Terdistribusi',
-    data: [0, 0, 0, 0, 0, 0],
-    borderColor: '#7c5cdb',
-    backgroundColor: 'rgba(122, 92, 219, 0.1)'
-}];
-initFilledLineChart('chartDistribusi', ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'], distributionDatasets);
+    // Line chart: fetch data from Owner API
+    fetch('{{ route('owner.chart.distribusi') }}')
+        .then(res => res.json())
+        .then(({ labels, values }) => {
+            const datasets = [{
+                label: 'Distribusi / Bulan',
+                data: values,
+                borderColor: '#7c5cdb',
+                backgroundColor: 'rgba(122, 92, 219, 0.15)'
+            }];
+            initFilledLineChart('chartDistribusi', labels, datasets);
+        })
+        .catch(() => {
+            const datasets = [{
+                label: 'Distribusi / Bulan',
+                data: [0, 0, 0, 0, 0, 0],
+                borderColor: '#7c5cdb',
+                backgroundColor: 'rgba(122, 92, 219, 0.15)'
+            }];
+            initFilledLineChart('chartDistribusi', ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'], datasets);
+        });
 
-initDoughnutChart('chartStatus', 
-    ['Sukses', 'Pending'],
-    [{{ $sukses ?? 0 }}, {{ $pending ?? 0 }}]
-);
+    // Doughnut chart: status distribusi
+    initDoughnutChart('chartStatus',
+        ['Terkirim', 'Pending'],
+        [{{ $terkirimCount ?? 0 }}, {{ $pendingCount ?? 0 }}]
+    );
 </script>
+@endpush
 
 @endsection

@@ -76,7 +76,7 @@ Route::delete('/owner/karyawan/{id}', [OwnerKaryawanController::class, 'destroy'
 
 // ⭐ Laporan Owner
 Route::get('/owner/laporan-umum', [LaporanController::class, 'ownerSummary'])->name('owner.keuangan');
-Route::get('/owner/laporan-distribusi', fn() => view('owner.laporan_distribusi'))->name('owner.distribusi');
+Route::get('/owner/laporan-distribusi', [LaporanController::class, 'ownerDistribusi'])->name('owner.distribusi');
 Route::get('/owner/api/chart-transaksi', [LaporanController::class, 'chartTransaksi'])->name('owner.chart.transaksi');
 Route::get('/owner/api/chart-distribusi', [LaporanController::class, 'chartDistribusi'])->name('owner.chart.distribusi');
 Route::get('/owner/api/chart-gaji-pinjaman', [LaporanController::class, 'chartGajiPinjaman'])->name('owner.chart.gaji_pinjaman');
