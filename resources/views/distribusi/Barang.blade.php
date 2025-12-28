@@ -208,7 +208,7 @@
                 </thead>
 
                 <tbody>
-                    @forelse($distribusis as $d)
+                    @forelse(($distribusis ?? collect())->sortByDesc('created_at') as $d)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $d->catatan }}</td>

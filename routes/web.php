@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PenggunaController;
-use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\DataTransaksiController;
 use App\Http\Controllers\OwnerKaryawanController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DistribusiController;
@@ -98,13 +98,18 @@ Route::post('/keuangan/laporan/filter', [\App\Http\Controllers\LaporanController
 Route::get('/keuangan/laporan/export/penggajian', [\App\Http\Controllers\LaporanController::class, 'exportPenggajian'])->name('keuangan.laporan.export.penggajian');
 Route::get('/keuangan/laporan/export/transaksi', [\App\Http\Controllers\LaporanController::class, 'exportTransaksi'])->name('keuangan.laporan.export.transaksi');
 
-Route::get('/keuangan/transaksi', [TransaksiController::class, 'index'])->name('keuangan.transaksi');
+Route::get('/keuangan/transaksi', [DataTransaksiController::class, 'index'])->name('keuangan.transaksi');
 // Halaman daftar transaksi
 
 // Simpan pemasukan
-Route::get('/keuangan/transaksi', [TransaksiController::class, 'index'])->name('keuangan.transaksi');
+Route::get('/keuangan/transaksi', [DataTransaksiController::class, 'index'])->name('keuangan.transaksi');
 
-Route::post('/keuangan/transaksi', [TransaksiController::class, 'store'])->name('keuangan.transaksi.post');
+Route::post('/keuangan/transaksi', [DataTransaksiController::class, 'store'])->name('keuangan.transaksi.post');
+
+// Pengeluaran CRUD menggunakan TransaksiController
+Route::get('/pengeluaran', [DataTransaksiController::class, 'pengeluaranIndex'])->name('pengeluaran.index');
+Route::get('/pengeluaran/create', [DataTransaksiController::class, 'pengeluaranCreate'])->name('pengeluaran.create');
+Route::post('/pengeluaran', [DataTransaksiController::class, 'pengeluaranStore'])->name('pengeluaran.store');
 /*
 |--------------------------------------------------------------------------
 | ROUTE DISTRIBUSI

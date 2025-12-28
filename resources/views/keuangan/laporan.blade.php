@@ -208,23 +208,17 @@
                 class="d-flex gap-2 flex-wrap mb-3 align-items-end">
                 <input type="hidden" name="tab" value="penggajian">
                 <div>
-                    <label style="font-size:12px; color:#6b7280;">Tanggal</label>
-                    <input type="date" name="pg_date" class="form-control" value="{{ $pgDate ?? '' }}">
+                    <label style="font-size:12px; color:#6b7280;">Tanggal Awal</label>
+                    <input type="date" name="pg_start" class="form-control" value="{{ $pgStart ?? '' }}">
+                </div>
+                <div>
+                    <label style="font-size:12px; color:#6b7280;">Tanggal Akhir</label>
+                    <input type="date" name="pg_end" class="form-control" value="{{ $pgEnd ?? '' }}">
                 </div>
                 <button type="submit" class="btn-modern btn-primary-modern" style="font-size:12px; padding:8px 14px;">
                     Terapkan Filter
                 </button>
             </form>
-            <div class="summary-badges">
-                <div class="summary-pill">
-                    <span class="summary-label">Total Gaji Diterima</span>
-                    <span class="summary-value">Rp {{ number_format($total_gaji_diterima ?? 0, 0, ',', '.') }}</span>
-                </div>
-                <div class="summary-pill">
-                    <span class="summary-label">Total Pinjaman</span>
-                    <span class="summary-value">Rp {{ number_format($total_pinjaman ?? 0, 0, ',', '.') }}</span>
-                </div>
-            </div>
         </div>
 
         <div class="card-glass-soft">
@@ -237,13 +231,13 @@
                             <tr>
                                 <th>Tanggal</th>
                                 <th>Nama Karyawan</th>
-                                <th>Tunjangan</th>
+                                <th>Bonus</th>
                                 <th>Hari Tidak Masuk</th>
                                 <th>Total Gaji Diterima</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($penggajian as $row)
+                            @foreach (($penggajian ?? collect())->sortByDesc('created_at') as $row)
                                 <tr>
                                     <td>{{ optional($row->tanggal)->format('d M Y') }}</td>
                                     <td>{{ $row->karyawan->nama ?? '-' }}</td>
@@ -280,7 +274,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($pinjaman as $row)
+                            @foreach (($pinjaman ?? collect())->sortByDesc('created_at') as $row)
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($row->tanggal)->format('d M Y') }}</td>
                                     <td>{{ $row->karyawan->nama ?? '-' }}</td>
@@ -328,29 +322,17 @@
                 class="d-flex gap-2 flex-wrap mb-3 align-items-end">
                 <input type="hidden" name="tab" value="transaksi">
                 <div>
-                    <label style="font-size:12px; color:#6b7280;">Tanggal</label>
-                    <input type="date" name="tx_date" class="form-control" value="{{ $txDate ?? '' }}">
+                    <label style="font-size:12px; color:#6b7280;">Tanggal Awal</label>
+                    <input type="date" name="tx_start" class="form-control" value="{{ $txStart ?? '' }}">
+                </div>
+                <div>
+                    <label style="font-size:12px; color:#6b7280;">Tanggal Akhir</label>
+                    <input type="date" name="tx_end" class="form-control" value="{{ $txEnd ?? '' }}">
                 </div>
                 <button type="submit" class="btn-modern btn-primary-modern" style="font-size:12px; padding:8px 14px;">
                     Terapkan Filter
                 </button>
             </form>
-            <div class="summary-badges">
-                <div class="summary-pill">
-                    <span class="summary-label">Total Pemasukan</span>
-                    <span class="summary-value" style="color:#16a34a;">Rp
-                        {{ number_format($total_pemasukan ?? 0, 0, ',', '.') }}</span>
-                </div>
-                <div class="summary-pill">
-                    <span class="summary-label">Total Pengeluaran</span>
-                    <span class="summary-value" style="color:#dc2626;">Rp
-                        {{ number_format($total_pengeluaran ?? 0, 0, ',', '.') }}</span>
-                </div>
-                <div class="summary-pill">
-                    <span class="summary-label">Saldo</span>
-                    <span class="summary-value">Rp {{ number_format($saldo_transaksi ?? 0, 0, ',', '.') }}</span>
-                </div>
-            </div>
         </div>
 
         <h6 style="font-weight:600; color:#111827; margin-bottom:10px;"><i class="fas fa-receipt"

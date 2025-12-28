@@ -230,7 +230,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($penggajian as $item)
+                        @foreach (($penggajian ?? collect())->sortByDesc('created_at') as $item)
                             <tr>
                                 <td>
                                     <span class="badge-custom" style="background: rgba(122, 92, 219, 0.1); color: #7c5cdb;">

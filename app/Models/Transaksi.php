@@ -17,4 +17,32 @@ class Transaksi extends Model
         'tanggal',
         'deskripsi'
     ];
+
+    protected $appends = [
+        'jumlah',
+        'tanggal_pengeluaran',
+        'keperluan',
+        'keterangan',
+    ];
+
+    // Kompatibilitas dengan form pengeluaran
+    public function getJumlahAttribute()
+    {
+        return $this->nominal;
+    }
+
+    public function getTanggalPengeluaranAttribute()
+    {
+        return $this->tanggal;
+    }
+
+    public function getKeperluanAttribute()
+    {
+        return $this->kategori;
+    }
+
+    public function getKeteranganAttribute()
+    {
+        return $this->deskripsi;
+    }
 }

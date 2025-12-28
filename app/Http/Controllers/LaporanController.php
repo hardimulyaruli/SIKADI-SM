@@ -22,14 +22,26 @@ class LaporanController extends Controller
     public function index(Request $request)
     {
         // Filter tanggal penggajian & pinjaman (single date)
-        $pgDate = $request->input('pg_date');
+        // Filter rentang tanggal penggajian & pinjaman
+        $pgStart = $request->input('pg_start');
+        $pgEnd = $request->input('pg_end');
 
-        $penggajianQuery = Penggajian::with('karyawan')->orderByDesc('tanggal');
-        $pinjamanQuery = Pinjaman::with('karyawan')->orderByDesc('tanggal');
+        $penggajianQuery = Penggajian::with('karyawan')
+            ->orderByDesc('created_at')
+            ->orderByDesc('tanggal');
+        $pinjamanQuery = Pinjaman::with('karyawan')
+            ->orderByDesc('created_at')
+            ->orderByDesc('tanggal');
 
-        if ($pgDate) {
-            $penggajianQuery->whereDate('tanggal', $pgDate);
-            $pinjamanQuery->whereDate('tanggal', $pgDate);
+        if ($pgStart && $pgEnd) {
+            $penggajianQuery->whereBetween('tanggal', [$pgStart, $pgEnd]);
+            $pinjamanQuery->whereBetween('tanggal', [$pgStart, $pgEnd]);
+        } elseif ($pgStart) {
+            $penggajianQuery->whereDate('tanggal', '>=', $pgStart);
+            $pinjamanQuery->whereDate('tanggal', '>=', $pgStart);
+        } elseif ($pgEnd) {
+            $penggajianQuery->whereDate('tanggal', '<=', $pgEnd);
+            $pinjamanQuery->whereDate('tanggal', '<=', $pgEnd);
         }
 
         $penggajian = $penggajianQuery->get();
@@ -52,11 +64,17 @@ class LaporanController extends Controller
             ->get();
 
         // Tabel 2: Transaksi keseluruhan dengan filter satu tanggal
-        $txDate = $request->input('tx_date');
+        // Tabel 2: Transaksi keseluruhan dengan filter rentang tanggal
+        $txStart = $request->input('tx_start');
+        $txEnd = $request->input('tx_end');
 
         $transaksiQuery = Transaksi::orderByDesc('tanggal');
-        if ($txDate) {
-            $transaksiQuery->whereDate('tanggal', $txDate);
+        if ($txStart && $txEnd) {
+            $transaksiQuery->whereBetween('tanggal', [$txStart, $txEnd]);
+        } elseif ($txStart) {
+            $transaksiQuery->whereDate('tanggal', '>=', $txStart);
+        } elseif ($txEnd) {
+            $transaksiQuery->whereDate('tanggal', '<=', $txEnd);
         }
         $transaksi = $transaksiQuery->get();
 
@@ -78,9 +96,10 @@ class LaporanController extends Controller
             'total_pemasukan',
             'total_pengeluaran',
             'saldo_transaksi',
-            'weeklyPenjualan',
-            'txDate',
-            'pgDate',
+            'txStart',
+            'txEnd',
+            'pgStart',
+            'pgEnd',
             'activeTab'
         ));
     }
@@ -90,54 +109,44 @@ class LaporanController extends Controller
      */
     public function ownerSummary()
     {
+        // Gunakan tampilan laporan keuangan yang sama dengan role keuangan
+        // tanpa filter tanggal bawaan (owner tetap bisa melihat tab penggajian & transaksi).
+
+        $pgDate = null;
+        $pgStart = null;
+        $pgEnd = null;
+        $txStart = null;
+        $txEnd = null;
+
+        $penggajian = Penggajian::with('karyawan')->orderByDesc('tanggal')->get();
+        $pinjaman = Pinjaman::with('karyawan')->orderByDesc('tanggal')->get();
+
+        $total_gaji_diterima = $penggajian->sum('total_gaji_diterima');
+        $total_pinjaman = $pinjaman->sum('jumlah_pinjaman');
+
         $total_pemasukan = Transaksi::where('tipe', 'pemasukan')->sum('nominal');
         $total_pengeluaran = Transaksi::where('tipe', 'pengeluaran')->sum('nominal');
-        $gaji_pegawai = Penggajian::sum('total_gaji_diterima');
-        $total_pinjaman = Pinjaman::sum('jumlah_pinjaman');
+        $saldo_transaksi = $total_pemasukan - $total_pengeluaran;
 
-        // Saldo akhir dengan mempertimbangkan semua arus kas
-        $saldo_akhir = $total_pemasukan - ($total_pengeluaran + $gaji_pegawai + $total_pinjaman);
+        $transaksi = Transaksi::orderByDesc('tanggal')->get();
 
-        // Riwayat transaksi terbaru untuk tabel owner (batasi 50 entri)
-        $transaksi = Transaksi::orderByDesc('tanggal')->limit(50)->get();
+        // Owner default di tab penggajian
+        $activeTab = 'penggajian';
 
-        // Data chart garis: 6 bulan terakhir pemasukan vs pengeluaran
-        $chartLabels = [];
-        $chartPemasukan = [];
-        $chartPengeluaran = [];
-
-        for ($i = 5; $i >= 0; $i--) {
-            $month = Carbon::now()->subMonths($i);
-            $chartLabels[] = $month->format('M Y');
-
-            $chartPemasukan[] = Transaksi::where('tipe', 'pemasukan')
-                ->whereYear('tanggal', $month->year)
-                ->whereMonth('tanggal', $month->month)
-                ->sum('nominal');
-
-            $chartPengeluaran[] = Transaksi::where('tipe', 'pengeluaran')
-                ->whereYear('tanggal', $month->year)
-                ->whereMonth('tanggal', $month->month)
-                ->sum('nominal');
-        }
-
-        // Data pie: fokus ke gaji & pinjaman karyawan
-        $pengeluaranBreakdown = [
-            'Gaji Pegawai' => $gaji_pegawai,
-            'Pinjaman Karyawan' => $total_pinjaman,
-        ];
-
-        return view('owner.laporan', compact(
+        return view('keuangan.laporan', compact(
+            'penggajian',
+            'pinjaman',
+            'total_gaji_diterima',
+            'total_pinjaman',
+            'transaksi',
             'total_pemasukan',
             'total_pengeluaran',
-            'gaji_pegawai',
-            'total_pinjaman',
-            'saldo_akhir',
-            'transaksi',
-            'chartLabels',
-            'chartPemasukan',
-            'chartPengeluaran',
-            'pengeluaranBreakdown'
+            'saldo_transaksi',
+            'txStart',
+            'txEnd',
+            'pgStart',
+            'pgEnd',
+            'activeTab'
         ));
     }
 

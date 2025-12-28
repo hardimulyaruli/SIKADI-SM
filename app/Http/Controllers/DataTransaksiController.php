@@ -7,7 +7,7 @@ use App\Models\Barang;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class TransaksiController extends Controller
+class DataTransaksiController extends Controller
 {
     public function index()
     {
@@ -83,5 +83,43 @@ class TransaksiController extends Controller
         return redirect()
             ->route('keuangan.transaksi')
             ->with('success', 'Transaksi berhasil ditambahkan!');
+    }
+
+    // ---------------- Pengeluaran CRUD (menggunakan tabel transaksi) ----------------
+    public function pengeluaranIndex()
+    {
+        $pengeluarans = Transaksi::where('tipe', 'pengeluaran')
+            ->orderBy('tanggal', 'desc')
+            ->paginate(10);
+
+        return view('pengeluaran.index', compact('pengeluarans'));
+    }
+
+    public function pengeluaranCreate()
+    {
+        return view('pengeluaran.create');
+    }
+
+    public function pengeluaranStore(Request $request)
+    {
+        $data = $request->validate([
+            'jumlah' => 'required|numeric|min:0',
+            'tanggal_pengeluaran' => 'required|date',
+            'keperluan' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        Transaksi::create([
+            'tipe' => 'pengeluaran',
+            'kategori' => $data['keperluan'] ?? null,
+            'qty' => 1,
+            'harga_satuan' => $data['jumlah'],
+            'nominal' => $data['jumlah'],
+            'tanggal' => $data['tanggal_pengeluaran'],
+            'deskripsi' => $data['keterangan'] ?? null,
+        ]);
+
+        return redirect()->route('pengeluaran.index')
+            ->with('success', 'Pengeluaran berhasil ditambahkan.');
     }
 }

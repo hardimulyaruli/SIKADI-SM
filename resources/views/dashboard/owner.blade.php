@@ -16,66 +16,6 @@
             margin: 0;
         }
 
-        .card-stat {
-            background: #fff;
-            border-radius: 12px;
-            padding: 14px 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-stat h3 {
-            margin: 0 0 6px;
-            font-weight: 700;
-            font-size: 20px;
-            color: #111827;
-        }
-
-        .card-stat p {
-            margin: 0;
-            color: #6b7280;
-            font-size: 13px;
-        }
-
-        .stat-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            margin-bottom: 8px;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-            font-size: 14px;
-        }
-
-        .icon-income {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-        }
-
-        .icon-outcome {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-        }
-
-        .icon-salary {
-            background: linear-gradient(135deg, #2563eb, #4f46e5);
-        }
-
-        .icon-loan {
-            background: linear-gradient(135deg, #f97316, #ea580c);
-        }
-
-        .icon-balance {
-            background: linear-gradient(135deg, #0ea5e9, #0284c7);
-        }
-
-        .icon-distribusi {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        }
-
         .chart-box {
             background: #ffffff;
             border-radius: 16px;
@@ -126,58 +66,7 @@
 
     <div class="page-header">
         <h1><i class="fas fa-gauge-high"></i> Dashboard Owner</h1>
-        <p>Ringkasan keuangan dan distribusi terbaru</p>
-    </div>
-
-    <!-- ===================== STATISTIK ===================== -->
-    <div class="row mb-4">
-        <div class="col-md-4 mb-3">
-            <div class="card-stat">
-                <div class="stat-icon icon-income"><i class="fas fa-arrow-up"></i></div>
-                <h3>Rp {{ number_format($total_pemasukan ?? 0, 0, ',', '.') }}</h3>
-                <p>Total Pemasukan</p>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <div class="card-stat">
-                <div class="stat-icon icon-outcome"><i class="fas fa-arrow-down"></i></div>
-                <h3>Rp {{ number_format($total_pengeluaran ?? 0, 0, ',', '.') }}</h3>
-                <p>Total Pengeluaran</p>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <div class="card-stat">
-                <div class="stat-icon icon-salary"><i class="fas fa-user-tie"></i></div>
-                <h3>Rp {{ number_format($gaji_pegawai ?? 0, 0, ',', '.') }}</h3>
-                <p>Total Gaji Pegawai</p>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <div class="card-stat">
-                <div class="stat-icon icon-loan"><i class="fas fa-hand-holding-usd"></i></div>
-                <h3>Rp {{ number_format($total_pinjaman ?? 0, 0, ',', '.') }}</h3>
-                <p>Total Pinjaman</p>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <div class="card-stat">
-                <div class="stat-icon icon-balance"><i class="fas fa-wallet"></i></div>
-                <h3>Rp {{ number_format($saldo_akhir ?? 0, 0, ',', '.') }}</h3>
-                <p>Saldo Akhir</p>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <div class="card-stat">
-                <div class="stat-icon icon-distribusi"><i class="fas fa-truck-moving"></i></div>
-                <h3>{{ $total_distribusi ?? 0 }}</h3>
-                <p>Total Distribusi Barang</p>
-            </div>
-        </div>
+        <p>Grafik keuangan dan distribusi terbaru</p>
     </div>
 
     <!-- ===================== GRAFIK ===================== -->

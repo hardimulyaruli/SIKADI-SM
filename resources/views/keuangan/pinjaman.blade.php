@@ -237,7 +237,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($pinjaman as $item)
+                        @foreach (($pinjaman ?? collect())->sortByDesc('created_at') as $item)
                             <tr>
                                 <td>
                                     <span class="badge-modern"

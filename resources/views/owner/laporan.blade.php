@@ -71,10 +71,6 @@
             background: linear-gradient(135deg, #2563eb, #4f46e5);
         }
 
-        .icon-loan {
-            background: linear-gradient(135deg, #f97316, #ea580c);
-        }
-
         .icon-balance {
             background: linear-gradient(135deg, #0ea5e9, #0284c7);
         }
@@ -185,14 +181,6 @@
 
         <div class="col-md-3 mb-3">
             <div class="card-stat">
-                <div class="stat-icon icon-loan"><i class="fas fa-hand-holding-usd"></i></div>
-                <h4>Rp {{ number_format($total_pinjaman ?? 0, 0, ',', '.') }}</h4>
-                <p>Total Pinjaman Karyawan</p>
-            </div>
-        </div>
-
-        <div class="col-md-3 mb-3">
-            <div class="card-stat">
                 <div class="stat-icon icon-balance"><i class="fas fa-wallet"></i></div>
                 <h4>Rp {{ number_format($saldo_akhir ?? 0, 0, ',', '.') }}</h4>
                 <p>Saldo Akhir</p>
@@ -202,20 +190,13 @@
 
     <!-- ===================== GRAFIK ===================== -->
     <div class="row mb-4">
-        <div class="col-md-8 mb-3">
+        <div class="col-md-12 mb-3">
             <div class="chart-box">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h5 class="mb-0"><i class="fas fa-chart-line"></i> Pemasukan vs Pengeluaran</h5>
                     <small id="chart-status" style="color:#6b7280;">Memuat data…</small>
                 </div>
                 <canvas id="chartKeuangan"></canvas>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <div class="chart-box donut">
-                <h5 class="mb-2"><i class="fas fa-circle-notch"></i> Gaji vs Pinjaman</h5>
-                <canvas id="chartPersen"></canvas>
             </div>
         </div>
     </div>
@@ -296,21 +277,6 @@
             })
             .catch(() => {
                 document.getElementById('chart-status').textContent = 'Gagal memuat data';
-            });
-
-        fetch('{{ route('owner.chart.gaji_pinjaman') }}')
-            .then(res => res.json())
-            .then(({
-                labels,
-                values
-            }) => {
-                initDoughnutChart('chartPersen', labels, values, {
-                    backgroundColor: ['#0ea5e9', '#f97316'],
-                    borderWidth: 1,
-                });
-            })
-            .catch(() => {
-                // fallback jika api gagal, tetap tidak memblok UI
             });
     </script>
 @endsection
