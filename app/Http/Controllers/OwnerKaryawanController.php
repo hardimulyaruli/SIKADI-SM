@@ -14,6 +14,7 @@ class OwnerKaryawanController extends Controller
         $karyawans = Karyawan::orderBy('nama')->get();
         $gajiMap = Gaji::select('karyawan_id', 'jumlah_gaji', 'tanggal')
             ->orderByDesc('tanggal')
+            ->orderByDesc('gaji_id')
             ->get()
             ->unique('karyawan_id')
             ->keyBy('karyawan_id');
@@ -48,7 +49,10 @@ class OwnerKaryawanController extends Controller
     public function edit($id)
     {
         $karyawan = Karyawan::findOrFail($id);
-        $latestGaji = Gaji::where('karyawan_id', $id)->orderByDesc('tanggal')->first();
+        $latestGaji = Gaji::where('karyawan_id', $id)
+            ->orderByDesc('tanggal')
+            ->orderByDesc('gaji_id')
+            ->first();
 
         return view('owner.karyawan_edit', compact('karyawan', 'latestGaji'));
     }

@@ -8,6 +8,8 @@ class Gaji extends Model
 {
     protected $table = 'gaji';
 
+    protected $primaryKey = 'gaji_id';
+
     protected $fillable = [
         'karyawan_id', 'jumlah_gaji', 'tanggal', 'keterangan'
     ];

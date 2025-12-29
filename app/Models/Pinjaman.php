@@ -8,6 +8,8 @@ class Pinjaman extends Model
 {
     protected $table = 'pinjaman';
 
+    protected $primaryKey = 'pinjaman_id';
+
     protected $fillable = [
         'jumlah_pinjaman',
         'tanggal',
