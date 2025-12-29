@@ -9,12 +9,7 @@ use App\Http\Controllers\LihatLaporanController;
 use App\Http\Controllers\DistribusiController;
 
 
-/*
-|--------------------------------------------------------------------------
-| ROUTE LOGIN
-|--------------------------------------------------------------------------
-*/
-
+//route halaman login
 Route::get('/', function () {
     return redirect()->route('login.page');
 });
@@ -24,11 +19,7 @@ Route::post('/login', [UserController::class, 'login'])->name('login.action');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 
-/*
-|--------------------------------------------------------------------------
-| ROUTE DASHBOARD SEMUA ROLE
-|--------------------------------------------------------------------------
-*/
+//route semua dashboard
 Route::get('/owner/dashboard', [LihatLaporanController::class, 'ownerDashboard'])->name('owner.dashboard');
 
 Route::get('/keuangan/dashboard', function () {
@@ -43,38 +34,34 @@ Route::get('/keuangan/dashboard', function () {
 Route::get('/distribusi/dashboard', [DistribusiController::class, 'dashboard'])->name('distribusi.dashboard');
 
 
-/*
-|--------------------------------------------------------------------------
-| ROUTE OWNER
-|--------------------------------------------------------------------------
-*/
+// route bagian owner
 
-// ⭐ LIST USER
+// LIST USER
 Route::get('/owner/akun', [OwnerController::class, 'index'])->name('owner.list_user');
 
-// ⭐ FORM TAMBAH USER
+// FORM TAMBAH USER
 Route::get('/owner/tambah-akun', [OwnerController::class, 'create'])->name('owner.add_user');
 
-// ⭐ SIMPAN USER BARU
+// SIMPAN USER BARU
 Route::post('/owner/tambah-akun', [OwnerController::class, 'store'])->name('owner.store_user');
 
-// ⭐ FORM EDIT USER
+// FORM EDIT USER
 Route::get('/owner/akun/{id}/edit', [OwnerController::class, 'edit'])->name('owner.edit_user');
 
-// ⭐ UPDATE USER
+// UPDATE USER
 Route::put('/owner/akun/{id}', [OwnerController::class, 'update'])->name('owner.update_user');
 
-// ⭐ HAPUS USER
+// HAPUS USER
 Route::delete('/owner/akun/{id}', [OwnerController::class, 'destroy'])->name('owner.delete_user');
 
-// ⭐ Data Karyawan (Owner)
+// Data Karyawan (Owner)
 Route::get('/owner/karyawan', [OwnerKaryawanController::class, 'index'])->name('owner.karyawan');
 Route::post('/owner/karyawan', [OwnerKaryawanController::class, 'store'])->name('owner.karyawan.store');
 Route::get('/owner/karyawan/{id}/edit', [OwnerKaryawanController::class, 'edit'])->name('owner.karyawan.edit');
 Route::put('/owner/karyawan/{id}', [OwnerKaryawanController::class, 'update'])->name('owner.karyawan.update');
 Route::delete('/owner/karyawan/{id}', [OwnerKaryawanController::class, 'destroy'])->name('owner.karyawan.destroy');
 
-// ⭐ Laporan Owner
+// Laporan Owner
 Route::get('/owner/laporan-umum', [LihatLaporanController::class, 'ownerSummary'])->name('owner.keuangan');
 Route::get('/owner/laporan-distribusi', [LihatLaporanController::class, 'ownerDistribusi'])->name('owner.distribusi');
 Route::get('/owner/laporan-distribusi/export', [LihatLaporanController::class, 'ownerDistribusiExport'])->name('owner.distribusi.export');
@@ -83,11 +70,7 @@ Route::get('/owner/api/chart-distribusi', [LihatLaporanController::class, 'chart
 Route::get('/owner/api/chart-gaji-pinjaman', [LihatLaporanController::class, 'chartGajiPinjaman'])->name('owner.chart.gaji_pinjaman');
 
 
-/*
-|--------------------------------------------------------------------------
-| ROUTE KEUANGAN
-|--------------------------------------------------------------------------
-*/
+//route bagian keuangan
 Route::get('/keuangan/gaji-pegawai', [\App\Http\Controllers\BagianKeuanganController::class, 'index'])->name('keuangan.gaji');
 Route::post('/keuangan/gaji-pegawai', [\App\Http\Controllers\BagianKeuanganController::class, 'store'])->name('keuangan.gaji.store');
 Route::get('/keuangan/pinjaman', [\App\Http\Controllers\PinjamanController::class, 'index'])->name('keuangan.pinjaman');
@@ -105,11 +88,8 @@ Route::post('/keuangan/transaksi', [DataTransaksiController::class, 'store'])->n
 Route::get('/pengeluaran', [DataTransaksiController::class, 'pengeluaranIndex'])->name('pengeluaran.index');
 Route::get('/pengeluaran/create', [DataTransaksiController::class, 'pengeluaranCreate'])->name('pengeluaran.create');
 Route::post('/pengeluaran', [DataTransaksiController::class, 'pengeluaranStore'])->name('pengeluaran.store');
-/*
-|--------------------------------------------------------------------------
-| ROUTE DISTRIBUSI
-|--------------------------------------------------------------------------
-*/
+
+//route bagian distribusi
 Route::get('/distribusi/laporan', [DistribusiController::class, 'laporan'])->name('distribusi.laporan');
 Route::get('/distribusi/laporan/export', [DistribusiController::class, 'exportExcel'])->name('distribusi.laporan.export');
 Route::get('/distribusi/barang', [\App\Http\Controllers\DistribusiController::class, 'index'])->name('distribusi.barang');
