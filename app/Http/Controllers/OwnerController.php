@@ -16,7 +16,7 @@ class OwnerController extends Controller
 
     public function create()
     {
-        return view('owner.tambah_akun');
+        return redirect()->route('owner.list_user');
     }
 
     public function edit($id)
