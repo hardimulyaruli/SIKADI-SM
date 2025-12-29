@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class AuthController extends Controller
+class UserController extends Controller
 {
     public function loginPage()
     {
@@ -22,24 +22,19 @@ class AuthController extends Controller
             'selected_role' => 'required'
         ]);
 
-        // Cari user berdasarkan email
         $user = User::where('email', $request->email)->first();
 
-        // Jika user tidak ditemukan atau password salah
         if (!$user || !Hash::check($request->password, $user->kata_sandi)) {
             return back()->with('error', 'Email atau password salah!');
         }
 
-        // Validasi role sesuai akun
         if ($request->selected_role !== $user->peran) {
             return back()->with('error', 'Role tidak sesuai dengan akun!');
         }
 
-        // Login manual
         Auth::login($user);
 
-        // Redirect sesuai perannya
-        return match($user->peran) {
+        return match ($user->peran) {
             'owner' => redirect()->route('owner.dashboard'),
             'keuangan' => redirect()->route('keuangan.dashboard'),
             'distribusi' => redirect()->route('distribusi.dashboard'),

@@ -8,7 +8,7 @@ use App\Models\Penggajian;
 use App\Models\Pinjaman;
 use Illuminate\Http\Request;
 
-class GajiController extends Controller
+class BagianKeuanganController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,26 +42,25 @@ class GajiController extends Controller
         $tunjangan = $request->tunjangan ?? 0;
         $hariTidakMasuk = $request->hari_tidak_masuk;
 
-        // Gaji pokok dari entri terbaru (anggap gaji per bulan). Jika belum ada, 0.
         $gajiPokok = Gaji::where('karyawan_id', $karyawanId)
             ->orderByDesc('tanggal')
             ->value('jumlah_gaji') ?? 0;
 
-        // Total pinjaman yang belum lunas
         $pinjamanBelumLunas = Pinjaman::where('karyawan_id', $karyawanId)
             ->where('status', 'belum_lunas')->get();
         $totalPinjaman = $pinjamanBelumLunas->sum('jumlah_pinjaman');
 
-        // Potongan absensi flat: 100.000 per hari tidak masuk
         $potonganAbsensi = $hariTidakMasuk * 100000;
 
-        // Gaji bersih sebelum potongan pinjaman
         $gajiBersihSebelumPinjaman = $gajiPokok - $potonganAbsensi + $tunjangan;
 
-        // Kurangi gaji dengan pinjaman; minimal 0 agar tidak minus
+        // Jika absen penuh (30 hari), tidak ada gaji yang dibayarkan.
+        if ($hariTidakMasuk >= 30) {
+            $gajiBersihSebelumPinjaman = 0;
+        }
+
         $totalGajiDiterima = max($gajiBersihSebelumPinjaman - $totalPinjaman, 0);
 
-        // Simpan data penggajian
         Penggajian::create([
             'karyawan_id' => $karyawanId,
             'tunjangan' => $tunjangan,
@@ -71,7 +70,6 @@ class GajiController extends Controller
             'keterangan' => 'Penggajian bulan ' . now()->format('F Y'),
         ]);
 
-        // Tandai pinjaman lunas hanya jika gaji cukup menutup total pinjaman
         if ($gajiBersihSebelumPinjaman >= $totalPinjaman && $totalPinjaman > 0) {
             foreach ($pinjamanBelumLunas as $pinjaman) {
                 $pinjaman->status = 'lunas';

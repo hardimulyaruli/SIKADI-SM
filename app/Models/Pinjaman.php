@@ -8,11 +8,6 @@ class Pinjaman extends Model
 {
     protected $table = 'pinjaman';
 
-    // Gunakan primary key kustom sesuai migrasi
-    protected $primaryKey = 'pinjaman_id';
-    public $incrementing = true;
-    protected $keyType = 'int';
-
     protected $fillable = [
         'jumlah_pinjaman',
         'tanggal',
