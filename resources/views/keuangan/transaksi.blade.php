@@ -237,9 +237,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($transaksi as $t)
+                        @foreach ($transaksi as $index => $t)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ ($transaksi->firstItem() ?? 0) + $index }}</td>
                                 <td>
                                     @if ($t->tipe === 'pemasukan')
                                         <span class="badge-custom"
@@ -260,6 +260,11 @@
                     </tbody>
                 </table>
             </div>
+            @if (method_exists($transaksi ?? null, 'links'))
+                <div style="padding:12px 14px; background:#fff;">
+                    {{ $transaksi->links() }}
+                </div>
+            @endif
         @else
             <div class="empty-state">
                 <i class="fas fa-inbox"></i>

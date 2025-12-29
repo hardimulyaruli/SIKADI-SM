@@ -15,8 +15,10 @@ class DataTransaksiController extends Controller
         $endOfWeek = Carbon::now()->endOfWeek(Carbon::SUNDAY);
 
         $transaksi = Transaksi::whereBetween('tanggal', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
-            ->orderBy('tanggal', 'desc')
-            ->get();
+            ->orderByDesc('tanggal')
+            ->orderByDesc('created_at')
+            ->paginate(10)
+            ->withQueryString();
 
         $barangs = Barang::orderBy('nama_barang')->get();
 
@@ -89,7 +91,8 @@ class DataTransaksiController extends Controller
     public function pengeluaranIndex()
     {
         $pengeluarans = Transaksi::where('tipe', 'pengeluaran')
-            ->orderBy('tanggal', 'desc')
+            ->orderByDesc('tanggal')
+            ->orderByDesc('created_at')
             ->paginate(10);
 
         return view('pengeluaran.index', compact('pengeluarans'));

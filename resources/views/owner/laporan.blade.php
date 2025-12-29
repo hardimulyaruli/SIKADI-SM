@@ -230,6 +230,11 @@
                 @endforelse
             </tbody>
         </table>
+        @if (method_exists($transaksi ?? null, 'links'))
+            <div style="padding:12px 14px; background:#fff;">
+                {{ $transaksi->links() }}
+            </div>
+        @endif
     </div>
 
     <script>

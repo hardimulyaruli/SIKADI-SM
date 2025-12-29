@@ -146,7 +146,7 @@
                 <tbody>
                     @forelse ($daftarDistribusi ?? [] as $d)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ ($daftarDistribusi->firstItem() ?? 0) + $loop->index }}</td>
                             <td>{{ $d->catatan }}</td>
                             <td>{{ $d->jumlah_produk }}</td>
                             <td>{{ $d->toko_tujuan }}</td>
@@ -160,6 +160,11 @@
                     @endforelse
                 </tbody>
             </table>
+            @if (method_exists($daftarDistribusi ?? null, 'links'))
+                <div style="padding:12px 14px; background:#fff;">
+                    {{ $daftarDistribusi->links() }}
+                </div>
+            @endif
         </div>
     </div>
 

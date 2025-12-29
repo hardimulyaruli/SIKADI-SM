@@ -216,9 +216,8 @@
                     <input type="date" name="pg_end" class="form-control" value="{{ $pgEnd ?? '' }}">
                 </div>
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn-modern btn-primary-modern" style="font-size:12px; padding:8px 14px;">
-                        Terapkan Filter
-                    </button>
+                    <button type="submit" class="btn-modern btn-primary-modern"
+                        style="font-size:12px; padding:8px 14px;">Terapkan Filter</button>
                     <a href="{{ route('keuangan.laporan', ['tab' => 'penggajian']) }}" class="btn btn-outline-secondary"
                         style="font-size:12px; padding:8px 14px;">Reset</a>
                 </div>
@@ -383,6 +382,11 @@
                     </tbody>
                 </table>
             </div>
+            @if (method_exists($transaksi ?? null, 'links'))
+                <div style="padding:12px 14px; background:#fff;">
+                    {{ $transaksi->links() }}
+                </div>
+            @endif
         @else
             <div class="empty-state">
                 <i class="fas fa-inbox"></i>

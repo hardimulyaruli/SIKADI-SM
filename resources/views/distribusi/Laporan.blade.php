@@ -193,9 +193,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($daftarDistribusi ?? [] as $d)
+                        @forelse ($daftarDistribusi as $index => $d)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ ($daftarDistribusi->firstItem() ?? 0) + $index }}</td>
                                 <td>{{ $d->catatan }}</td>
                                 <td>{{ $d->jumlah_produk }}</td>
                                 <td>{{ $d->toko_tujuan }}</td>
@@ -209,6 +209,10 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            <div class="mt-3">
+                {{ $daftarDistribusi->links() }}
             </div>
         </div>
     </div>

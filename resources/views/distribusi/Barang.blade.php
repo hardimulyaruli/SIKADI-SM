@@ -208,9 +208,9 @@
                 </thead>
 
                 <tbody>
-                    @forelse(($distribusis ?? collect())->sortByDesc('created_at') as $d)
+                    @forelse ($distribusis as $index => $d)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ ($distribusis->firstItem() ?? 0) + $index }}</td>
                             <td>{{ $d->catatan }}</td>
                             <td>{{ $d->jumlah_produk }}</td>
                             <td>{{ $d->toko_tujuan }}</td>
@@ -231,6 +231,10 @@
                     @endforelse
                 </tbody>
             </table>
+
+            <div class="mt-3">
+                {{ $distribusis->links() }}
+            </div>
         </div>
     </div>
 @endsection

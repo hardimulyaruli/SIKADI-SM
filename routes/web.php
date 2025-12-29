@@ -88,8 +88,6 @@ Route::get('/owner/api/chart-gaji-pinjaman', [LihatLaporanController::class, 'ch
 | ROUTE KEUANGAN
 |--------------------------------------------------------------------------
 */
-Route::get('/keuangan/add_pemasukan', fn() => view('keuangan.add_pemasukan'))->name('keuangan.add_pemasukan');
-Route::get('/keuangan/add_pengeluaran', fn() => view('keuangan.add_pengeluaran'))->name('keuangan.add_pengeluaran');
 Route::get('/keuangan/gaji-pegawai', [\App\Http\Controllers\BagianKeuanganController::class, 'index'])->name('keuangan.gaji');
 Route::post('/keuangan/gaji-pegawai', [\App\Http\Controllers\BagianKeuanganController::class, 'store'])->name('keuangan.gaji.store');
 Route::get('/keuangan/pinjaman', [\App\Http\Controllers\PinjamanController::class, 'index'])->name('keuangan.pinjaman');
@@ -99,10 +97,6 @@ Route::post('/keuangan/laporan/filter', [\App\Http\Controllers\LihatLaporanContr
 Route::get('/keuangan/laporan/export/penggajian', [\App\Http\Controllers\LihatLaporanController::class, 'exportPenggajian'])->name('keuangan.laporan.export.penggajian');
 Route::get('/keuangan/laporan/export/transaksi', [\App\Http\Controllers\LihatLaporanController::class, 'exportTransaksi'])->name('keuangan.laporan.export.transaksi');
 
-Route::get('/keuangan/transaksi', [DataTransaksiController::class, 'index'])->name('keuangan.transaksi');
-// Halaman daftar transaksi
-
-// Simpan pemasukan
 Route::get('/keuangan/transaksi', [DataTransaksiController::class, 'index'])->name('keuangan.transaksi');
 
 Route::post('/keuangan/transaksi', [DataTransaksiController::class, 'store'])->name('keuangan.transaksi.post');

@@ -49,7 +49,8 @@ class DistribusiController extends Controller
         $daftarDistribusi = (clone $filteredQuery)
             ->orderByDesc('tanggal')
             ->orderByDesc('id')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('distribusi.laporan', compact(
             'totalDistribusi',
@@ -143,7 +144,9 @@ class DistribusiController extends Controller
      */
     public function index()
     {
-        $distribusis = Distribusi::orderBy('tanggal', 'desc')->get();
+        $distribusis = Distribusi::orderByDesc('tanggal')
+            ->orderByDesc('id')
+            ->paginate(10);
         return view('distribusi.Barang', compact('distribusis'));
     }
 

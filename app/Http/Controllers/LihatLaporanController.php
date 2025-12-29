@@ -61,6 +61,7 @@ class LihatLaporanController extends Controller
         $weeklyPenjualan = Transaksi::where('tipe', 'pemasukan')
             ->whereBetween('tanggal', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
             ->orderByDesc('tanggal')
+            ->orderByDesc('created_at')
             ->get();
 
         // Tabel 2: Transaksi keseluruhan dengan filter satu tanggal
@@ -68,7 +69,7 @@ class LihatLaporanController extends Controller
         $txStart = $request->input('tx_start');
         $txEnd = $request->input('tx_end');
 
-        $transaksiQuery = Transaksi::orderByDesc('tanggal');
+        $transaksiQuery = Transaksi::orderByDesc('tanggal')->orderByDesc('created_at');
         if ($txStart && $txEnd) {
             $transaksiQuery->whereBetween('tanggal', [$txStart, $txEnd]);
         } elseif ($txStart) {
@@ -76,7 +77,7 @@ class LihatLaporanController extends Controller
         } elseif ($txEnd) {
             $transaksiQuery->whereDate('tanggal', '<=', $txEnd);
         }
-        $transaksi = $transaksiQuery->get();
+        $transaksi = $transaksiQuery->paginate(10)->withQueryString();
 
         // Tentukan tab aktif agar tetap di tab transaksi setelah filter
         $activeTab = $request->input('tab');
@@ -128,7 +129,10 @@ class LihatLaporanController extends Controller
         $total_pengeluaran = Transaksi::where('tipe', 'pengeluaran')->sum('nominal');
         $saldo_transaksi = $total_pemasukan - $total_pengeluaran;
 
-        $transaksi = Transaksi::orderByDesc('tanggal')->get();
+        $transaksi = Transaksi::orderByDesc('tanggal')
+            ->orderByDesc('created_at')
+            ->paginate(10)
+            ->withQueryString();
 
         // Owner default di tab penggajian
         $activeTab = 'penggajian';
@@ -201,7 +205,8 @@ class LihatLaporanController extends Controller
         $daftarDistribusi = (clone $filteredQuery)
             ->orderByDesc('tanggal')
             ->orderByDesc('id')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('owner.laporan_distribusi', compact(
             'totalDistribusi',

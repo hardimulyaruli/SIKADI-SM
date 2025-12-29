@@ -10,15 +10,16 @@ class BarangSeeder extends Seeder
     public function run(): void
     {
         $items = [
-            ['nama_barang' => 'Terigu', 'satuan' => 'kg', 'keterangan' => 'Bahan utama'],
-            ['nama_barang' => 'Telur', 'satuan' => 'butir', 'keterangan' => 'Bahan utama'],
-            ['nama_barang' => 'Gula Pasir', 'satuan' => 'kg', 'keterangan' => 'Bahan utama'],
-            ['nama_barang' => 'Margarin', 'satuan' => 'kg', 'keterangan' => 'Bahan tambahan'],
-            ['nama_barang' => 'Susu Bubuk', 'satuan' => 'kg', 'keterangan' => 'Bahan tambahan'],
-            ['nama_barang' => 'Cokelat Bubuk', 'satuan' => 'kg', 'keterangan' => 'Bahan tambahan'],
-            ['nama_barang' => 'Keju', 'satuan' => 'kg', 'keterangan' => 'Topping'],
-            ['nama_barang' => 'Gas LPG', 'satuan' => 'tabung', 'keterangan' => 'Operasional dapur'],
-            ['nama_barang' => 'Plastik Kemasan', 'satuan' => 'pack', 'keterangan' => 'Bahan kemas'],
+            ['nama_barang' => 'Terigu', 'satuan' => 'karung', 'keterangan' => 'Bahan baku utama'],
+            ['nama_barang' => 'Gula', 'satuan' => 'karung', 'keterangan' => 'Bahan baku utama'],
+            ['nama_barang' => 'Minyak', 'satuan' => 'kg', 'keterangan' => 'Bahan pendukung'],
+            ['nama_barang' => 'Margarin', 'satuan' => 'dus', 'keterangan' => 'Bahan pendukung'],
+            ['nama_barang' => 'Kacang Hijau', 'satuan' => 'karung', 'keterangan' => 'Bahan isi'],
+            ['nama_barang' => 'Toples', 'satuan' => 'lusin', 'keterangan' => 'Kemasan'],
+            ['nama_barang' => 'Telor', 'satuan' => 'kg', 'keterangan' => 'Bahan baku utama'],
+            ['nama_barang' => 'Vaneli Cair', 'satuan' => 'lusin', 'keterangan' => 'Perisa'],
+            ['nama_barang' => 'Pewarna Makanan', 'satuan' => 'lusin', 'keterangan' => 'Perisa'],
+            ['nama_barang' => 'Kacang Tanah', 'satuan' => 'kg', 'keterangan' => 'Bahan isi'],
         ];
 
         foreach ($items as $item) {
