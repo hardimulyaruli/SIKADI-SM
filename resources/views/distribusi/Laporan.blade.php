@@ -14,6 +14,14 @@
             box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
         }
 
+        .filter-bar {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.05), rgba(99, 102, 241, 0.05));
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+
         .card-head h2 {
             margin: 0;
             font-weight: 800;
@@ -142,15 +150,34 @@
         </div>
 
         <div class="card-glass">
-            <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-2 mb-3">
+            <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-2 mb-2">
                 <div>
                     <h4 class="section-title mb-1">Detail Distribusi</h4>
-                    <p class="section-sub">Data terbaru hasil kelola barang.</p>
+                    <p class="section-sub">Selaraskan tampilan dengan laporan keuangan: filter rentang tanggal dan export.</p>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('distribusi.laporan.export') }}"
-                        class="btn btn-sm btn-primary btn-primary-modern">Export Excel (.xlsx)</a>
+                    <a href="{{ route('distribusi.laporan.export', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}"
+                        class="btn btn-sm btn-primary-modern">Export Excel (.xlsx)</a>
                 </div>
+            </div>
+
+            <div class="filter-bar">
+                <form method="GET" action="{{ route('distribusi.laporan') }}" class="row g-2 align-items-end mb-0">
+                    <div class="col-md-4">
+                        <label class="form-label" style="font-size:12px; color:#6b7280;">Tanggal Awal</label>
+                        <input type="date" name="start_date" class="form-control"
+                            value="{{ request('start_date', $startDate ?? '') }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" style="font-size:12px; color:#6b7280;">Tanggal Akhir</label>
+                        <input type="date" name="end_date" class="form-control"
+                            value="{{ request('end_date', $endDate ?? '') }}">
+                    </div>
+                    <div class="col-md-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary-modern" style="align-self:flex-end;">Terapkan Filter</button>
+                        <a href="{{ route('distribusi.laporan') }}" class="btn btn-outline-secondary" style="align-self:flex-end;">Reset</a>
+                    </div>
+                </form>
             </div>
 
             <div class="table-responsive">

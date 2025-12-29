@@ -26,27 +26,58 @@ class DistribusiController extends Controller
         ));
     }
 
-    public function laporan()
+    public function laporan(Request $request)
     {
-        $totalDistribusi = Distribusi::count();
-        $totalBarang = Distribusi::sum('jumlah_produk');
-        $pendingCount = Distribusi::where('status', 'pending')->count();
-        $terkirimCount = Distribusi::where('status', 'terkirim')->count();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
-        $daftarDistribusi = Distribusi::orderByDesc('tanggal')->orderByDesc('id')->get();
+        $filteredQuery = Distribusi::query();
+
+        if ($startDate && $endDate) {
+            $filteredQuery->whereBetween('tanggal', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $filteredQuery->whereDate('tanggal', '>=', $startDate);
+        } elseif ($endDate) {
+            $filteredQuery->whereDate('tanggal', '<=', $endDate);
+        }
+
+        $totalDistribusi = (clone $filteredQuery)->count();
+        $totalBarang = (clone $filteredQuery)->sum('jumlah_produk');
+        $pendingCount = (clone $filteredQuery)->where('status', 'pending')->count();
+        $terkirimCount = (clone $filteredQuery)->where('status', 'terkirim')->count();
+
+        $daftarDistribusi = (clone $filteredQuery)
+            ->orderByDesc('tanggal')
+            ->orderByDesc('id')
+            ->get();
 
         return view('distribusi.laporan', compact(
             'totalDistribusi',
             'totalBarang',
             'pendingCount',
             'terkirimCount',
-            'daftarDistribusi'
+            'daftarDistribusi',
+            'startDate',
+            'endDate'
         ));
     }
 
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
-        $rows = Distribusi::orderByDesc('tanggal')->orderByDesc('id')->get();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $rowsQuery = Distribusi::orderByDesc('tanggal')->orderByDesc('id');
+
+        if ($startDate && $endDate) {
+            $rowsQuery->whereBetween('tanggal', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $rowsQuery->whereDate('tanggal', '>=', $startDate);
+        } elseif ($endDate) {
+            $rowsQuery->whereDate('tanggal', '<=', $endDate);
+        }
+
+        $rows = $rowsQuery->get();
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();

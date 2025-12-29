@@ -178,22 +178,116 @@ class LihatLaporanController extends Controller
     /**
      * Owner: Laporan Distribusi (menyamai laporan distribusi role distribusi).
      */
-    public function ownerDistribusi()
+    public function ownerDistribusi(Request $request)
     {
-        $totalDistribusi = Distribusi::count();
-        $totalBarang = Distribusi::sum('jumlah_produk');
-        $pendingCount = Distribusi::where('status', 'pending')->count();
-        $terkirimCount = Distribusi::where('status', 'terkirim')->count();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
-        $daftarDistribusi = Distribusi::orderByDesc('tanggal')->orderByDesc('id')->get();
+        $filteredQuery = Distribusi::query();
+
+        if ($startDate && $endDate) {
+            $filteredQuery->whereBetween('tanggal', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $filteredQuery->whereDate('tanggal', '>=', $startDate);
+        } elseif ($endDate) {
+            $filteredQuery->whereDate('tanggal', '<=', $endDate);
+        }
+
+        $totalDistribusi = (clone $filteredQuery)->count();
+        $totalBarang = (clone $filteredQuery)->sum('jumlah_produk');
+        $pendingCount = (clone $filteredQuery)->where('status', 'pending')->count();
+        $terkirimCount = (clone $filteredQuery)->where('status', 'terkirim')->count();
+
+        $daftarDistribusi = (clone $filteredQuery)
+            ->orderByDesc('tanggal')
+            ->orderByDesc('id')
+            ->get();
 
         return view('owner.laporan_distribusi', compact(
             'totalDistribusi',
             'totalBarang',
             'pendingCount',
             'terkirimCount',
-            'daftarDistribusi'
+            'daftarDistribusi',
+            'startDate',
+            'endDate'
         ));
+    }
+
+    public function ownerDistribusiExport(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $rowsQuery = Distribusi::orderByDesc('tanggal')->orderByDesc('id');
+
+        if ($startDate && $endDate) {
+            $rowsQuery->whereBetween('tanggal', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $rowsQuery->whereDate('tanggal', '>=', $startDate);
+        } elseif ($endDate) {
+            $rowsQuery->whereDate('tanggal', '<=', $endDate);
+        }
+
+        $rows = $rowsQuery->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Laporan Distribusi');
+
+        $sheet->fromArray([
+            ['Laporan Distribusi'],
+            [],
+            ['No', 'Nama Produk', 'Jumlah', 'Tujuan', 'Tanggal', 'Status'],
+        ], null, 'A1');
+
+        $rowIndex = 4;
+        foreach ($rows as $index => $row) {
+            $sheet->fromArray([
+                [
+                    $index + 1,
+                    $row->catatan,
+                    $row->jumlah_produk,
+                    $row->toko_tujuan,
+                    $row->tanggal,
+                    ucfirst($row->status),
+                ],
+            ], null, 'A' . $rowIndex);
+            $rowIndex++;
+        }
+
+        $headerStyle = [
+            'font' => ['bold' => true],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FFE5E7EB'],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF9CA3AF'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle('A3:F3')->applyFromArray($headerStyle);
+        $sheet->getStyle('A4:F' . max(4, $rowIndex - 1))
+            ->getBorders()->getAllBorders()
+            ->setBorderStyle(Border::BORDER_THIN)
+            ->getColor()->setARGB('FFE5E7EB');
+
+        foreach (range('A', 'F') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $fileName = 'laporan_distribusi_' . now()->format('Ymd_His') . '.xlsx';
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     /**
@@ -349,12 +443,27 @@ class LihatLaporanController extends Controller
      */
     public function exportPenggajian(Request $request)
     {
-        $pgDate = $request->input('pg_date');
+        $pgStart = $request->input('pg_start');
+        $pgEnd = $request->input('pg_end');
+        $pgDate = $request->input('pg_date'); // fallback untuk kompatibilitas lama
 
-        $penggajianQuery = Penggajian::with('karyawan')->orderByDesc('tanggal');
-        $pinjamanQuery = Pinjaman::with('karyawan')->orderByDesc('tanggal');
+        $penggajianQuery = Penggajian::with('karyawan')
+            ->orderByDesc('created_at')
+            ->orderByDesc('tanggal');
+        $pinjamanQuery = Pinjaman::with('karyawan')
+            ->orderByDesc('created_at')
+            ->orderByDesc('tanggal');
 
-        if ($pgDate) {
+        if ($pgStart && $pgEnd) {
+            $penggajianQuery->whereBetween('tanggal', [$pgStart, $pgEnd]);
+            $pinjamanQuery->whereBetween('tanggal', [$pgStart, $pgEnd]);
+        } elseif ($pgStart) {
+            $penggajianQuery->whereDate('tanggal', '>=', $pgStart);
+            $pinjamanQuery->whereDate('tanggal', '>=', $pgStart);
+        } elseif ($pgEnd) {
+            $penggajianQuery->whereDate('tanggal', '<=', $pgEnd);
+            $pinjamanQuery->whereDate('tanggal', '<=', $pgEnd);
+        } elseif ($pgDate) {
             $penggajianQuery->whereDate('tanggal', $pgDate);
             $pinjamanQuery->whereDate('tanggal', $pgDate);
         }
@@ -413,14 +522,17 @@ class LihatLaporanController extends Controller
 
         // Spacer dan Tabel 2: Pinjaman (masih di sheet yang sama)
         $rowIndex += 2; // satu baris kosong antar tabel
-        $pinjamanHeaderRow = $rowIndex;
+        $pinjamanTitleRow = $rowIndex;
         $sheet->fromArray([
             ['Laporan Pinjaman'],
             [],
             ['Tanggal', 'Nama Karyawan', 'Jumlah Pinjaman', 'Status', 'Keterangan'],
-        ], null, 'A' . $pinjamanHeaderRow);
+        ], null, 'A' . $pinjamanTitleRow);
 
-        $rowIndex = $pinjamanHeaderRow + 2;
+        // Data dimulai satu baris setelah header agar header tidak tertimpa
+        $pinjamanHeaderRow = $pinjamanTitleRow + 2;
+        $rowIndex = $pinjamanHeaderRow + 1;
+
         foreach ($pinjaman as $row) {
             $tanggal = $row->tanggal ? Carbon::parse($row->tanggal)->format('Y-m-d') : '';
 
@@ -436,8 +548,8 @@ class LihatLaporanController extends Controller
             $rowIndex++;
         }
 
-        $sheet->getStyle('A' . ($pinjamanHeaderRow + 2) . ':E' . ($pinjamanHeaderRow + 2))->applyFromArray($headerStyle);
-        $sheet->getStyle('A' . ($pinjamanHeaderRow + 2) . ':E' . max($pinjamanHeaderRow + 2, $rowIndex - 1))->getBorders()->getAllBorders()
+        $sheet->getStyle('A' . $pinjamanHeaderRow . ':E' . $pinjamanHeaderRow)->applyFromArray($headerStyle);
+        $sheet->getStyle('A' . $pinjamanHeaderRow . ':E' . max($pinjamanHeaderRow, $rowIndex - 1))->getBorders()->getAllBorders()
             ->setBorderStyle(Border::BORDER_THIN)->getColor()->setARGB('FFE5E7EB');
 
         foreach (range('A', 'E') as $col) {
@@ -459,10 +571,18 @@ class LihatLaporanController extends Controller
      */
     public function exportTransaksi(Request $request)
     {
-        $txDate = $request->input('tx_date');
+        $txStart = $request->input('tx_start');
+        $txEnd = $request->input('tx_end');
+        $txDate = $request->input('tx_date'); // fallback untuk kompatibilitas lama
 
         $transaksiQuery = Transaksi::orderByDesc('tanggal');
-        if ($txDate) {
+        if ($txStart && $txEnd) {
+            $transaksiQuery->whereBetween('tanggal', [$txStart, $txEnd]);
+        } elseif ($txStart) {
+            $transaksiQuery->whereDate('tanggal', '>=', $txStart);
+        } elseif ($txEnd) {
+            $transaksiQuery->whereDate('tanggal', '<=', $txEnd);
+        } elseif ($txDate) {
             $transaksiQuery->whereDate('tanggal', $txDate);
         }
 

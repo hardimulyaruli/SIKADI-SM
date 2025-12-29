@@ -197,7 +197,7 @@
                         pinjaman yang tercatat.</p>
                 </div>
                 <div>
-                    <a href="{{ route('keuangan.laporan.export.penggajian', ['pg_date' => $pgDate ?? request('pg_date')]) }}"
+                    <a href="{{ route('keuangan.laporan.export.penggajian', ['pg_start' => $pgStart ?? request('pg_start'), 'pg_end' => $pgEnd ?? request('pg_end')]) }}"
                         class="btn-modern btn-primary-modern"
                         style="font-size:12px; padding:6px 14px; border-radius:999px;">
                         <i class="fas fa-file-excel"></i> Export Excel
@@ -215,9 +215,13 @@
                     <label style="font-size:12px; color:#6b7280;">Tanggal Akhir</label>
                     <input type="date" name="pg_end" class="form-control" value="{{ $pgEnd ?? '' }}">
                 </div>
-                <button type="submit" class="btn-modern btn-primary-modern" style="font-size:12px; padding:8px 14px;">
-                    Terapkan Filter
-                </button>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn-modern btn-primary-modern" style="font-size:12px; padding:8px 14px;">
+                        Terapkan Filter
+                    </button>
+                    <a href="{{ route('keuangan.laporan', ['tab' => 'penggajian']) }}" class="btn btn-outline-secondary"
+                        style="font-size:12px; padding:8px 14px;">Reset</a>
+                </div>
             </form>
         </div>
 
@@ -311,7 +315,7 @@
                         keuangan.</p>
                 </div>
                 <div>
-                    <a href="{{ route('keuangan.laporan.export.transaksi', ['tx_date' => $txDate ?? request('tx_date')]) }}"
+                    <a href="{{ route('keuangan.laporan.export.transaksi', ['tx_start' => $txStart ?? request('tx_start'), 'tx_end' => $txEnd ?? request('tx_end')]) }}"
                         class="btn-modern btn-primary-modern"
                         style="font-size:12px; padding:6px 14px; border-radius:999px;">
                         <i class="fas fa-file-excel"></i> Export Excel
@@ -329,9 +333,13 @@
                     <label style="font-size:12px; color:#6b7280;">Tanggal Akhir</label>
                     <input type="date" name="tx_end" class="form-control" value="{{ $txEnd ?? '' }}">
                 </div>
-                <button type="submit" class="btn-modern btn-primary-modern" style="font-size:12px; padding:8px 14px;">
-                    Terapkan Filter
-                </button>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn-modern btn-primary-modern" style="font-size:12px; padding:8px 14px;">
+                        Terapkan Filter
+                    </button>
+                    <a href="{{ route('keuangan.laporan', ['tab' => 'transaksi']) }}" class="btn btn-outline-secondary"
+                        style="font-size:12px; padding:8px 14px;">Reset</a>
+                </div>
             </form>
         </div>
 
